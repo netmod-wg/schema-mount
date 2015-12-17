@@ -1,0 +1,19 @@
+module example-logical-devices {
+  namespace "http://example.com/logical-device";
+  prefix exld;
+
+  import ietf-yang-structural-mount {
+    prefix yangmnt;
+  }
+
+  container logical-devices {
+    list logical-device {
+      key name;
+      leaf name {
+        type string;
+      }
+
+      yangmnt:mount-point logical-device;
+    }
+  }
+}

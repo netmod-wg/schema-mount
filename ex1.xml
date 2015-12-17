@@ -1,0 +1,25 @@
+<mount-points
+  xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-structural-mount">
+  <mount-point>
+    <module>example-logical-devices</module>
+    <name>device-root</name>
+    <modules>
+      <module>
+        <name>ietf-interface</name>
+        <revision>2014-05-08</revision>
+        <namespace>
+          urn:ietf:params:xml:ns:yang:ietf-interfaces
+        </namespace>
+        <conformance>implement</conformance>
+      </module>
+      <module>
+        <name>ietf-yang-types</name>
+        <revision>2013-07-15</revision>
+        <namespace>
+          urn:ietf:params:xml:ns:yang:ietf-yang-types
+        </namespace>
+        <conformance>import</conformance>
+      </module>
+    </modules>
+  </mount-point>
+</mount-points>

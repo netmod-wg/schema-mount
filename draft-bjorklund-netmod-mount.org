@@ -1,0 +1,201 @@
+# -*- org -*-
+
+This document defines a mechanism to combine YANG modules into
+the schema defined in other YANG modules.
+
+* Introduction
+
+** Terminology
+
+The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+"OPTIONAL" in this document are to be interpreted as described in BCP
+14, ^RFC2119^.
+
+*** Tree Diagrams
+
+A simplified graphical representation of the data model is used in
+this document.  The meaning of the symbols in these
+diagrams is as follows:
+
+- Brackets "[" and "]" enclose list keys.
+- Abbreviations before data node names: "rw" means configuration
+ data (read-write) and "ro" state data (read-only).
+- Symbols after data node names: "?" means an optional node, "!" means
+ a presence container, and "*" denotes a list and leaf-list.
+- Parentheses enclose choice and case nodes, and case nodes are also
+marked with a colon (":").
+- Ellipsis ("...") stands for contents of subtrees that are not shown.
+
+* Background
+
+YANG has two mechanisms for extending a data model with additional
+nodes; "uses" and "augment".  The "uses" statement explicitly
+incorporates the contents of a "grouping" defined in some module.  The
+"augment" statement explicitly adds contents to a target node defined
+in some module.  In both these cases, the source and/or target
+model explicitly defines the relationship between the models.
+
+In some cases these mechanisms are not sufficient.  For example,
+suppose we have a model like ietf-interfaces ^RFC7223^ that is defined to
+be implemented in a device.  Now suppose we want to model a device
+that supports multiple logical devices, where each such logical device
+has its own instantiation of ietf-interfaces (and other models), but at
+the same time, we'd like to be able to manage all these logical
+devices from the main device.  We would like something like this:
+
+  +--rw interfaces
+  | +--rw interface* [name]
+  |    ...
+  +--rw logical-device* [name]
+     +--rw name             string
+     |   ...
+     +--rw interfaces
+       +--rw interface* [name]
+
+With the "uses" approach, ietf-interfaces would have to define a
+grouping with all its nodes, and the new model for logical devices
+would have to use this grouping.  This is a not a scalable solution,
+since every time there is a new model defined, we would have to update
+our model for logical devices to use a grouping from the new model.
+Another problem is that this approach cannot handle vendor-specific
+modules.
+
+With the "augment" approach, ietf-interfaces would have to augment the
+logical-device list with all its nodes, and at the same time define
+all its nodes on the top-level.  This approach is also not scalable,
+since there may be other models where we would like to add the
+interface list.
+
+* Structural Mount
+
+The structural mount mechanism defined in this document takes a
+different approach.  The relation between the source and target models
+is defined outside the models.
+
+This is accomplished with a YANG extension statement that is used
+to specify a mount point in a data model.  The purpose of a mount
+point is to define a place in the node hierarchy where other YANG data
+models may be attached, without any special notation in the other YANG
+data models.
+
+For each mount point supported by a server, the server populates an
+operational state node hierarchy with information about which models
+it has mounted.  This node hierarchy can be read by a client in order
+to learn what is implemented on a server.
+
+Structural mount applies to the schema, and specifically does not
+assume anything about how the mounted data is implemented.  It may be
+implemented using the same instrumentation as the rest of the system,
+or it may be implemented by querying some other system.
+
+This document allows mounting of complete data models only.  Other
+specifications may define other mechanisms, for example mounting of
+sub-hierarchies of a module.
+
+** Validation of Mounted Data
+
+All paths (in leafrefs, instance-identifiers, XPath expressions, and
+target nodes of augments) in the data models mounted at a mount point
+are interpreted with the mount point as the root node, and the mounted
+data nodes as its children.  This means that data within a mounted
+subtree can never refer to data outside of this subtree.
+
+** Top-level RPCs
+
+If any mounted data model defines RPCs, these RPCs can be invoked by
+treating them as actions defined where the mount point is specified.
+
+** Top-level Notifications
+
+If the server emits a notification defined at the top-level in any
+mounted data model, it is treated as if the notification was attached
+to the data node where the mount point is specified.
+
+* Data Model
+
+This document defines the YANG module "ietf-yang-structural-mount",
+which has the following structure:
+
+  module: ietf-yang-structural-mount
+     +--ro mount-points
+        +--ro mount-point* [module name]
+           +--ro module                 yang:yang-identifier
+           +--ro name                   yang:yang-identifier
+           +--ro (data-model)?
+              +--:(inline-yang-library)
+              |  +--ro inline-yang-library?   empty
+              +--:(modules)
+                 +--ro modules
+                    +--ro module* [name revision]
+                       +--ro name           yang:yang-identifier
+                       +--ro revision       union
+                       +--ro schema?        inet:uri
+                       +--ro namespace      inet:uri
+                       +--ro feature*       yang:yang-identifier
+                       +--ro deviation* [name revision]
+                       |  +--ro name        yang:yang-identifier
+                       |  +--ro revision    union
+                       +--ro conformance    enumeration
+                       +--ro submodules
+                          +--ro submodule* [name revision]
+                             +--ro name        yang:yang-identifier
+                             +--ro revision    union
+                             +--ro schema?     inet:uri
+
+* Structural Mount YANG Module
+
+!! include-figure ietf-yang-structural-mount.yang extract-to="ietf-yang-structural-mount@2015-12-17.yang"
+
+* Usage Example
+
+A data model for logical devices may be defined as:
+
+!! include-figure example-logical-devices.yang
+
+A server that implements two logical devices might
+populate the "mount-points" container with:
+
+!! include-figure ex1.xml
+
+and the "logical-devices" container might have:
+
+!! include-figure ex2.xml
+
+* IANA Considerations @iana@
+
+This document registers a URI in the IETF XML registry
+^RFC3688^.  Following the format in RFC 3688, the following
+registration is requested to be made.
+
+     URI: urn:ietf:params:xml:ns:yang:ietf-yang-structural-mount
+
+     Registrant Contact: The IESG.
+
+     XML: N/A, the requested URI is an XML namespace.
+
+This document registers a YANG module in the YANG Module Names
+registry ^RFC6020^.
+
+  name:        ietf-yang-structural-mount
+  namespace:   urn:ietf:params:xml:ns:yang:ietf-yang-structural-mount
+  prefix:      yangmnt
+  reference:   RFC XXXX
+
+* Security Considerations
+
+TBD
+
+* Acknowledgements
+
+TBD
+
+{{document:
+    name ;
+    ipr trust200902;
+    category std;
+    references mount-back.xml;
+    title "YANG Structural Mount";
+    abbreviation "YANG Structural Mount";
+    contributor "author:Martin Bjorklund:Tail-f Systems:mbj@tail-f.com";
+}}

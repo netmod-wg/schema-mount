@@ -1,0 +1,22 @@
+<logical-devices xmlns="http://example.com/logical-device">
+  <logical-device>
+    <name>vrtrA</name>
+    <interfaces
+      xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+      <interface>
+        <name>eth0</name>
+        ...
+      </interface>
+    </interfaces>
+  </logical-device>
+  <logical-device>
+    <name>vrtrB</name>
+    <interfaces
+      xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+      <interface>
+        <name>eth0</name>
+        ...
+      </interface>
+    </interfaces>
+  </logical-device>
+</logical-devices>

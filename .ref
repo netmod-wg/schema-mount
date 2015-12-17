@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference  anchor='RFC7223' target='http://www.rfc-editor.org/info/rfc7223'>
+<front>
+<title>A YANG Data Model for Interface Management</title>
+<author initials='M.' surname='Bjorklund' fullname='M. Bjorklund'><organization /></author>
+<date year='2014' month='May' />
+<abstract><t>This document defines a YANG data model for the management of network interfaces.  It is expected that interface-type-specific data models augment the generic interfaces data model defined in this document. The data model includes configuration data and state data (status information and counters for the collection of statistics).</t></abstract>
+</front>
+<seriesInfo name='RFC' value='7223'/>
+<seriesInfo name='DOI' value='10.17487/RFC7223'/>
+</reference>

@@ -31,16 +31,18 @@ marked with a colon (":").
 
 YANG has two mechanisms for extending a data model with additional
 nodes; "uses" and "augment".  The "uses" statement explicitly
-incorporates the contents of a "grouping" defined in some module.  The
-"augment" statement explicitly adds contents to a target node defined
-in some module.  In both these cases, the source and/or target
-model explicitly defines the relationship between the models.
+incorporates the contents of a "grouping" defined in some other
+module.  The "augment" statement explicitly adds contents to a target
+node defined in some other module.  In both these cases, the source
+and/or target model explicitly defines the relationship between the
+models.
 
 In some cases these mechanisms are not sufficient.  For example,
-suppose we have a model like ietf-interfaces ^RFC7223^ that is defined to
-be implemented in a device.  Now suppose we want to model a device
-that supports multiple logical devices, where each such logical device
-has its own instantiation of ietf-interfaces (and other models), but at
+suppose we have a model like ietf-interfaces ^RFC7223^ that is defined
+to be implemented in a device.  Now suppose we want to model a device
+that supports multiple logical devices
+^I-D.rtgyangdt-rtgwg-device-model^, where each such logical device has
+its own instantiation of ietf-interfaces (and other models), but at
 the same time, we'd like to be able to manage all these logical
 devices from the main device.  We would like something like this:
 
@@ -52,6 +54,7 @@ devices from the main device.  We would like something like this:
      |   ...
      +--rw interfaces
        +--rw interface* [name]
+          ...
 
 With the "uses" approach, ietf-interfaces would have to define a
 grouping with all its nodes, and the new model for logical devices
@@ -64,14 +67,15 @@ modules.
 With the "augment" approach, ietf-interfaces would have to augment the
 logical-device list with all its nodes, and at the same time define
 all its nodes on the top-level.  This approach is also not scalable,
-since there may be other models where we would like to add the
+since there may be other models to which we would like to add the
 interface list.
 
 * Structural Mount
 
 The structural mount mechanism defined in this document takes a
-different approach.  The relation between the source and target models
-is defined outside the models.
+different approach.  It decouples the definition of the relation
+between the source and target models from the definitions of the
+models themselves.
 
 This is accomplished with a YANG extension statement that is used
 to specify a mount point in a data model.  The purpose of a mount
@@ -90,8 +94,8 @@ implemented using the same instrumentation as the rest of the system,
 or it may be implemented by querying some other system.
 
 This document allows mounting of complete data models only.  Other
-specifications may define other mechanisms, for example mounting of
-sub-hierarchies of a module.
+specifications may extend this model by defining additional
+mechanisms, for example mounting of sub-hierarchies of a module.
 
 ** Validation of Mounted Data
 
@@ -188,7 +192,8 @@ TBD
 
 * Acknowledgements
 
-TBD
+The author would like to thank Lou Berger, Alexander Clemm, Ladislav
+Lhotka, and Jan Medved for useful comments and discussions on this topic.
 
 {{document:
     name ;

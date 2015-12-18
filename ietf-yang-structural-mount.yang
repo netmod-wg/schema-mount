@@ -81,7 +81,12 @@ module ietf-yang-structural-mount {
        The 'mount-point' statement can be present in 'container' and
        'list'.
 
-       ";
+       A mount point defines a place in the node hierarchy where other
+       data models may be attached.  A server that implements a module
+       with a mount point, populates the /mount-points/mount-point
+       list with detailed information on which data models are mounted
+       at each mount point.";
+
   }
 
   /*
@@ -137,7 +142,7 @@ module ietf-yang-structural-mount {
             "The 'module' list contains the set of modules that are
              mounted at the mount point.";
 
-          uses yanglib:module;
+          uses yanglib:module-list;
         }
       }
     }

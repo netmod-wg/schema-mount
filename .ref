@@ -1,12 +1,32 @@
 <?xml version='1.0' encoding='UTF-8'?>
 
-<reference  anchor='RFC7223' target='http://www.rfc-editor.org/info/rfc7223'>
+<reference anchor='I-D.rtgyangdt-rtgwg-device-model'>
 <front>
-<title>A YANG Data Model for Interface Management</title>
-<author initials='M.' surname='Bjorklund' fullname='M. Bjorklund'><organization /></author>
-<date year='2014' month='May' />
-<abstract><t>This document defines a YANG data model for the management of network interfaces.  It is expected that interface-type-specific data models augment the generic interfaces data model defined in this document. The data model includes configuration data and state data (status information and counters for the collection of statistics).</t></abstract>
+<title>Network Device YANG Organizational Model</title>
+
+<author initials='A' surname='Lindem' fullname='Acee Lindem'>
+    <organization />
+</author>
+
+<author initials='L' surname='Berger' fullname='Lou Berger'>
+    <organization />
+</author>
+
+<author initials='D' surname='Bogdanovic' fullname='Dean Bogdanovic'>
+    <organization />
+</author>
+
+<author initials='C' surname='Hopps' fullname='Christian Hopps'>
+    <organization />
+</author>
+
+<date month='September' day='21' year='2015' />
+
+<abstract><t>This document presents an approach for organizing YANG models in a comprehensive structure that defines how individual models may be composed to configure and operate network infrastructure and services.  The structure is itself represented as a YANG model, with all of the related component models logically organized in a way that is operationally intuitive. This document is derived from work submitted to the IETF by members of the informal OpenConfig working group of network operators and is a product of the Routing Area YANG Architecture design team.</t></abstract>
+
 </front>
-<seriesInfo name='RFC' value='7223'/>
-<seriesInfo name='DOI' value='10.17487/RFC7223'/>
+
+<seriesInfo name='Internet-Draft' value='draft-rtgyangdt-rtgwg-device-model-01' />
+<format type='TXT'
+        target='http://www.ietf.org/internet-drafts/draft-rtgyangdt-rtgwg-device-model-01.txt' />
 </reference>

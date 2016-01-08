@@ -1,0 +1,22 @@
+<references title="Normative References">
+
+  ietf-ref:RFC2119
+
+  ietf-ref:RFC3688
+
+  ietf-ref:RFC6020
+
+</references>
+
+<references title="Informative References">
+
+  ietf-ref:RFC7223
+
+  ietf-ref:I-D.rtgyangdt-rtgwg-device-model
+
+  ietf-ref:I-D.clemm-netmod-mount
+
+  ietf-ref:I-D.lhotka-netmod-ysdl
+
+</references>
+

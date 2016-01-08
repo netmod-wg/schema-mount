@@ -190,16 +190,19 @@ registry ^RFC6020^.
 
 TBD
 
-* Acknowledgements
+* Contributors
 
-The author would like to thank Lou Berger, Alexander Clemm, Ladislav
-Lhotka, and Jan Medved for useful comments and discussions on this topic.
+The idea of having some way to combine schemas from different YANG
+modules into one has been proposed independently by several groups of
+people: Alexander Clemm, Jan Medved, and Eric Voit
+(^I-D.clemm-netmod-mount^); Ladislav Lhotka
+(^I-D.lhotka-netmod-ysdl^); and Lou Berger and Christian Hopps.
 
 {{document:
     name ;
     ipr trust200902;
     category std;
-    references mount-back.xml;
+    references back.xml;
     title "YANG Structural Mount";
     abbreviation "YANG Structural Mount";
     contributor "author:Martin Bjorklund:Tail-f Systems:mbj@tail-f.com";

@@ -34,6 +34,9 @@ all: $(next).txt
 
 latest: $(draft).txt $(draft).html
 
+back.xml: back.src.xml
+	mk-back $< > $@
+
 idnits: $(next).txt
 	$(idnits) $<
 
@@ -52,7 +55,7 @@ validate_ex1:
 
 clean:
 	-rm -f .x
-	-rm -f $(draft).txt $(draft).html index.html
+	-rm -f $(draft).txt $(draft).html index.html back.xml
 	-rm -f $(next).txt $(next).html
 	-rm -f $(draft)-[0-9][0-9].xml
 	-rm -f *.rng *.dsrl *.sch
@@ -64,7 +67,7 @@ ifeq (.org,$(draft_type))
 endif
 
 $(next).xml: ietf-yang-structural-mount.yang example-logical-devices.yang \
-	mount-back.xml ex1.xml
+	back.xml ex1.xml
 
 $(next).xml: $(draft).xml
 	sed -e"s/$(basename $<)-latest/$(basename $@)/" $< > $@

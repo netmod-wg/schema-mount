@@ -37,6 +37,9 @@ latest: $(draft).txt $(draft).html
 back.xml: back.src.xml
 	mk-back $< > $@
 
+ietf-yang-structural-mount.tree: ietf-yang-structural-mount.yang
+	pyang -p $(PYANG_PATH) -f tree $< > $@
+
 idnits: $(next).txt
 	$(idnits) $<
 
@@ -57,6 +60,7 @@ validate_ex1: .ex1.xml
 	echo "</data>" >> $@
 
 clean:
+	-rm -f ietf-yang-structural-mount.tree
 	-rm -f $(draft).txt $(draft).html index.html back.xml
 	-rm -f $(next).txt $(next).html
 	-rm -f $(draft)-[0-9][0-9].xml
@@ -69,7 +73,7 @@ ifeq (.org,$(draft_type))
 endif
 
 $(next).xml: ietf-yang-structural-mount.yang example-logical-devices.yang \
-	back.xml ex1.xml
+	back.xml ex1.xml ietf-yang-structural-mount.tree
 
 $(next).xml: $(draft).xml
 	sed -e"s/$(basename $<)-latest/$(basename $@)/" $< > $@

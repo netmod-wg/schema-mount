@@ -6,11 +6,19 @@
 
   ietf-ref:RFC6020
 
+  ietf-ref:I-D.ietf-netmod-rfc6020bis
+
 </references>
 
 <references title="Informative References">
 
+  ietf-ref:RFC6241
+
   ietf-ref:RFC7223
+
+  ietf-ref:RFC7277
+
+  ietf-ref:RFC7317
 
   ietf-ref:I-D.rtgyangdt-rtgwg-device-model
 

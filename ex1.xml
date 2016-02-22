@@ -13,6 +13,22 @@
         <conformance-type>implement</conformance-type>
       </module>
       <module>
+        <name>ietf-ip</name>
+        <revision>2014-06-16</revision>
+        <namespace>
+          urn:ietf:params:xml:ns:yang:ietf-ip
+        </namespace>
+        <conformance-type>implement</conformance-type>
+      </module>
+      <module>
+        <name>ietf-system</name>
+        <revision>2014-08-06</revision>
+        <namespace>
+          urn:ietf:params:xml:ns:yang:ietf-system
+        </namespace>
+        <conformance-type>implement</conformance-type>
+      </module>
+      <module>
         <name>ietf-yang-types</name>
         <revision>2013-07-15</revision>
         <namespace>

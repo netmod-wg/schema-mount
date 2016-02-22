@@ -2,21 +2,35 @@
   <logical-device>
     <name>vrtrA</name>
     <interfaces
-      xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+        xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
       <interface>
         <name>eth0</name>
+          <ipv6 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+            <enabled>true</enabled>
+            ...
+          </ipv6>
         ...
       </interface>
     </interfaces>
+    <system xmlns="urn:ietf:params:xml:ns:yang:ietf-system">
+      ...
+    </system>
   </logical-device>
   <logical-device>
     <name>vrtrB</name>
     <interfaces
-      xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+        xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
       <interface>
         <name>eth0</name>
+          <ipv6 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+            <enabled>true</enabled>
+            ...
+          </ipv6>
         ...
       </interface>
     </interfaces>
+    <system xmlns="urn:ietf:params:xml:ns:yang:ietf-system">
+      ...
+    </system>
   </logical-device>
 </logical-devices>

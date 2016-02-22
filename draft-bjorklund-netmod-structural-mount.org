@@ -121,34 +121,10 @@ to the data node where the mount point is specified.
 
 * Data Model
 
-This document defines the YANG module "ietf-yang-structural-mount",
-which has the following structure:
+This document defines the YANG 1.1 module ^I-D.ietf-netmod-rfc6020bis^
+"ietf-yang-structural-mount", which has the following structure:
 
-  module: ietf-yang-structural-mount
-     +--ro mount-points
-        +--ro mount-point* [module name]
-           +--ro module                 yang:yang-identifier
-           +--ro name                   yang:yang-identifier
-           +--ro (data-model)?
-              +--:(inline-yang-library)
-              |  +--ro inline-yang-library?   empty
-              +--:(modules)
-                 +--ro modules
-                    +--ro module* [name revision]
-                       +--ro name           yang:yang-identifier
-                       +--ro revision       union
-                       +--ro schema?        inet:uri
-                       +--ro namespace      inet:uri
-                       +--ro feature*       yang:yang-identifier
-                       +--ro deviation* [name revision]
-                       |  +--ro name        yang:yang-identifier
-                       |  +--ro revision    union
-                       +--ro conformance    enumeration
-                       +--ro submodules
-                          +--ro submodule* [name revision]
-                             +--ro name        yang:yang-identifier
-                             +--ro revision    union
-                             +--ro schema?     inet:uri
+!! include-figure ietf-yang-structural-mount.tree
 
 * Structural Mount YANG Module
 
@@ -160,14 +136,20 @@ A data model for logical devices may be defined as:
 
 !! include-figure example-logical-devices.yang
 
-A server that implements two logical devices might
-populate the "mount-points" container with:
+A server that implements two logical devices that both implement
+"ietf-interfaces" ^RFC7223^, "ietf-ip" ^RFC7277^, and "ietf-system"
+^RFC7317^ might populate the "mount-points" container with:
 
 !! include-figure ex1.xml
 
 and the "logical-devices" container might have:
 
 !! include-figure ex2.xml
+
+A client that wants to invoke the "restart" operation ^RFC7317^ on the
+logical device "vrtrA" over NETCONF ^RFC6241^ can send:
+
+!! include-figure ex3.xml
 
 * IANA Considerations @iana@
 

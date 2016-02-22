@@ -10,7 +10,7 @@
         <namespace>
           urn:ietf:params:xml:ns:yang:ietf-interfaces
         </namespace>
-        <conformance>implement</conformance>
+        <conformance-type>implement</conformance-type>
       </module>
       <module>
         <name>ietf-yang-types</name>
@@ -18,7 +18,7 @@
         <namespace>
           urn:ietf:params:xml:ns:yang:ietf-yang-types
         </namespace>
-        <conformance>import</conformance>
+        <conformance-type>import</conformance-type>
       </module>
     </modules>
   </mount-point>

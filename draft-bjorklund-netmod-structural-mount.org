@@ -91,7 +91,9 @@ to learn what is implemented on a server.
 Structural mount applies to the schema, and specifically does not
 assume anything about how the mounted data is implemented.  It may be
 implemented using the same instrumentation as the rest of the system,
-or it may be implemented by querying some other system.
+or it may be implemented by querying some other system.  Future
+specifications may define mechanisms to control or monitor the
+implementation of specific mount points.
 
 This document allows mounting of complete data models only.  Other
 specifications may extend this model by defining additional
@@ -108,7 +110,8 @@ subtree can never refer to data outside of this subtree.
 ** Top-level RPCs
 
 If any mounted data model defines RPCs, these RPCs can be invoked by
-treating them as actions defined where the mount point is specified.
+clients by treating them as actions defined where the mount point is
+specified.
 
 ** Top-level Notifications
 
@@ -149,7 +152,7 @@ which has the following structure:
 
 * Structural Mount YANG Module
 
-!! include-figure ietf-yang-structural-mount.yang extract-to="ietf-yang-structural-mount@2015-12-17.yang"
+!! include-figure ietf-yang-structural-mount.yang extract-to="ietf-yang-structural-mount@2016-02-22.yang"
 
 * Usage Example
 

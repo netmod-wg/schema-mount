@@ -39,7 +39,7 @@ module ietf-yang-structural-mount {
      clients can learn which data models a server implements for the
      mount points.
 
-     Copyright (c) 2015 IETF Trust and the persons identified as
+     Copyright (c) 2016 IETF Trust and the persons identified as
      authors of the code.  All rights reserved.
 
      Redistribution and use in source and binary forms, with or
@@ -60,7 +60,7 @@ module ietf-yang-structural-mount {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2015-12-17 {
+  revision 2016-02-22 {
     description
       "Initial revision.";
     reference
@@ -121,14 +121,14 @@ module ietf-yang-structural-mount {
           "Indicates which data models the server implements
            for this mount point.
 
-           It is expected that this choice may be augmented with new
+           It is expected that this choice may be augmented with other
            data model discovery mechansisms.";
 
         leaf inline-yang-library {
           type empty;
           description
             "This leaf indicates that the server has mounted
-             'ietf-yang-library' at the mount point, and that this
+             'ietf-yang-library' at the mount point, and that the
              instantiation of 'ietf-yang-library' contains the
              information about which modules are mounted.
 

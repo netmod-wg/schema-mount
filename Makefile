@@ -40,21 +40,23 @@ back.xml: back.src.xml
 idnits: $(next).txt
 	$(idnits) $<
 
+.PHONY: validate validate_ex1
 validate:
 	pyang -p $(PYANG_PATH) --ietf ietf-yang-structural-mount.yang
 	pyang -p $(PYANG_PATH) example-logical-devices.yang
 	$(MAKE) validate_ex1
 
-validate_ex1:
-	echo "<data xmlns='urn:ietf:params:xml:ns:netconf:base:1.0'>" > .x; \
-	cat ex1.xml >> .x; \
-	echo "</data>" >> .x; \
+validate_ex1: .ex1.xml
 	YANG_MODPATH=$(PYANG_PATH):$$YANG_MODPATH \
-		yang2dsdl -j -v .x ietf-yang-structural-mount.yang; \
-	rm -f .x
+		yang2dsdl -j -v $< ietf-yang-structural-mount.yang; \
+
+.INTERMEDIATE: .ex1.xml
+.ex1.xml: ex1.xml
+	echo "<data xmlns='urn:ietf:params:xml:ns:netconf:base:1.0'>" > $@; \
+	cat $< >> $@; \
+	echo "</data>" >> $@
 
 clean:
-	-rm -f .x
 	-rm -f $(draft).txt $(draft).html index.html back.xml
 	-rm -f $(next).txt $(next).html
 	-rm -f $(draft)-[0-9][0-9].xml

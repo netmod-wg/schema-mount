@@ -1,5 +1,5 @@
 module example-logical-devices {
-  namespace "http://example.com/logical-device";
+  namespace "urn:example:logical-devices";
   prefix exld;
 
   import ietf-yang-structural-mount {
@@ -13,7 +13,9 @@ module example-logical-devices {
         type string;
       }
 
-      yangmnt:mount-point logical-device;
+      yangmnt:mount-point logical-device {
+        yangmnt:use-yang-library;
+      }
     }
   }
 }

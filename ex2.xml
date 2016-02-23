@@ -1,4 +1,4 @@
-<logical-devices xmlns="http://example.com/logical-device">
+<logical-devices xmlns="urn:example:logical-devices">
   <logical-device>
     <name>vrtrA</name>
     <interfaces

@@ -47,6 +47,7 @@ idnits: $(next).txt
 validate:
 	pyang -p $(PYANG_PATH) --ietf ietf-yang-structural-mount.yang
 	pyang -p $(PYANG_PATH) example-logical-devices.yang
+	pyang -p $(PYANG_PATH) example-network-manager.yang
 	$(MAKE) validate_ex1
 
 validate_ex1: .ex1.xml
@@ -72,8 +73,11 @@ ifeq (.org,$(draft_type))
 	-rm -f $(draft).xml
 endif
 
-$(next).xml: ietf-yang-structural-mount.yang example-logical-devices.yang \
-	back.xml ex1.xml ietf-yang-structural-mount.tree
+$(next).xml: ietf-yang-structural-mount.yang \
+	ietf-yang-structural-mount.tree \
+	example-logical-devices.yang example-network-manager.yang \
+	ex1.xml ex2.xml ex3.xml ex4.xml \
+	back.xml
 
 $(next).xml: $(draft).xml
 	sed -e"s/$(basename $<)-latest/$(basename $@)/" $< > $@

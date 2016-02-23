@@ -60,7 +60,7 @@ module ietf-yang-structural-mount {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2016-02-22 {
+  revision 2016-02-23 {
     description
       "Initial revision.";
     reference
@@ -85,8 +85,19 @@ module ietf-yang-structural-mount {
        data models may be attached.  A server that implements a module
        with a mount point, populates the /mount-points/mount-point
        list with detailed information on which data models are mounted
-       at each mount point.";
+       at each mount point.
 
+       The 'mount-yang-library' extension may be used as a substatement
+       to 'mount-point'.";
+  }
+
+  extension mount-yang-library {
+    description
+      "The presence of this statement as a substatement to 'mount-point'
+       indicates that the data model defined in the module
+       'ietf-yang-library' is mounted.  When this statement is present,
+       a client can read the 
+ ";
   }
 
   /*
@@ -133,7 +144,7 @@ module ietf-yang-structural-mount {
              information about which modules are mounted.
 
              This is useful if the mount point is defined in a
-             list, and different list entries may mount a different
+             list and different list entries may mount a different
              set of modules.";
         }
 

@@ -128,28 +128,7 @@ This document defines the YANG 1.1 module ^I-D.ietf-netmod-rfc6020bis^
 
 * Structural Mount YANG Module
 
-!! include-figure ietf-yang-structural-mount.yang extract-to="ietf-yang-structural-mount@2016-02-22.yang"
-
-* Usage Example
-
-A data model for logical devices may be defined as:
-
-!! include-figure example-logical-devices.yang
-
-A server that implements two logical devices that both implement
-"ietf-interfaces" ^RFC7223^, "ietf-ip" ^RFC7277^, and "ietf-system"
-^RFC7317^ might populate the "mount-points" container with:
-
-!! include-figure ex1.xml
-
-and the "logical-devices" container might have:
-
-!! include-figure ex2.xml
-
-A client that wants to invoke the "restart" operation ^RFC7317^ on the
-logical device "vrtrA" over NETCONF ^RFC6241^ can send:
-
-!! include-figure ex3.xml
+!! include-figure ietf-yang-structural-mount.yang extract-to="ietf-yang-structural-mount@2016-02-23.yang"
 
 * IANA Considerations @iana@
 
@@ -182,6 +161,44 @@ modules into one has been proposed independently by several groups of
 people: Alexander Clemm, Jan Medved, and Eric Voit
 (^I-D.clemm-netmod-mount^); Ladislav Lhotka
 (^I-D.lhotka-netmod-ysdl^); and Lou Berger and Christian Hopps.
+
+*! start-appendix
+
+* Example: Logical Devices
+
+A data model for logical devices may be defined as:
+
+!! include-figure example-logical-devices.yang
+
+A server that implements two logical devices that both implement
+"ietf-interfaces" ^RFC7223^, "ietf-ip" ^RFC7277^, and "ietf-system"
+^RFC7317^ might populate the "mount-points" container with:
+
+!! include-figure ex1.xml
+
+and the "logical-devices" container might have:
+
+!! include-figure ex2.xml
+
+A client that wants to invoke the "restart" operation ^RFC7317^ on the
+logical device "vrtrA" over NETCONF ^RFC6241^ can send:
+
+!! include-figure ex3.xml
+
+* Example: Network Manager
+
+!! include-figure example-network-manager.yang
+
+!! include-figure ex4.xml
+
+* Open Issues
+
+This section lists open issues that should be discsussed before this
+document is published.
+
+- required-packages
+- support non-named mount points? (ysdl case)
+
 
 {{document:
     name ;

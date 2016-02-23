@@ -1,0 +1,43 @@
+module example-network-manager {
+  namespace "urn:example:network-manager";
+  prefix exnm;
+
+  import ietf-yang-structural-mount {
+    prefix yangmnt;
+  }
+
+  container devices {
+    description
+      "The managed devices and device communication settings.";
+
+    list device {
+      key name;
+      leaf name {
+        type string;
+      }
+      choice transport {
+        mandatory true;
+        container netconf {
+          leaf address {
+            type inet:ip-address;
+            mandatory true;
+          }
+          container authentication {
+             ...
+          }
+        }
+        container restconf {
+          leaf address {
+            type inet:ip-address;
+            mandatory true;
+          }
+           ...
+        }
+      }
+
+      container root {
+        yangmnt:mount-point managed-device;
+      }
+    }
+  }
+}

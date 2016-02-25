@@ -36,7 +36,9 @@ module example-network-manager {
       }
 
       container root {
-        yangmnt:mount-point managed-device;
+        yangmnt:mount-point managed-device {
+          yangmnt:mount-yang-library;
+        }
       }
     }
   }

@@ -60,7 +60,7 @@ module ietf-yang-structural-mount {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2016-02-23 {
+  revision 2016-02-25 {
     description
       "Initial revision.";
     reference
@@ -80,6 +80,10 @@ module ietf-yang-structural-mount {
 
        The 'mount-point' statement can be present in 'container' and
        'list'.
+
+       If a mount point is defined in a grouping, its name is bound to
+       the module where the grouping is used.  Note that this implies
+       that such a grouping can be used at most once in a module.
 
        A mount point defines a place in the node hierarchy where other
        data models may be attached.  A server that implements a module

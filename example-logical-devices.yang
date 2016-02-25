@@ -13,9 +13,7 @@ module example-logical-devices {
         type string;
       }
 
-      yangmnt:mount-point logical-device {
-        yangmnt:use-yang-library;
-      }
+      yangmnt:mount-point logical-device;
     }
   }
 }

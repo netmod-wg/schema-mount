@@ -73,9 +73,10 @@ interface list.
 * Structural Mount
 
 The structural mount mechanism defined in this document takes a
-different approach.  It decouples the definition of the relation
-between the source and target models from the definitions of the
-models themselves.
+different approach to the extensibility problem described in the
+previous section.  It decouples the definition of the relation between
+the source and target models from the definitions of the models
+themselves.
 
 This is accomplished with a YANG extension statement that is used
 to specify a mount point in a data model.  The purpose of a mount
@@ -99,7 +100,7 @@ This document allows mounting of complete data models only.  Other
 specifications may extend this model by defining additional
 mechanisms, for example mounting of sub-hierarchies of a module.
 
-** Validation of Mounted Data
+** Augment and Validation in Mounted Data
 
 All paths (in leafrefs, instance-identifiers, XPath expressions, and
 target nodes of augments) in the data models mounted at a mount point
@@ -128,7 +129,7 @@ This document defines the YANG 1.1 module ^I-D.ietf-netmod-rfc6020bis^
 
 * Structural Mount YANG Module
 
-!! include-figure ietf-yang-structural-mount.yang extract-to="ietf-yang-structural-mount@2016-02-23.yang"
+!! include-figure ietf-yang-structural-mount.yang extract-to="ietf-yang-structural-mount@2016-02-25.yang"
 
 * IANA Considerations @iana@
 
@@ -187,7 +188,13 @@ logical device "vrtrA" over NETCONF ^RFC6241^ can send:
 
 * Example: Network Manager
 
+This example shows how a Network Manager application can use
+structural mount to define a data model with all its managed devices.
+Structural mount is used to mount the data models each device supports.
+
 !! include-figure example-network-manager.yang
+
+The "devices" container might have:
 
 !! include-figure ex4.xml
 

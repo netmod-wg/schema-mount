@@ -129,7 +129,7 @@ This document defines the YANG 1.1 module ^I-D.ietf-netmod-rfc6020bis^
 
 * Structural Mount YANG Module
 
-!! include-figure ietf-yang-structural-mount.yang extract-to="ietf-yang-structural-mount@2016-02-25.yang"
+!! include-figure ietf-yang-structural-mount.yang extract-to="ietf-yang-structural-mount@2016-02-26.yang"
 
 * IANA Considerations @iana@
 
@@ -165,15 +165,17 @@ people: Alexander Clemm, Jan Medved, and Eric Voit
 
 *! start-appendix
 
-* Example: Logical Devices
+* Example: Logical Devices @ex-logical@
 
-A data model for logical devices may be defined as:
+Logical devices within a device typically use the same set of data
+models in each instance.  This can be modelled with a mount point:
 
 !! include-figure example-logical-devices.yang
 
-A server that implements two logical devices that both implement
+A server with two logical devices that both implement
 "ietf-interfaces" ^RFC7223^, "ietf-ip" ^RFC7277^, and "ietf-system"
-^RFC7317^ might populate the "mount-points" container with:
+^RFC7317^ YANG modules might populate the "mount-points" container
+with:
 
 !! include-figure ex1.xml
 
@@ -181,16 +183,13 @@ and the "logical-devices" container might have:
 
 !! include-figure ex2.xml
 
-A client that wants to invoke the "restart" operation ^RFC7317^ on the
-logical device "vrtrA" over NETCONF ^RFC6241^ can send:
-
-!! include-figure ex3.xml
-
 * Example: Network Manager
 
 This example shows how a Network Manager application can use
 structural mount to define a data model with all its managed devices.
-Structural mount is used to mount the data models each device supports.
+Structural mount is used to mount the data models each device
+supports, and these data models can be discovered by a client via the
+"ietf-yang-library" module that is mounted for each device.
 
 !! include-figure example-network-manager.yang
 
@@ -198,13 +197,146 @@ The "devices" container might have:
 
 !! include-figure ex4.xml
 
+** Invoking an RPC
+
+A client that wants to invoke the "restart" operation ^RFC7317^ on the
+managed device "rtrA" over NETCONF ^RFC6241^ can send:
+
+!! include-figure ex3.xml
+
 * Open Issues
 
-This section lists open issues that should be discsussed before this
-document is published.
+- Is there a use case for specifying modules that are required to be
+  mounted under a mount point?
+- Do we really need the case where ietf-yang-library is not mounted?
+  The solution would be simpler if we always use ietf-yang-library at
+  every mount point.  See ^alt-static^.
+- Support non-named mount points? (ysdl case)  See ^alt-dyn^.
 
-- required-packages
-- support non-named mount points? (ysdl case)
+* Alternative solutions
+
+This section discusses some alternative solution ideas.
+
+** Static Mount Points with YANG Library Only @alt-static@
+
+This solution supports named mount points, and always use
+ietf-yang-library.
+
+There would be just one single extension statement, and no additional
+operational state data:
+
+  extension mount-point {
+    argument name;
+  }
+
+Data models need to be prepared with this extension:
+
+  container logical-devices {
+    list logical-device {
+      key name;
+      ...
+      yangmnt:mount-point logical-device;
+    }
+  }
+
+The tree on the server from ^ex-logical^ would look like this:
+
+  "example-logical-devices:logical-devices": {
+    "logical-device": [
+      {
+        "name": "vrtrA",
+        "ietf-yang-library:modules-state": {
+          "module-set-id": "ef50fe1",
+          "module": [
+            {
+              "name": "ietf-interfaces",
+               ...
+            },
+            {
+              "name": "ietf-system",
+               ...
+            }
+          ]
+        },
+        "ietf-interfaces:interfaces": {
+          ...
+        },
+        "ietf-system:system": {
+          ...
+        }
+      },
+      {
+        "name": "vrtrB",
+        "ietf-yang-library:modules-state": {
+          ...
+        }
+      }
+    ]
+  }
+
+** Dynamic Mount Points with YANG Library Only @alt-dyn@
+
+This solution supports only non-named mount points, and always use
+ietf-yang-library.
+
+There would be no extension statement.  Instead, the server would
+populate a list of dynamic mount points.  Each such mount point MUST
+mount ietf-yang-library.
+
+  container mount-points {
+    config false;
+    list mount-point {
+      key path;
+      leaf path {
+        type schema-node-path;
+      }
+    }
+  }
+
+The tree on the server from ^ex-logical^ would look like this:
+
+  "ietf-yang-structural-mount:mount-points": {
+    "mount-point": [
+      { "path": "/exld:logical-devices/exld:logical-device" }
+    ]
+  },
+  "example-logical-devices:logical-devices": {
+    "logical-device": [
+      {
+        "name": "vrtrA",
+        "ietf-yang-library:modules-state": {
+          "module-set-id": "ef50fe1",
+          "module": [
+            {
+              "name": "ietf-interfaces",
+               ...
+            },
+            {
+              "name": "ietf-system",
+               ...
+            }
+          ]
+        },
+        "ietf-interfaces:interfaces": {
+          ...
+        },
+        "ietf-system:system": {
+          ...
+        }
+      },
+      {
+        "name": "vrtrB",
+        "ietf-yang-library:modules-state": {
+          ...
+        }
+      }
+    ]
+  }
+
+A client needs to read the "/mount-points/mount-point" list in order to
+learn where the server has mounted data models.  Next, it needs to
+read the "modules-state" subtree for each instantiated mount point in
+order to learn which modules are mounted at that instance.
 
 
 {{document:

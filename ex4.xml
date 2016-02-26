@@ -10,10 +10,16 @@
         ...
       </netconf>
       <root>
-        <interfaces
-            xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+        <modules-state
+            xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-library">
+          <module>
+            <name>ietf-system</name>
+            ...
+          </module>
+        </modules-state>
+        <system xmlns="urn:ietf:params:xml:ns:yang:ietf-system">
           ...
-        </interfaces>
+        </system>
       </root>
     </transport>
   </device>
@@ -28,6 +34,13 @@
         ...
       </restconf>
       <root>
+        <modules-state
+            xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-library">
+          <module>
+            <name>ietf-interfaces</name>
+            ...
+          </module>
+        </modules-state>
         <interfaces
             xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
           ...

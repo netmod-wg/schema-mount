@@ -2,11 +2,14 @@ module example-network-manager {
   namespace "urn:example:network-manager";
   prefix exnm;
 
+  import ietf-inet-types {
+    prefix inet;
+  }
   import ietf-yang-structural-mount {
     prefix yangmnt;
   }
 
-  container devices {
+  container managed-devices {
     description
       "The managed devices and device communication settings.";
 
@@ -23,7 +26,7 @@ module example-network-manager {
             mandatory true;
           }
           container authentication {
-             ...
+            // ...
           }
         }
         container restconf {
@@ -31,7 +34,7 @@ module example-network-manager {
             type inet:ip-address;
             mandatory true;
           }
-           ...
+          // ...
         }
       }
 

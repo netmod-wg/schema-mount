@@ -1,13 +1,13 @@
 <rpc message-id="101"
      xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
   <action xmlns="urn:ietf:params:xml:ns:yang:1">
-    <logical-devices xmlns="urn:example:logical-devices">
-      <logical-device>
-        <name>vrtrA</name>
+    <managed-devices xmlns="urn:example:network-manager">
+      <device>
+        <name>rtrA</name>
         <system xmlns="urn:ietf:params:xml:ns:yang:ietf-system">
           <restart/>
         </system>
-      </logical-device>
-    </logical-devices>
+      </device>
+    </managed-devices>
   </action>
 </rpc>

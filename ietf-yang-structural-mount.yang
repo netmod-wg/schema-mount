@@ -60,7 +60,7 @@ module ietf-yang-structural-mount {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2016-02-25 {
+  revision 2016-02-26 {
     description
       "Initial revision.";
     reference
@@ -81,27 +81,32 @@ module ietf-yang-structural-mount {
        The 'mount-point' statement can be present in 'container' and
        'list'.
 
-       If a mount point is defined in a grouping, its name is bound to
-       the module where the grouping is used.  Note that this implies
-       that such a grouping can be used at most once in a module.
+       If a mount point is defined in a grouping, its name is bound
+       to the module where the grouping is used.  Note that this
+       implies that such a grouping can be used at most once in a
+       module.
 
-       A mount point defines a place in the node hierarchy where other
-       data models may be attached.  A server that implements a module
-       with a mount point, populates the /mount-points/mount-point
-       list with detailed information on which data models are mounted
-       at each mount point.
+       A mount point defines a place in the node hierarchy where
+       other data models may be attached.  A server that implements
+       a module with a mount point, populates the
+       /mount-points/mount-point list with detailed information on
+       which data models are mounted at each mount point.
 
-       The 'mount-yang-library' extension may be used as a substatement
-       to 'mount-point'.";
+       The 'mount-yang-library' extension may be used as a
+       substatement to 'mount-point'.";
   }
 
   extension mount-yang-library {
     description
-      "The presence of this statement as a substatement to 'mount-point'
-       indicates that the data model defined in the module
-       'ietf-yang-library' is mounted.  When this statement is present,
-       a client can read the 
- ";
+      "The presence of this statement as a substatement to
+       'mount-point' indicates that the data model defined in the
+       module 'ietf-yang-library' is mounted.  When this statement is
+       present, a client can discover the mounted YANG modules by
+       reading from the mounted 'ietf-yang-library' data.
+
+       This statement is useful if the mount point is defined in a
+       list and different list entries may mount a different
+       set of modules.";
   }
 
   /*

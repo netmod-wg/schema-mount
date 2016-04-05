@@ -37,7 +37,7 @@ latest: $(draft).txt $(draft).html
 back.xml: back.src.xml
 	mk-back $< > $@
 
-ietf-yang-structural-mount.tree: ietf-yang-structural-mount.yang
+ietf-yang-schema-mount.tree: ietf-yang-schema-mount.yang
 	pyang -p $(PYANG_PATH) -f tree $< > $@
 
 idnits: $(next).txt
@@ -45,14 +45,14 @@ idnits: $(next).txt
 
 .PHONY: validate validate_ex1
 validate:
-	pyang -p $(PYANG_PATH) --ietf ietf-yang-structural-mount.yang
+	pyang -p $(PYANG_PATH) --ietf ietf-yang-schema-mount.yang
 	pyang -p $(PYANG_PATH) example-logical-devices.yang
 	pyang -p $(PYANG_PATH) example-network-manager.yang
 	$(MAKE) validate_ex1
 
 validate_ex1: .ex1.xml
 	YANG_MODPATH=$(PYANG_PATH):$$YANG_MODPATH \
-		yang2dsdl -j -v $< ietf-yang-structural-mount.yang; \
+		yang2dsdl -j -v $< ietf-yang-schema-mount.yang; \
 
 .INTERMEDIATE: .ex1.xml
 .ex1.xml: ex1.xml
@@ -61,7 +61,7 @@ validate_ex1: .ex1.xml
 	echo "</data>" >> $@
 
 clean:
-	-rm -f ietf-yang-structural-mount.tree
+	-rm -f ietf-yang-schema-mount.tree
 	-rm -f $(draft).txt $(draft).html index.html back.xml
 	-rm -f $(next).txt $(next).html
 	-rm -f $(draft)-[0-9][0-9].xml
@@ -73,8 +73,8 @@ ifeq (.org,$(draft_type))
 	-rm -f $(draft).xml
 endif
 
-$(next).xml: ietf-yang-structural-mount.yang \
-	ietf-yang-structural-mount.tree \
+$(next).xml: ietf-yang-schema-mount.yang \
+	ietf-yang-schema-mount.tree \
 	example-logical-devices.yang example-network-manager.yang \
 	ex1.xml ex2.xml ex3.xml ex4.xml \
 	back.xml

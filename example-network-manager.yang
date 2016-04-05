@@ -5,7 +5,7 @@ module example-network-manager {
   import ietf-inet-types {
     prefix inet;
   }
-  import ietf-yang-structural-mount {
+  import ietf-yang-schema-mount {
     prefix yangmnt;
   }
 

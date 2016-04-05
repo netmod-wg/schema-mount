@@ -2,7 +2,7 @@ module example-logical-devices {
   namespace "urn:example:logical-devices";
   prefix exld;
 
-  import ietf-yang-structural-mount {
+  import ietf-yang-schema-mount {
     prefix yangmnt;
   }
 

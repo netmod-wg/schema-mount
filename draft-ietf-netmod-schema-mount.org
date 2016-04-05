@@ -70,9 +70,9 @@ all its nodes on the top-level.  This approach is also not scalable,
 since there may be other models to which we would like to add the
 interface list.
 
-* Structural Mount
+* Schema Mount
 
-The structural mount mechanism defined in this document takes a
+The schema mount mechanism defined in this document takes a
 different approach to the extensibility problem described in the
 previous section.  It decouples the definition of the relation between
 the source and target models from the definitions of the models
@@ -89,7 +89,7 @@ operational state node hierarchy with information about which models
 it has mounted.  This node hierarchy can be read by a client in order
 to learn what is implemented on a server.
 
-Structural mount applies to the schema, and specifically does not
+Schema mount applies to the data model, and specifically does not
 assume anything about how the mounted data is implemented.  It may be
 implemented using the same instrumentation as the rest of the system,
 or it may be implemented by querying some other system.  Future
@@ -123,13 +123,13 @@ to the data node where the mount point is specified.
 * Data Model
 
 This document defines the YANG 1.1 module ^I-D.ietf-netmod-rfc6020bis^
-"ietf-yang-structural-mount", which has the following structure:
+"ietf-yang-schema-mount", which has the following structure:
 
-!! include-figure ietf-yang-structural-mount.tree
+!! include-figure ietf-yang-schema-mount.tree
 
-* Structural Mount YANG Module
+* Schema Mount YANG Module
 
-!! include-figure ietf-yang-structural-mount.yang extract-to="ietf-yang-structural-mount@2016-02-26.yang"
+!! include-figure ietf-yang-schema-mount.yang extract-to="ietf-yang-schema-mount@2016-04-05.yang"
 
 * IANA Considerations @iana@
 
@@ -137,7 +137,7 @@ This document registers a URI in the IETF XML registry
 ^RFC3688^.  Following the format in RFC 3688, the following
 registration is requested to be made.
 
-     URI: urn:ietf:params:xml:ns:yang:ietf-yang-structural-mount
+     URI: urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount
 
      Registrant Contact: The IESG.
 
@@ -146,8 +146,8 @@ registration is requested to be made.
 This document registers a YANG module in the YANG Module Names
 registry ^RFC6020^.
 
-  name:        ietf-yang-structural-mount
-  namespace:   urn:ietf:params:xml:ns:yang:ietf-yang-structural-mount
+  name:        ietf-yang-schema-mount
+  namespace:   urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount
   prefix:      yangmnt
   reference:   RFC XXXX
 
@@ -186,8 +186,8 @@ and the "logical-devices" container might have:
 * Example: Network Manager
 
 This example shows how a Network Manager application can use
-structural mount to define a data model with all its managed devices.
-Structural mount is used to mount the data models each device
+schema mount to define a data model with all its managed devices.
+Schema mount is used to mount the data models each device
 supports, and these data models can be discovered by a client via the
 "ietf-yang-library" module that is mounted for each device.
 
@@ -295,7 +295,7 @@ mount ietf-yang-library.
 
 The tree on the server from ^ex-logical^ would look like this:
 
-  "ietf-yang-structural-mount:mount-points": {
+  "ietf-yang-schema-mount:mount-points": {
     "mount-point": [
       { "path": "/exld:logical-devices/exld:logical-device" }
     ]
@@ -344,7 +344,8 @@ order to learn which modules are mounted at that instance.
     ipr trust200902;
     category std;
     references back.xml;
-    title "YANG Structural Mount";
-    abbreviation "YANG Structural Mount";
+    title "YANG Schema Mount";
+    abbreviation "YANG Schema Mount";
     contributor "author:Martin Bjorklund:Tail-f Systems:mbj@tail-f.com";
+    contributor "author:Ladislav Lhotka:CZ.NIC:mbj@lhotka@nic.cz";
 }}

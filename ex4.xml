@@ -9,19 +9,19 @@
         </authentication>
         ...
       </netconf>
-      <root>
-        <modules-state
-            xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-library">
-          <module>
-            <name>ietf-system</name>
-            ...
-          </module>
-        </modules-state>
-        <system xmlns="urn:ietf:params:xml:ns:yang:ietf-system">
-          ...
-        </system>
-      </root>
     </transport>
+    <root>
+      <modules-state
+          xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-library">
+        <module>
+          <name>ietf-system</name>
+          ...
+        </module>
+      </modules-state>
+      <system xmlns="urn:ietf:params:xml:ns:yang:ietf-system">
+        ...
+      </system>
+    </root>
   </device>
   <device>
     <name>rtrB</name>
@@ -33,19 +33,19 @@
         </authentication>
         ...
       </restconf>
-      <root>
-        <modules-state
-            xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-library">
-          <module>
-            <name>ietf-interfaces</name>
-            ...
-          </module>
-        </modules-state>
-        <interfaces
-            xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-          ...
-        </interfaces>
-      </root>
     </transport>
+    <root>
+      <modules-state
+          xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-library">
+        <module>
+          <name>ietf-interfaces</name>
+          ...
+        </module>
+      </modules-state>
+      <interfaces
+          xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+        ...
+      </interfaces>
+    </root>
   </device>
 </devices>

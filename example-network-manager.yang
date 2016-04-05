@@ -18,26 +18,27 @@ module example-network-manager {
       leaf name {
         type string;
       }
-      choice transport {
-        mandatory true;
-        container netconf {
-          leaf address {
-            type inet:ip-address;
-            mandatory true;
+      container transport {
+        choice protocol {
+          mandatory true;
+          container netconf {
+            leaf address {
+              type inet:ip-address;
+              mandatory true;
+            }
+            container authentication {
+              // ...
+            }
           }
-          container authentication {
+          container restconf {
+            leaf address {
+              type inet:ip-address;
+              mandatory true;
+            }
             // ...
           }
         }
-        container restconf {
-          leaf address {
-            type inet:ip-address;
-            mandatory true;
-          }
-          // ...
-        }
       }
-
       container root {
         yangmnt:mount-point managed-device {
           yangmnt:mount-yang-library;

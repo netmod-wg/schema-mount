@@ -112,7 +112,7 @@ subtree can never refer to data outside of this subtree.
 
 If any mounted data model defines RPCs, these RPCs can be invoked by
 clients by treating them as actions defined where the mount point is
-specified.
+specified.  An example of this is given in ^invoke-rpc^.
 
 ** Top-level Notifications
 
@@ -197,7 +197,7 @@ The "devices" container might have:
 
 !! include-figure ex4.xml
 
-** Invoking an RPC
+** Invoking an RPC @invoke-rpc@
 
 A client that wants to invoke the "restart" operation ^RFC7317^ on the
 managed device "rtrA" over NETCONF ^RFC6241^ can send:

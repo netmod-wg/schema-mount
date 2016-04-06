@@ -3,7 +3,7 @@
     <name>rtrA</name>
     <transport>
       <netconf>
-        <address>192.0.2.2</address>
+        <address>2001:db8::2</address>
         <authentication>
           ...
         </authentication>
@@ -27,7 +27,7 @@
     <name>rtrB</name>
     <transport>
       <restconf>
-        <address>192.0.2.3</address>
+        <address>2001:db8::3</address>
         <authentication>
           ...
         </authentication>

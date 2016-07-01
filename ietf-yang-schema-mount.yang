@@ -81,7 +81,7 @@ module ietf-yang-schema-mount {
        the mount point MUST be unique within the module where it
        is defined.
 
-       The 'mount-point' statement can be present in 'anyxml'.
+       The 'mount-point' statement can be present in 'anydata'.
 
        If a mount point is defined in a grouping, its name is bound
        to the module where the grouping is used.  Note that this

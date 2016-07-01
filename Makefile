@@ -9,8 +9,6 @@ kramdown-rfc2629 ?= kramdown-rfc2629
 oxtradoc ?= oxtradoc
 idnits ?= idnits
 
-PYANG_PATH=~/src/netconf-wg/yang-library
-
 draft := $(basename $(lastword $(sort $(wildcard draft-*.xml)) $(sort $(wildcard draft-*.md)) $(sort $(wildcard draft-*.org)) ))
 
 ifeq (,$(draft))
@@ -38,21 +36,20 @@ back.xml: back.src.xml
 	mk-back $< > $@
 
 ietf-yang-schema-mount.tree: ietf-yang-schema-mount.yang
-	pyang -p $(PYANG_PATH) -f tree $< > $@
+	pyang -f tree $< > $@
 
 idnits: $(next).txt
 	$(idnits) $<
 
 .PHONY: validate validate_ex1
 validate:
-	pyang -p $(PYANG_PATH) --ietf ietf-yang-schema-mount.yang
-	pyang -p $(PYANG_PATH) example-logical-devices.yang
-	pyang -p $(PYANG_PATH) example-network-manager.yang
+	pyang --ietf ietf-yang-schema-mount.yang
+	pyang example-logical-devices.yang
+	pyang example-network-manager.yang
 	$(MAKE) validate_ex1
 
 validate_ex1: .ex1.xml
-	YANG_MODPATH=$(PYANG_PATH):$$YANG_MODPATH \
-		yang2dsdl -j -v $< ietf-yang-schema-mount.yang; \
+	yang2dsdl -j -v $< ietf-yang-schema-mount.yang; \
 
 .INTERMEDIATE: .ex1.xml
 .ex1.xml: ex1.xml

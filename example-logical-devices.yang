@@ -13,7 +13,9 @@ module example-logical-devices {
         type string;
       }
 
-      yangmnt:mount-point logical-device;
+      anyxml root {
+        yangmnt:mount-point logical-device;
+      }
     }
   }
 }

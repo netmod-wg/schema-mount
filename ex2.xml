@@ -1,36 +1,40 @@
 <logical-devices xmlns="urn:example:logical-devices">
   <logical-device>
     <name>vrtrA</name>
-    <interfaces
-        xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-      <interface>
-        <name>eth0</name>
-          <ipv6 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
-            <enabled>true</enabled>
-            ...
-          </ipv6>
+    <root>
+      <interfaces
+          xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+        <interface>
+          <name>eth0</name>
+            <ipv6 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+              <enabled>true</enabled>
+              ...
+            </ipv6>
+          ...
+        </interface>
+      </interfaces>
+      <system xmlns="urn:ietf:params:xml:ns:yang:ietf-system">
         ...
-      </interface>
-    </interfaces>
-    <system xmlns="urn:ietf:params:xml:ns:yang:ietf-system">
-      ...
-    </system>
+      </system>
+    </root>
   </logical-device>
   <logical-device>
     <name>vrtrB</name>
-    <interfaces
-        xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-      <interface>
-        <name>eth0</name>
-          <ipv6 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
-            <enabled>true</enabled>
-            ...
-          </ipv6>
+    <root>
+      <interfaces
+          xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+        <interface>
+          <name>eth0</name>
+            <ipv6 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+              <enabled>true</enabled>
+              ...
+            </ipv6>
+          ...
+        </interface>
+      </interfaces>
+      <system xmlns="urn:ietf:params:xml:ns:yang:ietf-system">
         ...
-      </interface>
-    </interfaces>
-    <system xmlns="urn:ietf:params:xml:ns:yang:ietf-system">
-      ...
-    </system>
+      </system>
+    </root>
   </logical-device>
 </logical-devices>

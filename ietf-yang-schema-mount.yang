@@ -5,9 +5,12 @@ module ietf-yang-schema-mount {
 
   import ietf-yang-types {
     prefix yang;
+    reference "RFC 6991: Common YANG Data Types";
+
   }
   import ietf-yang-library {
     prefix yanglib;
+    reference "RFC 7895: YANG Module Library";
   }
 
   organization
@@ -60,7 +63,7 @@ module ietf-yang-schema-mount {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2016-04-05 {
+  revision 2016-07-01 {
     description
       "Initial revision.";
     reference
@@ -78,8 +81,7 @@ module ietf-yang-schema-mount {
        the mount point MUST be unique within the module where it
        is defined.
 
-       The 'mount-point' statement can be present in 'container' and
-       'list'.
+       The 'mount-point' statement can be present in 'anyxml'.
 
        If a mount point is defined in a grouping, its name is bound
        to the module where the grouping is used.  Note that this

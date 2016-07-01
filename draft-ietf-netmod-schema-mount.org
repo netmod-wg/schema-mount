@@ -129,6 +129,8 @@ This document defines the YANG 1.1 module ^I-D.ietf-netmod-rfc6020bis^
 
 * Schema Mount YANG Module
 
+This module references ^RFC6991^ and ^RFC7895^.
+
 !! include-figure ietf-yang-schema-mount.yang extract-to="ietf-yang-schema-mount@2016-04-05.yang"
 
 * IANA Considerations @iana@
@@ -206,8 +208,8 @@ managed device "rtrA" over NETCONF ^RFC6241^ can send:
 
 * Open Issues
 
-- Is there a use case for specifying modules that are required to be
-  mounted under a mount point?
+- Is there a use case for specifying that certain modules are required
+  to be mounted under a mount point?
 - Do we really need the case where ietf-yang-library is not mounted?
   The solution would be simpler if we always use ietf-yang-library at
   every mount point.  See ^alt-static^.

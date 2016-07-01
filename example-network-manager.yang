@@ -39,7 +39,7 @@ module example-network-manager {
           }
         }
       }
-      container root {
+      anyxml root {
         yangmnt:mount-point managed-device {
           yangmnt:mount-yang-library;
         }

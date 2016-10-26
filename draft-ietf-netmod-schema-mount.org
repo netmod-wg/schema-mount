@@ -203,7 +203,7 @@ The top-level module may look as follows:
 
 !! include-figure example-network-manager-fixed.yang
 
-The "data-model" container may have the following data: 
+The "data-model" container may have the following data:
 
 !! include-figure ex5.xml
 
@@ -223,7 +223,7 @@ therefore implement "ietf-yang-library" and optionally "ietf-schema-mount".
 
 !! include-figure example-network-manager-arbitrary.yang
 
-The "data-model" container may have the following data: 
+The "data-model" container may have the following data:
 
 !! include-figure ex6.xml
 

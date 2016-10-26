@@ -1,9 +1,6 @@
 module ietf-yang-schema-mount {
-
   yang-version 1.1;
-
   namespace "urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount";
-
   prefix yangmnt;
 
   import ietf-inet-types {
@@ -28,20 +25,20 @@ module ietf-yang-schema-mount {
     "IETF NETMOD (NETCONF Data Modeling Language) Working Group";
 
   contact
-    "WG Web:   <https://tools.ietf.org/wg/netmod/>
-     WG List:  <mailto:netmod@ietf.org>
+    "WG Web:   <https://tools.ietf.org/wg/netmod/>
+     WG List:  <mailto:netmod@ietf.org>
 
-     WG Chair: Lou Berger
-               <mailto:lberger@labn.net>
+     WG Chair:  Lou Berger
+                <mailto:lberger@labn.net>
 
-     WG Chair: Kent Watsen
-               <mailto:kwatsen@juniper.net>
+     WG Chair:  Kent Watsen
+                <mailto:kwatsen@juniper.net>
 
-     Editor:   Martin Bjorklund
-               <mailto:mbj@tail-f.com>
+     Editor:    Martin Bjorklund
+                <mailto:mbj@tail-f.com>
 
-     Editor:   Ladislav Lhotka
-               <mailto:lhotka@nic.cz>";
+     Editor:    Ladislav Lhotka
+                <mailto:lhotka@nic.cz>";
 
   description
     "This module defines a YANG extension statement that can be used
@@ -62,9 +59,9 @@ module ietf-yang-schema-mount {
      The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL', 'SHALL
      NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED', 'MAY', and
      'OPTIONAL' in the module text are to be interpreted as described
-     in RFC 2119 (https://tools.ietf.org/html/rfc2119).
+     in RFC 2119 (https://tools.ietf.org/html/rfc2119).
 
-     This version of this YANG module is part of RFC XXXX
+     This version of this YANG module is part of RFC XXXX
      (https://tools.ietf.org/html/rfcXXXX); see the RFC itself for
      full legal notices.";
 
@@ -75,7 +72,9 @@ module ietf-yang-schema-mount {
       "RFC XXXX: YANG Schema Mount";
   }
 
-  /* Extensions */
+  /*
+   * Extensions
+   */
 
   extension mount-point {
     argument name;
@@ -99,7 +98,9 @@ module ietf-yang-schema-mount {
        which data models are mounted at each mount point.";
   }
 
-  /* Groupings */
+  /*
+   * Groupings
+   */
 
   grouping mount-point-list {
     list mount-point {
@@ -166,7 +167,9 @@ module ietf-yang-schema-mount {
     }
   }
 
-  /* State data nodes */
+  /*
+   * State data nodes
+   */
 
   container data-model {
     config "false";
@@ -174,7 +177,7 @@ module ietf-yang-schema-mount {
       "Contains information about the structure of the overall data
        model implemented in the server: it refers to modules that are
        declared in YANG library [RFC 7895] with conformance type
-       \"implement\", and specifies subschemas that are mounted at
+       'implement', and specifies subschemas that are mounted at
        particular mount points inside these modules.";
     list namespace {
       key "prefix";

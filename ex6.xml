@@ -1,0 +1,12 @@
+<data-model
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount">
+  <namespace>
+    <prefix>edt</prefix>
+    <ns-uri>http://example-device-types</ns-uri>
+  </namespace>
+  <mount-point>
+    <module>example-network-manager</module>
+    <name>managed-device</name>
+    <inline/>
+  </mount-point>
+</data-model>

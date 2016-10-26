@@ -1,7 +1,7 @@
-module example-network-manager {
+module example-network-manager-arbitrary {
   yang-version 1.1;
-  namespace "urn:example:network-manager";
-  prefix exnm;
+  namespace "urn:example:network-manager-arbitrary";
+  prefix exa;
 
   import ietf-inet-types {
     prefix inet;
@@ -41,9 +41,7 @@ module example-network-manager {
         }
       }
       anydata root {
-        yangmnt:mount-point managed-device {
-          yangmnt:mount-yang-library;
-        }
+        yangmnt:mount-point managed-device;
       }
     }
   }

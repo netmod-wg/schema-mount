@@ -1,0 +1,56 @@
+module example-network-manager-fixed {
+  yang-version 1.1;
+  namespace "urn:example:network-manager-fixed";
+  prefix exf;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import ietf-yang-schema-mount {
+    prefix yangmnt;
+  }
+  import example-device-types {
+    prefix edt;
+  }
+
+  container managed-devices {
+    description
+      "The managed devices and device communication settings.";
+
+    list device {
+      key name;
+      leaf name {
+        type string;
+      }
+      leaf type {
+	type identityref {
+	  base edt:device-type;
+	}
+      }
+      container transport {
+        choice protocol {
+          mandatory true;
+          container netconf {
+            leaf address {
+              type inet:ip-address;
+              mandatory true;
+            }
+            container authentication {
+              // ...
+            }
+          }
+          container restconf {
+            leaf address {
+              type inet:ip-address;
+              mandatory true;
+            }
+            // ...
+          }
+        }
+      }
+      anydata root {
+        yangmnt:mount-point managed-device;
+      }
+    }
+  }
+}

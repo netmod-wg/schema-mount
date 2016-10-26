@@ -1,172 +1,218 @@
 module ietf-yang-schema-mount {
+
   yang-version 1.1;
+
   namespace "urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount";
+
   prefix yangmnt;
+
+  import ietf-inet-types {
+    prefix inet;
+    reference
+      "RFC 6991: Common YANG Data Types";
+  }
 
   import ietf-yang-types {
     prefix yang;
-    reference "RFC 6991: Common YANG Data Types";
-
+    reference
+      "RFC 6991: Common YANG Data Types";
   }
+
   import ietf-yang-library {
     prefix yanglib;
-    reference "RFC 7895: YANG Module Library";
+    reference
+      "RFC 7895: YANG Module Library";
   }
 
   organization
     "IETF NETMOD (NETCONF Data Modeling Language) Working Group";
 
   contact
-    "WG Web:   <http://tools.ietf.org/wg/netmod/>
-     WG List:  <mailto:netmod@ietf.org>
+    "WG Web:   <https://tools.ietf.org/wg/netmod/>
+     WG List:  <mailto:netmod@ietf.org>
 
-     WG Chair: Thomas Nadeau
-               <mailto:tnadeau@lucidvision.com>
-
-     WG Chair: Juergen Schoenwaelder
-               <mailto:j.schoenwaelder@jacobs-university.de>
+     WG Chair: Lou Berger
+               <mailto:lberger@labn.net>
 
      WG Chair: Kent Watsen
-               <mailto:kwatsen@juniper.net>
+               <mailto:kwatsen@juniper.net>
 
-     Editor:   Martin Bjorklund
-               <mailto:mbj@tail-f.com>";
+     Editor:   Martin Bjorklund
+               <mailto:mbj@tail-f.com>
 
+     Editor:   Ladislav Lhotka
+               <mailto:lhotka@nic.cz>";
 
-  // RFC Ed.: replace XXXX with actual RFC number and remove this
-  // note.
   description
     "This module defines a YANG extension statement that can be used
      to incorporate data models defined in other YANG modules in a
-     module.  It also defines a operational state data so that
-     clients can learn which data models a server implements for the
-     mount points.
+     module. It also defines operational state data that specify the
+     overall structure of the data model.
 
      Copyright (c) 2016 IETF Trust and the persons identified as
-     authors of the code.  All rights reserved.
+     authors of the code. All rights reserved.
 
      Redistribution and use in source and binary forms, with or
      without modification, is permitted pursuant to, and subject to
      the license terms contained in, the Simplified BSD License set
      forth in Section 4.c of the IETF Trust's Legal Provisions
      Relating to IETF Documents
-     (http://trustee.ietf.org/license-info).
+     (https://trustee.ietf.org/license-info).
 
      The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL', 'SHALL
      NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED', 'MAY', and
      'OPTIONAL' in the module text are to be interpreted as described
-     in RFC 2119 (http://tools.ietf.org/html/rfc2119).
+     in RFC 2119 (https://tools.ietf.org/html/rfc2119).
 
-     This version of this YANG module is part of RFC XXXX
-     (http://tools.ietf.org/html/rfcXXXX); see the RFC itself for
+     This version of this YANG module is part of RFC XXXX
+     (https://tools.ietf.org/html/rfcXXXX); see the RFC itself for
      full legal notices.";
 
-  // RFC Ed.: update the date below with the date of RFC publication
-  // and remove this note.
-  revision 2016-07-01 {
+  revision 2016-10-26 {
     description
       "Initial revision.";
     reference
       "RFC XXXX: YANG Schema Mount";
   }
 
-  /*
-   * Extension statements
-   */
+  /* Extensions */
 
   extension mount-point {
     argument name;
     description
-      "The argument 'name' is a yang-identifier.  The name of
-       the mount point MUST be unique within the module where it
-       is defined.
+      "The argument 'name' is a yang-identifier. The name of the
+       mount point MUST be unique within the module where it is
+       defined.
 
-       The 'mount-point' statement can be present in 'anydata'.
+       The 'mount-point' statement can only be present as a
+       substatement of 'anydata'.
 
        If a mount point is defined in a grouping, its name is bound
-       to the module where the grouping is used.  Note that this
+       to the module where the grouping is used. Note that this
        implies that such a grouping can be used at most once in a
        module.
 
        A mount point defines a place in the node hierarchy where
-       other data models may be attached.  A server that implements
-       a module with a mount point, populates the
-       /mount-points/mount-point list with detailed information on
-       which data models are mounted at each mount point.
-
-       The 'mount-yang-library' extension may be used as a
-       substatement to 'mount-point'.";
+       other data models may be attached. A server that implements a
+       module with a mount point, populates the
+       /data-model/mount-point list with detailed information on
+       which data models are mounted at each mount point.";
   }
 
-  extension mount-yang-library {
-    description
-      "The presence of this statement as a substatement to
-       'mount-point' indicates that the data model defined in the
-       module 'ietf-yang-library' is mounted.  When this statement is
-       present, a client can discover the mounted YANG modules by
-       reading from the mounted 'ietf-yang-library' data.
+  /* Groupings */
 
-       This statement is useful if the mount point is defined in a
-       list and different list entries may mount a different
-       set of modules.";
-  }
-
-  /*
-   * Operational state data nodes
-   */
-
-  container mount-points {
-    config false;
-    description
-      "Contains information about which mount points are implemented
-       in the server, and their data models.";
-
+  grouping mount-point-list {
     list mount-point {
       key "module name";
       description
-        "Contains information about which data models are implemented
-         for the mountpoint 'name' defined in 'module'.";
-
+        "Each entry of this list specifies a subschema for a
+         particular mount point.";
       leaf module {
         type yang:yang-identifier;
         description
-          "The name of the module where the mount point is defined.";
+          "Name of a module containing the mount point.";
       }
       leaf name {
         type yang:yang-identifier;
         description
-          "The name of the mount point.";
+          "Name of the mount point defined using the 'mount-point'
+           extension.";
       }
-      choice data-model {
-        mandatory true;
+      choice subschema-ref {
         description
-          "Indicates which data models the server implements
-           for this mount point.
-
-           It is expected that this choice may be augmented with other
-           data model discovery mechansisms.";
-
-        leaf inline-yang-library {
+          "Alternative way for specifying the subschema.";
+        leaf inline {
           type empty;
           description
             "This leaf indicates that the server has mounted
-             'ietf-yang-library' at the mount point, and that the
-             instantiation of 'ietf-yang-library' contains the
-             information about which modules are mounted.
-
-             This is useful if the mount point is defined in a
-             list and different list entries may mount a different
-             set of modules.";
+             'ietf-yang-library' and 'ietf-schema-mount' at the mount
+             point, and their instantiation (i.e., state data
+             containers modules-state' and 'data-model') provides the
+             information about which modules are mounted.";
         }
-
-        container modules {
+        list use-schema {
+          key "name";
           description
-            "The 'module' list contains the set of modules that are
-             mounted at the mount point.";
+            "Each entry of this list contains a reference to a
+             subschema defined in the /data-model/schema list. The
+             entry can be made conditional by specifying an XPath
+             expression in the 'when' leaf.";
+          leaf name {
+            type leafref {
+              path "/data-model/schema/name";
+            }
+            description
+              "Name of the referenced schema.";
+          }
+          leaf when {
+            type yang:xpath1.0;
+            description
+              "This leaf contains an XPath expression. If it is
+               present, then the current entry applies if and only if
+               the expression evaluates to true.
 
-          uses yanglib:module-list;
+               The context node is an instance of the anydata node
+               containing the corresponding 'mount-point' statement.
+
+               The XPath expression is evaluated as described in sec.
+               6.4 of [RFC 7950], except that the set of namespace
+               declarations is the set of all prefix/namespace pairs
+               defined in the /data-model/namespace list. Names
+               without a namespace prefix belong to the same
+               namespace as the context node.";
+          }
         }
       }
+    }
+  }
+
+  /* State data nodes */
+
+  container data-model {
+    config "false";
+    description
+      "Contains information about the structure of the overall data
+       model implemented in the server: it refers to modules that are
+       declared in YANG library [RFC 7895] with conformance type
+       \"implement\", and specifies subschemas that are mounted at
+       particular mount points inside these modules.";
+    list namespace {
+      key "prefix";
+      description
+        "This list provides a mapping of namespace prefixes that are
+         used in XPath expressions of 'when' leafs to the
+         corresponding namespace URI references.";
+      leaf prefix {
+        type yang:yang-identifier;
+        description
+          "Namespace prefix.";
+      }
+      leaf ns-uri {
+        type inet:uri;
+        description
+          "Namespace URI reference.";
+      }
+    }
+    uses mount-point-list;
+    list schema {
+      key "name";
+      description
+        "Each entry specifies a schema that can be mounted at a mount
+         point. The schema information consists of two parts:
+
+         - an instance of YANG library that defines YANG modules used
+           in the schema,
+
+         - mount-point list with content identical to the top-level
+           mount-point list (this makes the schema structure
+           recursive).";
+      leaf name {
+        type string;
+        description
+          "Arbitrary name of the entry.";
+      }
+      uses yanglib:module-list;
+      uses mount-point-list;
     }
   }
 }

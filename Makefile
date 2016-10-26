@@ -45,7 +45,8 @@ idnits: $(next).txt
 validate:
 	pyang --ietf ietf-yang-schema-mount.yang
 	pyang example-logical-devices.yang
-	pyang example-network-manager.yang
+	pyang example-network-manager-fixed.yang
+	pyang example-network-manager-arbitrary.yang
 	$(MAKE) validate_ex1
 
 validate_ex1: .ex1.xml
@@ -72,8 +73,10 @@ endif
 
 $(next).xml: ietf-yang-schema-mount.yang \
 	ietf-yang-schema-mount.tree \
-	example-logical-devices.yang example-network-manager.yang \
-	ex1.xml ex2.xml ex3.xml ex4.xml \
+	example-logical-devices.yang \
+	example-network-manager-fixed.yang \
+	example-network-manager-arbitrary.yang \
+	ex1.xml ex2.xml ex3.xml ex4.xml ex5.xml ex6.xml\
 	back.xml
 
 $(next).xml: $(draft).xml

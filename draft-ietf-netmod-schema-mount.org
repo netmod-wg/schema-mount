@@ -82,7 +82,7 @@ This is accomplished with a YANG extension statement that is used
 to specify a mount point in a data model.  The purpose of a mount
 point is to define a place in the node hierarchy where other YANG data
 models may be attached, without any special notation in the other YANG
-data models.
+data models. Only anydata nodes can be used as mount points.
 
 For each mount point supported by a server, the server populates an
 operational state node hierarchy with information about which models
@@ -122,7 +122,7 @@ to the data node where the mount point is specified.
 
 * Data Model
 
-This document defines the YANG 1.1 module ^I-D.ietf-netmod-rfc6020bis^
+This document defines the YANG 1.1 module ^RFC7950^
 "ietf-yang-schema-mount", which has the following structure:
 
 !! include-figure ietf-yang-schema-mount.tree
@@ -176,7 +176,7 @@ models in each instance.  This can be modelled with a mount point:
 
 A server with two logical devices that both implement
 "ietf-interfaces" ^RFC7223^, "ietf-ip" ^RFC7277^, and "ietf-system"
-^RFC7317^ YANG modules might populate the "mount-points" container
+^RFC7317^ YANG modules might populate the "data-model" container
 with:
 
 !! include-figure ex1.xml
@@ -185,15 +185,47 @@ and the "logical-devices" container might have:
 
 !! include-figure ex2.xml
 
-* Example: Network Manager
+* Example: Network Manager with Fixed Device Models
 
 This example shows how a Network Manager application can use
-schema mount to define a data model with all its managed devices.
-Schema mount is used to mount the data models each device
-supports, and these data models can be discovered by a client via the
-"ietf-yang-library" module that is mounted for each device.
+schema mount to define a data model for a network consisting of
+devices whose data models are known a priori and fixed. Assume for
+simplicity that only two device types are used (switch and router), and
+they are identified by identities defined in the module
+"example-device-types".
 
-!! include-figure example-network-manager.yang
+Schema mount is used to mount the device data models conditionally,
+depending on the "type" leaf that is a sibling of the mount
+point. This approach is similar to "ietf-interfaces" ^RFC7223^ where
+the same effect is achieved via conditional augments.
+
+The top-level module may look as follows:
+
+!! include-figure example-network-manager-fixed.yang
+
+The "data-model" container may have the following data: 
+
+!! include-figure ex5.xml
+
+The "devices" list may contain any number of instances of either type.
+
+* Example: Network Manager with Arbitrary Device Models
+
+This example shows how a Network Manager application can use
+schema mount to define a data model for a network consisting of
+devices whose data models are not known in advance -- each device is
+expected to provide its data model dynamically.
+
+Schema mount is used to mount the data models that each device
+supports, and these data models can be discovered by inspecting state
+data under the corresponding mount point. Every such device must
+therefore implement "ietf-yang-library" and optionally "ietf-schema-mount".
+
+!! include-figure example-network-manager-arbitrary.yang
+
+The "data-model" container may have the following data: 
+
+!! include-figure ex6.xml
 
 The "devices" container might have:
 

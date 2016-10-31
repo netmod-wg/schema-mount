@@ -82,7 +82,7 @@ This is accomplished with a YANG extension statement that is used
 to specify a mount point in a data model.  The purpose of a mount
 point is to define a place in the node hierarchy where other YANG data
 models may be attached, without any special notation in the other YANG
-data models. Only anydata nodes can be used as mount points.
+data models. Only "anydata" nodes can be used as mount points.
 
 For each mount point supported by a server, the server populates an
 operational state node hierarchy with information about which models

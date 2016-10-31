@@ -1,4 +1,4 @@
-<data-model
+<schema-mounts
     xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount">
   <mount-point>
     <module>example-logical-devices</module>
@@ -42,4 +42,5 @@
       <conformance-type>import</conformance-type>
     </module>
   </schema>
-</data-model>
+</schema-mounts>
+

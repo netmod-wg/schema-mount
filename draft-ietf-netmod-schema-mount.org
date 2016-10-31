@@ -249,4 +249,19 @@ managed device "rtrA" over NETCONF ^RFC6241^ can send:
   list, schema node identifiers (as in 'augment' statements) can be
   used instead of the (module, name) pair for identifying mount
   points. As a useful side effect, a grouping containing mount points
-  could be used any number of times in the same module.
+  could be used any number of times in the same module.  OTOH, by
+  using this extension, the intention of the data modeller is clear,
+  and it provides a formal machine readable instruction about where
+  mounts are allowed to occur.
+
+
+{{document:
+    name ;
+    ipr trust200902;
+    category std;
+    references back.xml;
+    title "YANG Schema Mount";
+    abbreviation "YANG Schema Mount";
+    contributor "author:Martin Bjorklund:Tail-f Systems:mbj@tail-f.com";
+    contributor "author:Ladislav Lhotka:CZ.NIC:mbj@lhotka@nic.cz";
+}}

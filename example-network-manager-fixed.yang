@@ -23,9 +23,9 @@ module example-network-manager-fixed {
         type string;
       }
       leaf type {
-	type identityref {
-	  base edt:device-type;
-	}
+        type identityref {
+          base edt:device-type;
+        }
       }
       container transport {
         choice protocol {

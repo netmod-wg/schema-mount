@@ -94,7 +94,7 @@ module ietf-yang-schema-mount {
        A mount point defines a place in the node hierarchy where
        other data models may be attached. A server that implements a
        module with a mount point, populates the
-       /data-model/mount-point list with detailed information on
+       /schema-mounts/mount-point list with detailed information on
        which data models are mounted at each mount point.";
   }
 
@@ -103,11 +103,26 @@ module ietf-yang-schema-mount {
    */
 
   grouping mount-point-list {
+    description
+      "This grouping is used inside the 'schema-mounts' container and
+       inside the 'schema' list.";
     list mount-point {
       key "module name";
       description
         "Each entry of this list specifies a subschema for a
-         particular mount point.";
+         particular mount point.
+
+         Each mount point MUST be defined using the 'mount-point'
+         extension in one of the modules listed in the corresponding
+         YANG library instance with conformance type 'implement'. The
+         corresponding YANG library instance is:
+
+         - standard YANG library state data as defined in RFC 7895, if
+           the 'mount-point' list is a child of 'schema-mounts',
+
+         - the contents of the sibling 'yanglib:modules-state'
+           container, if the 'mount-point' list is a child of
+           'schema'.";
       leaf module {
         type yang:yang-identifier;
         description
@@ -128,19 +143,19 @@ module ietf-yang-schema-mount {
             "This leaf indicates that the server has mounted
              'ietf-yang-library' and 'ietf-schema-mount' at the mount
              point, and their instantiation (i.e., state data
-             containers modules-state' and 'data-model') provides the
-             information about which modules are mounted.";
+             containers 'yanglib:modules-state' and 'schema-mounts')
+             provides the information about the mounted schema.";
         }
         list use-schema {
           key "name";
           description
             "Each entry of this list contains a reference to a
-             subschema defined in the /data-model/schema list. The
+             subschema defined in the /schema-mounts/schema list. The
              entry can be made conditional by specifying an XPath
              expression in the 'when' leaf.";
           leaf name {
             type leafref {
-              path "/data-model/schema/name";
+              path "/schema-mounts/schema/name";
             }
             description
               "Name of the referenced schema.";
@@ -152,15 +167,27 @@ module ietf-yang-schema-mount {
                present, then the current entry applies if and only if
                the expression evaluates to true.
 
-               The context node is an instance of the anydata node
-               containing the corresponding 'mount-point' statement.
+               The XPath expression is evaluated once for each
+               instance of the anydata node containing the mount
+               point for which the 'when' leaf is defined.
 
-               The XPath expression is evaluated as described in sec.
-               6.4 of [RFC 7950], except that the set of namespace
-               declarations is the set of all prefix/namespace pairs
-               defined in the /data-model/namespace list. Names
-               without a namespace prefix belong to the same
-               namespace as the context node.";
+               The XPath expression is evaluated using the rules
+               specified in sec. 6.4 of RFC 7950, with these
+               modifications:
+
+               - The context node is the anydata instance containing
+                 the corresponding 'mount-point' statement.
+
+               - The accessible tree contains only data belonging to
+                 the parent schema, i.e., all instances of anydata
+                 nodes containing the mount points are considered
+                 empty.
+
+               - The set of namespace declarations is the set of all
+                 prefix/namespace pairs defined in the
+                 /schema-mounts/namespace list. Names without a
+                 namespace prefix belong to the same namespace as the
+                 context node.";
           }
         }
       }
@@ -171,14 +198,11 @@ module ietf-yang-schema-mount {
    * State data nodes
    */
 
-  container data-model {
+  container schema-mounts {
     config "false";
     description
       "Contains information about the structure of the overall data
-       model implemented in the server: it refers to modules that are
-       declared in YANG library [RFC 7895] with conformance type
-       'implement', and specifies subschemas that are mounted at
-       particular mount points inside these modules.";
+       model implemented in the server.";
     list namespace {
       key "prefix";
       description

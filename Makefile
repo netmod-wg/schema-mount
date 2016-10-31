@@ -33,7 +33,7 @@ all: $(next).txt
 latest: $(draft).txt $(draft).html
 
 back.xml: back.src.xml
-	mk-back $< > $@
+	./mk-back $< > $@
 
 ietf-yang-schema-mount.tree: ietf-yang-schema-mount.yang
 	pyang -f tree $< > $@

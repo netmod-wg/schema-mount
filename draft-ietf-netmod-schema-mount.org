@@ -176,7 +176,7 @@ models in each instance.  This can be modelled with a mount point:
 
 A server with two logical devices that both implement
 "ietf-interfaces" ^RFC7223^, "ietf-ip" ^RFC7277^, and "ietf-system"
-^RFC7317^ YANG modules might populate the "data-model" container
+^RFC7317^ YANG modules might populate the "schema-mounts" container
 with:
 
 !! include-figure ex1.xml
@@ -189,10 +189,13 @@ and the "logical-devices" container might have:
 
 This example shows how a Network Manager application can use
 schema mount to define a data model for a network consisting of
-devices whose data models are known a priori and fixed. Assume for
-simplicity that only two device types are used (switch and router), and
-they are identified by identities defined in the module
-"example-device-types".
+devices whose data models are known a priori and fixed.
+
+Assume for simplicity that only two device types are used (switch and
+router), and they are identified by identities defined in the module
+"example-device-types":
+
+!! include-figure example-device-types.yang
 
 Schema mount is used to mount the device data models conditionally,
 depending on the "type" leaf that is a sibling of the mount
@@ -203,7 +206,7 @@ The top-level module may look as follows:
 
 !! include-figure example-network-manager-fixed.yang
 
-The "data-model" container may have the following data:
+The "schema-mounts" container may have the following data:
 
 !! include-figure ex5.xml
 
@@ -223,7 +226,7 @@ therefore implement "ietf-yang-library" and optionally "ietf-schema-mount".
 
 !! include-figure example-network-manager-arbitrary.yang
 
-The "data-model" container may have the following data:
+The "schema-mounts" container may have the following data:
 
 !! include-figure ex6.xml
 
@@ -240,146 +243,10 @@ managed device "rtrA" over NETCONF ^RFC6241^ can send:
 
 * Open Issues
 
-- Is there a use case for specifying that certain modules are required
-  to be mounted under a mount point?
-- Do we really need the case where ietf-yang-library is not mounted?
-  The solution would be simpler if we always use ietf-yang-library at
-  every mount point.  See ^alt-static^.
-- Support non-named mount points? (ysdl case)  See ^alt-dyn^.
-
-* Alternative solutions
-
-This section discusses some alternative solution ideas.
-
-** Static Mount Points with YANG Library Only @alt-static@
-
-This solution supports named mount points, and always use
-ietf-yang-library.
-
-There would be just one single extension statement, and no additional
-operational state data:
-
-  extension mount-point {
-    argument name;
-  }
-
-Data models need to be prepared with this extension:
-
-  container logical-devices {
-    list logical-device {
-      key name;
-      ...
-      yangmnt:mount-point logical-device;
-    }
-  }
-
-The tree on the server from ^ex-logical^ would look like this:
-
-  "example-logical-devices:logical-devices": {
-    "logical-device": [
-      {
-        "name": "vrtrA",
-        "ietf-yang-library:modules-state": {
-          "module-set-id": "ef50fe1",
-          "module": [
-            {
-              "name": "ietf-interfaces",
-               ...
-            },
-            {
-              "name": "ietf-system",
-               ...
-            }
-          ]
-        },
-        "ietf-interfaces:interfaces": {
-          ...
-        },
-        "ietf-system:system": {
-          ...
-        }
-      },
-      {
-        "name": "vrtrB",
-        "ietf-yang-library:modules-state": {
-          ...
-        }
-      }
-    ]
-  }
-
-** Dynamic Mount Points with YANG Library Only @alt-dyn@
-
-This solution supports only non-named mount points, and always use
-ietf-yang-library.
-
-There would be no extension statement.  Instead, the server would
-populate a list of dynamic mount points.  Each such mount point MUST
-mount ietf-yang-library.
-
-  container mount-points {
-    config false;
-    list mount-point {
-      key path;
-      leaf path {
-        type schema-node-path;
-      }
-    }
-  }
-
-The tree on the server from ^ex-logical^ would look like this:
-
-  "ietf-yang-schema-mount:mount-points": {
-    "mount-point": [
-      { "path": "/exld:logical-devices/exld:logical-device" }
-    ]
-  },
-  "example-logical-devices:logical-devices": {
-    "logical-device": [
-      {
-        "name": "vrtrA",
-        "ietf-yang-library:modules-state": {
-          "module-set-id": "ef50fe1",
-          "module": [
-            {
-              "name": "ietf-interfaces",
-               ...
-            },
-            {
-              "name": "ietf-system",
-               ...
-            }
-          ]
-        },
-        "ietf-interfaces:interfaces": {
-          ...
-        },
-        "ietf-system:system": {
-          ...
-        }
-      },
-      {
-        "name": "vrtrB",
-        "ietf-yang-library:modules-state": {
-          ...
-        }
-      }
-    ]
-  }
-
-A client needs to read the "/mount-points/mount-point" list in order to
-learn where the server has mounted data models.  Next, it needs to
-read the "modules-state" subtree for each instantiated mount point in
-order to learn which modules are mounted at that instance.
-
-
-{{document:
-    name ;
-    ipr trust200902;
-    category std;
-    references back.xml;
-    title "YANG Schema Mount";
-    abbreviation "YANG Schema Mount";
-    contributor "author:Martin Bjorklund:Tail-f Systems:mbj@tail-f.com";
-    contributor "author:Ladislav Lhotka:CZ.NIC:mbj@lhotka@nic.cz";
-}}
+- Is the 'mount-point' extension really needed? Now that mount points
+  can only appear under anydata nodes, there seems to be little need
+  to otherwise restrict mount point locations. In the 'mount-point'
+  list, schema node identifiers (as in 'augment' statements) can be
+  used instead of the (module, name) pair for identifying mount
+  points. As a useful side effect, a grouping containing mount points
+  could be used any number of times in the same module.

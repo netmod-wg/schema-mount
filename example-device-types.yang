@@ -1,0 +1,11 @@
+module example-device-types {
+  namespace "http://example.org/device-types";
+  prefix edt;
+  identity device-type;
+  identity switch-device {
+    base device-type;
+  }
+  identity router-device {
+    base device-type;
+  }
+}

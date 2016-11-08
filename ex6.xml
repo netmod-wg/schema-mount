@@ -1,8 +1,8 @@
-<data-model
+<schema-mounts
     xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount">
   <mount-point>
     <module>example-network-manager</module>
     <name>managed-device</name>
     <inline/>
   </mount-point>
-</data-model>
+</schema-mounts>

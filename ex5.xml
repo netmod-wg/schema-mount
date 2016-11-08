@@ -1,4 +1,4 @@
-<data-model
+<schema-mounts
     xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount">
   <namespace>
     <prefix>edt</prefix>
@@ -30,4 +30,4 @@
     </module>
     ...
   </schema>
-</data-model>
+</schema-mounts>

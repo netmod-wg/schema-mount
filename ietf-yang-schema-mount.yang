@@ -109,8 +109,8 @@ module ietf-yang-schema-mount {
     list mount-point {
       key "module name";
       description
-        "Each entry of this list specifies a subschema for a
-         particular mount point.
+        "Each entry of this list specifies a schema for a particular
+         mount point.
 
          Each mount point MUST be defined using the 'mount-point'
          extension in one of the modules listed in the corresponding
@@ -134,9 +134,9 @@ module ietf-yang-schema-mount {
           "Name of the mount point defined using the 'mount-point'
            extension.";
       }
-      choice subschema-ref {
+      choice schema-ref {
         description
-          "Alternative way for specifying the subschema.";
+          "Alternatives for specifying the schema.";
         leaf inline {
           type empty;
           description
@@ -149,10 +149,10 @@ module ietf-yang-schema-mount {
         list use-schema {
           key "name";
           description
-            "Each entry of this list contains a reference to a
-             subschema defined in the /schema-mounts/schema list. The
-             entry can be made conditional by specifying an XPath
-             expression in the 'when' leaf.";
+            "Each entry of this list contains a reference to a schema
+             defined in the /schema-mounts/schema list. The entry can
+             be made conditional by specifying an XPath expression in
+             the 'when' leaf.";
           leaf name {
             type leafref {
               path "/schema-mounts/schema/name";

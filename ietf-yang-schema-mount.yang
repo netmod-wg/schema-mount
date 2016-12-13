@@ -238,6 +238,24 @@ module ietf-yang-schema-mount {
         description
           "Arbitrary name of the entry.";
       }
+      leaf-list parent-references {
+        type yang:yang-identifier;
+        description
+          "Entries of this leaf-list specify the names of YANG modules
+          that MUST be implemented in the parent schema and MUST NOT be
+          implemented in the present schema.
+
+          Within the present schema and corresponding part of the data
+          tree, references to nodes and identities from the namespace
+          of these modules (in 'must' and 'when' expressions, 'base'
+          and 'path' statements, and instance-identifiers) SHALL be
+          resolved in the parent schema.
+
+          If a module that is included in this leaf-list contains an
+          'augment' statement, then references to nodes defined in the
+          augment are possible only if the augmented module is also
+          included in this leaf-list.";
+      }
       uses yanglib:module-list;
       uses mount-point-list;
     }

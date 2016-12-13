@@ -7,82 +7,76 @@ the schema defined in other YANG modules.
 
 * Terminology and Notation
 
-  The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-  "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-  "OPTIONAL" in this document are to be interpreted as described in
-  BCP 14, ^RFC2119^.
+The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+"OPTIONAL" in this document are to be interpreted as described in BCP
+14, ^RFC2119^.
 
-  The following terms are defined in ^RFC6241^ and are not redefined
-  here:
+The following terms are defined in ^RFC6241^ and are not redefined
+here:
 
-  * client
-  * server
+- client
+- server
 
-  The following terms are defined in ^RFC7950^ and are not redefined
-  here:
+The following terms are defined in ^RFC7950^ and are not redefined
+here:
 
-  * action
-  * configuration data
-  * operation
+- action
+- configuration data
+- operation
 
 ** Glossary of New Terms
 
-   * mount point: anydata node whose definition contains the
-     "mount-point" extension statement. The argument of the
-     "mount-point" statement defines the name of the mount point.
-
-   * parent schema (of a particular mounted schema): the schema that
-     contains the mount point for the mounted schema.
-
-   * shared management context: server setup in which instance data of
-     both parent and mounted schemas are accessible within the same
-     management session.
-
-   * split management context: server setup in which one (master)
-     management session has access to instance data of both parent and
-     mounted schemas but, in addition, an extra session exists for
-     every instance of the mount point in the parent schema.  The
-     latter session has access only to the mounted data tree.
-
-   * top-level schema: the schema according to ^RFC7950^ in which
-     schema trees of each module (except augments) start at the root
-     node.
+- mount point: anydata node whose definition contains the
+  "mount-point" extension statement. The argument of the
+  "mount-point" statement defines the name of the mount point.
+- parent schema (of a particular mounted schema): the schema that
+  contains the mount point for the mounted schema.
+- shared management context: server setup in which instance data of
+  both parent and mounted schemas are accessible within the same
+  management session.
+- split management context: server setup in which one (master)
+  management session has access to instance data of both parent and
+  mounted schemas but, in addition, an extra session exists for
+  every instance of the mount point in the parent schema.  The
+  latter session has access only to the mounted data tree.
+- top-level schema: the schema according to ^RFC7950^ in which
+  schema trees of each module (except augments) start at the root
+  node.
 
 ** Tree Diagrams
 
-   A simplified graphical representation of the data model is used in
-   this document.  The meaning of the symbols in these diagrams is as
-   follows:
+ A simplified graphical representation of the data model is used in
+ this document.  The meaning of the symbols in these diagrams is as
+ follows:
 
-   - Brackets "[" and "]" enclose list keys.
-
-   - Abbreviations before data node names: "rw" means configuration
-     data (read-write) and "ro" state data (read-only).
-
-   - Symbols after data node names: "?" means an optional node, "!"
-     means a presence container, and "*" denotes a list and
-     leaf-list.
-
-   - Parentheses enclose choice and case nodes, and case nodes are
-     also marked with a colon (":").
-
-   - Ellipsis ("...") stands for contents of subtrees that are not
-     shown.
+- Brackets "[" and "]" enclose list keys.
+- Abbreviations before data node names: "rw" means configuration
+  data (read-write) and "ro" state data (read-only).
+- Symbols after data node names: "?" means an optional node, "!"
+  means a presence container, and "*" denotes a list and
+  leaf-list.
+- Parentheses enclose choice and case nodes, and case nodes are
+  also marked with a colon (":").
+- Ellipsis ("...") stands for contents of subtrees that are not
+  shown.
 
 ** Namespace Prefixes
 
-   In this document, names of data nodes, YANG extensions, actions and
-   other data model objects are often used without a prefix, as long
-   as it is clear from the context in which YANG module each name is
-   defined.  Otherwise, names are prefixed using the standard prefix
-   associated with the corresponding YANG module, as shown in Table 1.
+In this document, names of data nodes, YANG extensions, actions and
+other data model objects are often used without a prefix, as long as
+it is clear from the context in which YANG module each name is
+defined.  Otherwise, names are prefixed using the standard prefix
+associated with the corresponding YANG module, as shown in
+^prefixtab^.
 
-   | Prefix  | YANG module            | Reference |
-   |---------+------------------------+-----------|
-   | yangmnt | ietf-yang-schema-mount | ^RFC7950^ |
-   | inet    | ietf-inet-types        | ^RFC6991^ |
-   | yang    | ietf-yang-types        | ^RFC6991^ |
-   | yanglib | ietf-yang-library      | ^RFC7895^ |
+-- Prefixes @prefixtab@
+| Prefix  | YANG module            | Reference |
+|---------+------------------------+-----------|
+| yangmnt | ietf-yang-schema-mount | ^RFC7950^ |
+| inet    | ietf-inet-types        | ^RFC6991^ |
+| yang    | ietf-yang-types        | ^RFC6991^ |
+| yanglib | ietf-yang-library      | ^RFC7895^ |
 
 * Background
 

@@ -79,12 +79,10 @@ module ietf-yang-schema-mount {
   extension mount-point {
     argument name;
     description
-      "The argument 'name' is a yang-identifier. The name of the
-       mount point MUST be unique within the module where it is
-       defined.
+      "The argument 'name' is a yang-identifier.
 
-       The 'mount-point' statement can only be present as a
-       substatement of 'anydata'.
+       The 'mount-point' statement MAY be present as a substatement of
+       'anydata' and MUST NOT be present elsewhere.
 
        If a mount point is defined in a grouping, its name is bound
        to the module where the grouping is used. Note that this
@@ -133,6 +131,24 @@ module ietf-yang-schema-mount {
         description
           "Name of the mount point defined using the 'mount-point'
            extension.";
+      }
+      leaf-list parent-references {
+        type yang:yang-identifier;
+        description
+          "Entries of this leaf-list specify the names of YANG modules
+          that MUST be implemented in the parent schema and MUST NOT be
+          implemented in the present schema.
+
+          Within the present schema and corresponding part of the data
+          tree, references to nodes and identities from the namespace
+          of these modules (in 'must' and 'when' expressions, 'base'
+          and 'path' statements, and instance-identifiers) SHALL be
+          resolved in the parent schema.
+
+          If a module that is included in this leaf-list contains an
+          'augment' statement, then references to nodes defined in the
+          augment are possible only if the augmented module is also
+          included in this leaf-list.";
       }
       choice schema-ref {
         description
@@ -237,24 +253,6 @@ module ietf-yang-schema-mount {
         type string;
         description
           "Arbitrary name of the entry.";
-      }
-      leaf-list parent-references {
-        type yang:yang-identifier;
-        description
-          "Entries of this leaf-list specify the names of YANG modules
-          that MUST be implemented in the parent schema and MUST NOT be
-          implemented in the present schema.
-
-          Within the present schema and corresponding part of the data
-          tree, references to nodes and identities from the namespace
-          of these modules (in 'must' and 'when' expressions, 'base'
-          and 'path' statements, and instance-identifiers) SHALL be
-          resolved in the parent schema.
-
-          If a module that is included in this leaf-list contains an
-          'augment' statement, then references to nodes defined in the
-          augment are possible only if the augmented module is also
-          included in this leaf-list.";
       }
       uses yanglib:module-list;
       uses mount-point-list;

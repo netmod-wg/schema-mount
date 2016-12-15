@@ -40,7 +40,7 @@ starting at a non-root location. For example, YANG modules such as
 "ietf-interfaces" ^RFC7223^ are often defined so as to be used in a
 data model of a physical device.  Now suppose we want to model a
 device that supports multiple logical devices
-^I-D.rtgyangdt-rtgwg-device-model^, each of which has its own
+^I-D.ietf-rtgwg-device-model^, each of which has its own
 instantiation of "ietf-interfaces" and possibly other modules but, at
 the same time, we want to be able to manage all these logical devices
 from the master device.  Hence, we would like to have a schema like
@@ -113,10 +113,21 @@ phases of the data model life cycle:
    instances of the same mount point (e.g. in multiple entries of a
    list), the mounted data model may be different for each instance.
 
-The schema mount mechanism defined in this document support only the
+The schema mount mechanism defined in this document supports only the
 latter two cases because design-time definition of the mounted schema
 doesn't play well with the existing YANG modularity mechanisms. For
 example, it would be impossible to augment the mounted data model.
+
+Schema mount applies to the data model, and specifically does not
+assume anything about the source of instance data for the mounted
+schemas. It may be implemented using the same instrumentation as the
+rest of the system, or it may be implemented by querying some other
+system.  Future specifications may define mechanisms to control or
+monitor the implementation of specific mount points.
+
+This document allows mounting of complete data models only.  Other
+specifications may extend this model by defining additional
+mechanisms such as mounting sub-hierarchies of a module.
 
 * Terminology and Notation
 
@@ -218,38 +229,129 @@ of the "anydata" statement that defines the mount point.
 
 ** Specification of the Mounted Schema
 
-TBD
+Mounted schemas for all mount points in the parent schema are defined
+in the "yangmnt:mount-point" list (state data inside the
+"yangmnt:schema-mounts" container). Every entry of this list refers
+through its key to a mount point and specifies the mounted schema.
 
-Schema mount applies to the data model, and specifically does not
-assume anything about how the mounted data is implemented.  It may be
-implemented using the same instrumentation as the rest of the system,
-or it may be implemented by querying some other system.  Future
-specifications may define mechanisms to control or monitor the
-implementation of specific mount points.
+If a mount point is defined in the parent schema does not have an
+entry in the "mount-point" list, then the mounted schema is void -
+instances of that mount point MUST NOT contain any data.
 
-This document allows mounting of complete data models only.  Other
-specifications may extend this model by defining additional
-mechanisms, for example mounting of sub-hierarchies of a module.
+If multiple mount points with the same name are defined in the same
+module - either directly or because the mount point is defined in a
+grouping and the grouping is used multiple times - then the
+corresponding "mount-point" entry applies equally to all such mount
+points.
+
+An entry of the "mount-point" list can specify the mounted schema in
+two different ways:
+
+1. by stating that the schema is available inline, i.e., in run-time
+   instance data; or
+
+2. by referring to one or more entries of the "schema" list in the
+   same instance of "yangmnt:schema-mounts".
+
+In the former case, every instance of the mount point that exists in
+the parent tree MUST contain a copy of YANG library data ^RFC7895^
+that defines the mounted schema exactly as for a top-level data
+model. A client is expected to retrieve this data from the instance
+tree, possibly after creating the mount point. Instances of the same
+mount point MAY use different mounted schemas.
+
+In the second case, the mounted schema is defined by the combination
+of all "schema" entries referred to in the "uses-schema"
+list. Optionally, a reference to a "schema" entry can be made
+conditional by including the "when" leaf. Its argument is an XPath
+expression that is evaluated in the parent tree with the mount point
+instance as the context node. The conditional "schema" entry is used
+only if the XPath expression evaluates to true. XPath expressions in
+the argument of "when" may use that are declared in the "namespace"
+list (child of "yangmnt:schema-mounts").
+
+In case 2, the mounted schema is specified as implementation-time data
+that can be retrieved together with YANG library data for the parent
+schema, i.e. even before any instances of the mount point
+exist. However, the mounted schema has to the same for all instances
+of the mount point (except for parts that are conditional due to
+"when" leaves).
+
+Each entry of the "schema" list contains
+
+- a list in the YANG library format specifying all YANG modules
+  (and revisions etc.) that are implemented or imported in the mounted
+  schema;
+
+- (optionally) a new "schema-mounts" specification that applies to
+  mount points defined within the mounted schema.
 
 ** Augment and Validation in Mounted Data
 
-All paths (in leafrefs, instance-identifiers, XPath expressions, and
-target nodes of augments) in the data models mounted at a mount point
-are interpreted with the mount point as the root node, and the mounted
-data nodes as its children.  This means that data within a mounted
-subtree can never refer to data outside of this subtree.
+A fundamental design principle of schema mount is that the mounted
+data model works exactly as a top-level data model, i.e., it is
+confined to the "mount jail". This means that all paths in the mounted
+data model (in leafrefs, instance-identifiers, XPath expressions, and
+target nodes of augments) are interpreted with the mount point as the
+root node. YANG modules of the mounted schema as well as corresponding
+instance data thus cannot refer to schema nodes or instance data
+outside the mount jail.
 
-** Top-level RPCs
+However, this restriction is sometimes too severe. A typical example
+are network instances (NI) ^I-D.ietf-rtgwg-ni-model^: each NI has
+its own routing engine but the list of interfaces is global and shared
+by all NIs. If we want to model this organization with the NI schema
+mounted using schema mount, the overall schema tree would look
+schematically as follows:
 
-If any mounted data model defines RPCs, these RPCs can be invoked by
-clients by treating them as actions defined where the mount point is
-specified.  An example of this is given in ^invoke-rpc^.
+  +--rw interfaces
+  |  +--rw interface* [name]
+  |     ...
+  +--rw network-instances
+     +--rw network-instance* [name]
+        +--rw name
+        +--rw root
+           +--rw routing
+              ...
 
-** Top-level Notifications
+Here, the "root" node is the mount point for the NI schema. Now,
+routing configuration inside an NI often needs to refer to interfaces (at least
+those that are assigned to the NI), which is impossible unless such a
+reference can point to a node in the parent schema (interface name).
 
-If the server emits a notification defined at the top-level in any
-mounted data model, it is treated as if the notification was attached
-to the data node where the mount point is specified.
+Therefore, schema mount also allows for such references, albeit in a
+limited and controlled way: The "yangmnt:schema-mounts" container has
+a child leaf-list named "parent-references" that contains zero or more
+module names. All modules appearing in this leaf-list MUST be
+implemented in the parent schema and MUST NOT be implemented in the
+mounted schema. All absolute leafref paths and instance identifiers
+within the mounted data model and corresponding instance data tree are
+then evaluated as follows:
+
+- If the leftmost node-identifier (right after the initial slash)
+  belongs to the namespace of a module that is listed in
+  "parent-references", then the root of the accessible tree is not the
+  mount point but the root of the parent schema.
+
+- Other rules for the "leafref" and "instance-identifier" types as
+  defined in Sections 9.9 and 9.13 of ^RFC7950^ remain in effect.
+
+It is worth emphasizing that the mount jail can be escaped only via
+absolute leafref paths and instance identifiers. Relative leafref
+paths, "must"/"when" expressions and schema node identifiers are still
+restricted to the mounted schema.
+
+** RPC operations and Notifications
+
+If a mounted YANG module defines an RPC operation, clients can invoke
+this operation by representing it as an action defined for the
+corresponding mount point, see Section 7.15 of ^RFC7950.  An example
+of this is given in ^invoke-rpc^.
+
+Similarly, if the server emits a notification defined at the top-level
+of any mounted module, it MUST be represented as if the
+notification was connected to the mount point, see Section 7.16 of
+^RFC7950^.
 
 * Data Model
 

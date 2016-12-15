@@ -135,20 +135,20 @@ module ietf-yang-schema-mount {
       leaf-list parent-references {
         type yang:yang-identifier;
         description
-          "Entries of this leaf-list specify the names of YANG modules
-          that MUST be implemented in the parent schema and MUST NOT be
-          implemented in the present schema.
+          "Entries of this leaf-list are names of YANG modules. All
+          these modules MUST be implemented in the parent schema and
+          MUST NOT be implemented in the mounted schema.
 
-          Within the present schema and corresponding part of the data
-          tree, references to nodes and identities from the namespace
-          of these modules (in 'must' and 'when' expressions, 'base'
-          and 'path' statements, and instance-identifiers) SHALL be
-          resolved in the parent schema.
+          Within the mounted schema and the corresponding data tree,
+          conceptual evaluation of absolute leafref paths and instance
+          identifiers, including the deref() XPath function, is
+          modified in the following way:
 
-          If a module that is included in this leaf-list contains an
-          'augment' statement, then references to nodes defined in the
-          augment are possible only if the augmented module is also
-          included in this leaf-list.";
+          If the leftmost node-identifier in an absolute leafref path
+          or instance identifier belongs to a module whose name is
+          listed in 'parent-references', then the root of the
+          accessible data tree coincides with the root of the parent
+          data tree.";
       }
       choice schema-ref {
         description

@@ -65,7 +65,7 @@ module ietf-yang-schema-mount {
      (https://tools.ietf.org/html/rfcXXXX); see the RFC itself for
      full legal notices.";
 
-  revision 2016-10-26 {
+  revision 2016-12-16 {
     description
       "Initial revision.";
     reference

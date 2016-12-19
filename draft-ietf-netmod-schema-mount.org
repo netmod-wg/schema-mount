@@ -364,7 +364,7 @@ This document defines the YANG 1.1 module ^RFC7950^
 
 This module references ^RFC6991^ and ^RFC7895^.
 
-!! include-figure ietf-yang-schema-mount.yang extract-to="ietf-yang-schema-mount@2016-04-05.yang"
+!! include-figure ietf-yang-schema-mount.yang extract-to="ietf-yang-schema-mount@2016-12-16.yang"
 
 * IANA Considerations @iana@
 

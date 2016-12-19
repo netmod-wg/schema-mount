@@ -24,7 +24,9 @@
 
   ietf-ref:RFC7317
 
-  ietf-ref:I-D.rtgyangdt-rtgwg-device-model
+  ietf-ref:I-D.ietf-rtgwg-device-model
+
+  ietf-ref:I-D.ietf-rtgwg-ni-model
 
   ietf-ref:I-D.clemm-netmod-mount
 

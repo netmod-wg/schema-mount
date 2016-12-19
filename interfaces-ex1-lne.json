@@ -1,0 +1,22 @@
+  "ietf-interfaces:interfaces-state": {
+    "interface": [
+      {
+	"name": "eth0",
+	"type": "iana-if-type:ethernetCsmacd",
+	"oper-status": "up",
+	"statistics": {
+	  "discontinuity-time": "2016-12-16T17:11:27+02:00"
+	},
+	"ietf-ip:ipv6": {
+	  "address": [
+	    {
+	      "ip": "fe80::42a8:f0ff:fea8:24fe",
+	      "origin": "link-layer",
+	      "prefix-length": 64
+	    }
+	  ]
+	}
+      },
+      ...
+    ]
+  }

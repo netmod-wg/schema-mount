@@ -1,0 +1,45 @@
+  "ietf-yang-schema-mount:schema-mounts": {
+    "mount-point": [
+      {
+	"module": "ietf-network-instance",
+	"name": "root",
+	"parent-references": ["ietf-interfaces"],
+	"use-schema": [
+	  {
+	    "name": "ni-schema"
+	  }
+	]
+      }
+    ],
+    "schema": [
+      {
+	"name": "ni-schema",
+	"module": [
+	  {
+	    "name": "ietf-ipv4-unicast-routing",
+	    "revision": "2016-11-04",
+	    "namespace":
+	     "urn:ietf:params:xml:ns:yang:ietf-ipv4-unicast-routing",
+	    "conformance-type": "implement"
+	  },
+	  {
+	    "name": "ietf-ipv6-unicast-routing",
+	    "revision": "2016-11-04",
+	    "namespace":
+	     "urn:ietf:params:xml:ns:yang:ietf-ipv6-unicast-routing",
+	    "conformance-type": "implement"
+	  },
+	  {
+	    "name": "ietf-routing",
+	    "revision": "2016-11-04",
+	    "feature": [
+	      "multiple-ribs",
+	      "router-id"
+	    ],
+	    "namespace": "urn:ietf:params:xml:ns:yang:ietf-routing",
+	    "conformance-type": "implement"
+	  }
+	]
+      }
+    ]
+  }

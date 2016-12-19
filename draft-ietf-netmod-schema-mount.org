@@ -149,6 +149,11 @@ here:
 - configuration data
 - operation
 
+The following terms are defined in ^RFC7223^ and are not redefined
+here:
+
+- system-controlled interface
+
 ** Glossary of New Terms
 
 - mount point: anydata node whose definition contains the
@@ -156,10 +161,10 @@ here:
   "mount-point" statement defines the name of the mount point.
 - parent schema (of a particular mounted schema): the schema that
   contains the mount point for the mounted schema.
-- shared management context: server setup in which instance data of
+- shared management: server setup in which instance data of
   both parent and mounted schemas are accessible within the same
   management session.
-- split management context: server setup in which one (master)
+- split management: server setup in which one (master)
   management session has access to instance data of both parent and
   mounted schemas but, in addition, an extra session exists for
   every instance of the mount point in the parent schema.  The
@@ -400,6 +405,43 @@ people: Alexander Clemm, Jan Medved, and Eric Voit
 
 *! start-appendix
 
+* Example: Device Model with LNEs an NIs
+
+This non-normative example demostrates an implementation of the device
+model as specified in ^I-D.ietf-rtgwg-device-model^, using both logical
+network elements (LNE) and network instances (NI). The (physical) device
+may implement a data model described by this YANG library content:
+
+!! include-figure yang-library-ex1-device.json
+
+We assume that split management is used at the LNE level, and the
+mounted schema is specified separately for each LNE instance. The
+corresponding "schema-mounts" data may be as follows:
+
+!! include-figure schema-mounts-ex1-device.json
+
+An administrator of the host device has to configure an entry for each
+LNE instance, for example,
+
+!! config-ex1-device.json
+
+and then also place necessary state data as the contents of the "root"
+instance, which should include at least:
+
+- YANG library data specifying the LNE's data model, for example:
+
+!! include-figure yang-library-ex1-lne.json
+
+- specification of the mounted NI schema, for example:
+
+!! include-figure schema-mounts-ex1-lne.json
+
+- state data for interfaces assigned to the LNE instance (that
+  effectively become system-controlled interfaces for the LNE), for
+  example:
+
+!! include-figure interfaces-ex1-lne.json
+
 * Example: Logical Devices @ex-logical@
 
 Logical devices within a device typically use the same set of data
@@ -417,6 +459,10 @@ with:
 and the "logical-devices" container might have:
 
 !! include-figure ex2.xml
+
+The NI schema is specified explicitly near the LNE root, and clients
+interacting with the LNE instance can thus learn the complete LNE-NI
+schema even before any NI instances are created.
 
 * Example: Network Manager with Fixed Device Models
 

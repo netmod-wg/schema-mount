@@ -17,7 +17,7 @@ in the data model "side by side", i.e., top-level data nodes of each
 module – if there are any – are also top-level nodes of the overall
 data model.
 
-Further, YANG also has two mechanisms for contributing a schema
+Furthermore, YANG has two mechanisms for contributing a schema
 hierarchy defined elsewhere to the contents of an internal node of the
 schema tree; these mechanisms are realized through the following YANG
 statements:
@@ -30,7 +30,7 @@ statements:
   defined in the same or another module. See Section 4.2.8 of
   ^RFC7950^ for more details.
 
-With both mechanisms, the source and/or target YANG module explicitly
+With both mechanisms, the source or target YANG module explicitly
 defines the exact location in the schema tree where the new nodes are
 placed.
 
@@ -40,11 +40,10 @@ starting at a non-root location. For example, YANG modules such as
 "ietf-interfaces" ^RFC7223^ are often defined so as to be used in a
 data model of a physical device.  Now suppose we want to model a
 device that supports multiple logical devices
-^I-D.ietf-rtgwg-device-model^, each of which has its own
-instantiation of "ietf-interfaces" and possibly other modules but, at
-the same time, we want to be able to manage all these logical devices
-from the master device.  Hence, we would like to have a schema like
-this:
+^I-D.ietf-rtgwg-device-model^, each of which has its own instantiation
+of "ietf-interfaces", and possibly other modules, but, at the same
+time, we want to be able to manage all these logical devices from the
+master device.  Hence, we would like to have a schema like this:
 
   +--rw interfaces
   |  +--rw interface* [name]
@@ -59,14 +58,14 @@ this:
 With the "uses" approach, the complete schema of "ietf-interfaces"
 would have to be wrapped in a grouping, and then this grouping would
 have to be used at the top-level (for the master device) and then also
-for the logical device. This approach has serious disadvantages:
+for the logical device. This approach has several disadvantages:
 
 - It is not scalable because every time there is a new YANG module
-  needs to be added to the logical device model, we have to update
-  the model for logical devices with another grouping for the new
-  model.
+  that needs to be added to the logical device model, we have to
+  update the model for logical devices with another "uses" statement
+  pulling in contents of the new module.
 
-- Absolute references to nodes defined inside a grouping in may break
+- Absolute references to nodes defined inside a grouping may break
   if the grouping is used in different locations.
 
 - Nodes defined inside a grouping belong to the namespace of
@@ -140,12 +139,14 @@ The following terms are defined in ^RFC6241^ and are not redefined
 here:
 
 - client
+- notification
 - server
 
 The following terms are defined in ^RFC7950^ and are not redefined
 here:
 
 - action
+- anydata
 - configuration data
 - operation
 
@@ -169,9 +170,8 @@ here:
   mounted schemas but, in addition, an extra session exists for
   every instance of the mount point in the parent schema.  The
   latter session has access only to the mounted data tree.
-- top-level schema: the schema according to ^RFC7950^ in which
-  schema trees of each module (except augments) start at the root
-  node.
+- top-level schema: a schema according to ^RFC7950^ in which schema
+  trees of each module (except augments) start at the root node.
 
 ** Tree Diagrams
 
@@ -209,12 +209,12 @@ associated with the corresponding YANG module, as shown in
 
 * Schema Mount
 
-The schema mount mechanism defined in this document provide a new
+The schema mount mechanism defined in this document provides a new
 extensibility mechanism for use with YANG 1.1. In contrast to the
 existing mechanisms described in ^intro^, schema mount defines the
 relationship between the source and target YANG modules outside these
 modules. The procedure consists of two separate steps that are
-described in the following two subsections.
+described in the following subsections.
 
 ** Mount Point Definition
 
@@ -229,8 +229,8 @@ defines the name for the mount point. A module MAY contain multiple
 
 It is therefore up to the designer of the parent schema to decide
 about the placement of mount points. A mount point can also be made
-conditional by placing "if-feature" and/or "when" as substatements
-of the "anydata" statement that defines the mount point.
+conditional by placing "if-feature" and/or "when" as substatements of
+the "anydata" statement that represents the mount point.
 
 ** Specification of the Mounted Schema
 
@@ -239,7 +239,7 @@ in the "yangmnt:mount-point" list (state data inside the
 "yangmnt:schema-mounts" container). Every entry of this list refers
 through its key to a mount point and specifies the mounted schema.
 
-If a mount point is defined in the parent schema does not have an
+If a mount point is defined in the parent schema but does not have an
 entry in the "mount-point" list, then the mounted schema is void -
 instances of that mount point MUST NOT contain any data.
 
@@ -266,14 +266,78 @@ tree, possibly after creating the mount point. Instances of the same
 mount point MAY use different mounted schemas.
 
 In the second case, the mounted schema is defined by the combination
-of all "schema" entries referred to in the "uses-schema"
+of all "schema" entries referred to in the "use-schema"
 list. Optionally, a reference to a "schema" entry can be made
 conditional by including the "when" leaf. Its argument is an XPath
 expression that is evaluated in the parent tree with the mount point
 instance as the context node. The conditional "schema" entry is used
 only if the XPath expression evaluates to true. XPath expressions in
-the argument of "when" may use that are declared in the "namespace"
-list (child of "yangmnt:schema-mounts").
+the argument of "when" may use namespace prefixes that are declared in
+the "namespace" list (child of "yangmnt:schema-mounts").
+
+Conditional schemas may be used, for example, in a situation where
+virtual devices are of several different types and the schema for each
+type is fixed and known in advance. The list of virtual devices in a
+parent schema module (say "example-virtual-host") might be defined as
+follows:
+
+  list virtual-device {
+    key name;
+    leaf name {
+      type string;
+    }
+    leaf type {
+      type identityref {
+        base virtual-device-type;
+      }
+    }
+    anydata root {
+      yangmnt:mount-point virtual-device;
+    }
+
+The "schema-mounts" specification in state data might contain, for
+example,
+
+  "yangmnt:schema-mounts": {
+    "namespace": [
+      {
+        "prefix": "evh",
+        "ns-uri": "http://example.org/ns/example-virtual-host"
+      }
+    ],
+    "mount-point": [
+      {
+        "module": "example-virtual-host",
+	"name": "root"
+	"use-schema": [
+	  {
+	    "name": "virtual-router-schema",
+	    "when": "derived-from(../evh:type, 'evh:virtual-router')"
+	  },
+	  {
+	    "name": "virtual-switch-schema",
+	    "when": "derived-from(../evh:type, 'evh:virtual-switch')"
+	  }
+    ],
+    "schema": [
+      {
+        "name": "virtual-router-schema",
+	"module": [
+	  ...
+	]
+      },
+      {
+        "name": "virtual-switch-schema",
+	"module": [
+	  ...
+	]
+      }
+    ]
+  }
+
+The schema of virtual device instances can then be controlled by setting
+the "type" leaf to an appropriate identity derived from the
+"virtual-device-type" base.
 
 In case 2, the mounted schema is specified as implementation-time data
 that can be retrieved together with YANG library data for the parent
@@ -291,7 +355,7 @@ Each entry of the "schema" list contains
 - (optionally) a new "schema-mounts" specification that applies to
   mount points defined within the mounted schema.
 
-** Augment and Validation in Mounted Data
+* Augment and Validation in Mounted Data
 
 A fundamental design principle of schema mount is that the mounted
 data model works exactly as a top-level data model, i.e., it is
@@ -319,10 +383,11 @@ schematically as follows:
            +--rw routing
               ...
 
-Here, the "root" node is the mount point for the NI schema. Now,
-routing configuration inside an NI often needs to refer to interfaces (at least
-those that are assigned to the NI), which is impossible unless such a
-reference can point to a node in the parent schema (interface name).
+Here, the "root" node is the mount point for the NI schema. Routing
+configuration inside an NI often needs to refer to interfaces (at
+least those that are assigned to the NI), which is impossible unless
+such a reference can point to a node in the parent schema (interface
+name).
 
 Therefore, schema mount also allows for such references, albeit in a
 limited and controlled way: The "yangmnt:schema-mounts" container has
@@ -346,7 +411,7 @@ absolute leafref paths and instance identifiers. Relative leafref
 paths, "must"/"when" expressions and schema node identifiers are still
 restricted to the mounted schema.
 
-** RPC operations and Notifications
+* RPC operations and Notifications
 
 If a mounted YANG module defines an RPC operation, clients can invoke
 this operation by representing it as an action defined for the
@@ -442,83 +507,28 @@ instance, which should include at least:
 
 !! include-figure interfaces-ex1-lne.json
 
-* Example: Logical Devices @ex-logical@
-
-Logical devices within a device typically use the same set of data
-models in each instance.  This can be modelled with a mount point:
-
-!! include-figure example-logical-devices.yang
-
-A server with two logical devices that both implement
-"ietf-interfaces" ^RFC7223^, "ietf-ip" ^RFC7277^, and "ietf-system"
-^RFC7317^ YANG modules might populate the "schema-mounts" container
-with:
-
-!! include-figure ex1.xml
-
-and the "logical-devices" container might have:
-
-!! include-figure ex2.xml
-
-The NI schema is specified explicitly near the LNE root, and clients
-interacting with the LNE instance can thus learn the complete LNE-NI
+For every LNE instance, shared management can be used so as to allow
+clients access to the parent (LNE) data as well as data of all NI
+instances. The mounted NI schema is fixed for all NI instances and
+specified explicitly so that clients can learn the complete LNE-NI
 schema even before any NI instances are created.
 
-* Example: Network Manager with Fixed Device Models
+Note also that the "ietf-interfaces" module appears in the
+"parent-references" leaf-list for the mounted NI schema. This means
+that references to LNE interfaces, such as "outgoing-interface" in
+static routes, are valid despite the fact that "ietf-interfaces" isn't
+part of the NI schema.
 
-This example shows how a Network Manager application can use
-schema mount to define a data model for a network consisting of
-devices whose data models are known a priori and fixed.
+** Invoking an RPC Operation @invoke-rpc@
 
-Assume for simplicity that only two device types are used (switch and
-router), and they are identified by identities defined in the module
-"example-device-types":
+Assume that the mounted NI data model also implements the "ietf-isis"
+module ^I-D.ietf-isis-yang-isis-cfg^. An RPC operation defined in this
+module, such as "clear-adjacency", can be invoked by a client session
+of a LNE's RESTCONF server as an action tied to the mount point
+resource using a request URI like this (all on one line):
 
-!! include-figure example-device-types.yang
-
-Schema mount is used to mount the device data models conditionally,
-depending on the "type" leaf that is a sibling of the mount
-point. This approach is similar to "ietf-interfaces" ^RFC7223^ where
-the same effect is achieved via conditional augments.
-
-The top-level module may look as follows:
-
-!! include-figure example-network-manager-fixed.yang
-
-The "schema-mounts" container may have the following data:
-
-!! include-figure ex5.xml
-
-The "devices" list may contain any number of instances of either type.
-
-* Example: Network Manager with Arbitrary Device Models
-
-This example shows how a Network Manager application can use
-schema mount to define a data model for a network consisting of
-devices whose data models are not known in advance -- each device is
-expected to provide its data model dynamically.
-
-Schema mount is used to mount the data models that each device
-supports, and these data models can be discovered by inspecting state
-data under the corresponding mount point. Every such device must
-therefore implement "ietf-yang-library" and optionally "ietf-schema-mount".
-
-!! include-figure example-network-manager-arbitrary.yang
-
-The "schema-mounts" container may have the following data:
-
-!! include-figure ex6.xml
-
-The "devices" container might have:
-
-!! include-figure ex4.xml
-
-** Invoking an RPC @invoke-rpc@
-
-A client that wants to invoke the "restart" operation ^RFC7317^ on the
-managed device "rtrA" over NETCONF ^RFC6241^ can send:
-
-!! include-figure ex3.xml
+  POST /restconf/data/ietf-network-instance:network-instances/
+      network-instance=rtrA/root/ietf-isis:clear-adjacency HTTP/1.1
 
 * Open Issues
 
@@ -528,10 +538,10 @@ managed device "rtrA" over NETCONF ^RFC6241^ can send:
   list, schema node identifiers (as in 'augment' statements) can be
   used instead of the (module, name) pair for identifying mount
   points. As a useful side effect, a grouping containing mount points
-  could be used any number of times in the same module.  OTOH, by
-  using this extension, the intention of the data modeller is clear,
-  and it provides a formal machine readable instruction about where
-  mounts are allowed to occur.
+  could be used any number of times in the same module.  On the other
+  hand, by using the "mount-point" extension, the intent of the
+  data modeller is clear, and it provides a formal machine-readable
+  instruction about where mounts are allowed to occur.
 
 
 {{document:
@@ -542,5 +552,5 @@ managed device "rtrA" over NETCONF ^RFC6241^ can send:
     title "YANG Schema Mount";
     abbreviation "YANG Schema Mount";
     contributor "author:Martin Bjorklund:Tail-f Systems:mbj@tail-f.com";
-    contributor "author:Ladislav Lhotka:CZ.NIC:mbj@lhotka@nic.cz";
+    contributor "author:Ladislav Lhotka:CZ.NIC:lhotka@nic.cz";
 }}

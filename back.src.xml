@@ -20,13 +20,11 @@
 
   ietf-ref:RFC7223
 
-  ietf-ref:RFC7277
-
-  ietf-ref:RFC7317
-
   ietf-ref:I-D.ietf-rtgwg-device-model
 
   ietf-ref:I-D.ietf-rtgwg-ni-model
+
+  ietf-ref:I-D.ietf-isis-yang-isis-cfg
 
   ietf-ref:I-D.clemm-netmod-mount
 

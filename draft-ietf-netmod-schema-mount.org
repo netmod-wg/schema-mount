@@ -97,20 +97,20 @@ mounted data model but they also will not break.
 In principle, the mounted schema can be specified at three different
 phases of the data model life cycle:
 
-1. Design-time: the mounted schema is defined along with the mount
-   point in the parent module. In this case, the mounted schema has to
-   be the same for every implementation of the parent module.
++ Design-time: the mounted schema is defined along with the mount
+  point in the parent module. In this case, the mounted schema has to
+  be the same for every implementation of the parent module.
 
-2. Implementation-time: the mounted schema is defined by a server
-   implementor and is as stable as YANG library information - that is,
-   it may change after an upgrade of server software but not after
-   rebooting the server. Also, a client can learn the entire schema
-   together with YANG library data.
++ Implementation-time: the mounted schema is defined by a server
+  implementor and is as stable as YANG library information - that is,
+  it may change after an upgrade of server software but not after
+  rebooting the server. Also, a client can learn the entire schema
+  together with YANG library data.
 
-3. Run-time: the mounted schema is defined by read-only instance data
-   that is part of the mounted data model. If there are multiple
-   instances of the same mount point (e.g. in multiple entries of a
-   list), the mounted data model may be different for each instance.
++ Run-time: the mounted schema is defined by read-only instance data
+  that is part of the mounted data model. If there are multiple
+  instances of the same mount point (e.g. in multiple entries of a
+  list), the mounted data model may be different for each instance.
 
 The schema mount mechanism defined in this document supports only the
 latter two cases because design-time definition of the mounted schema
@@ -252,11 +252,11 @@ points.
 An entry of the "mount-point" list can specify the mounted schema in
 two different ways:
 
-1. by stating that the schema is available inline, i.e., in run-time
-   instance data; or
++ by stating that the schema is available inline, i.e., in run-time
+  instance data; or
 
-2. by referring to one or more entries of the "schema" list in the
-   same instance of "yangmnt:schema-mounts".
++ by referring to one or more entries of the "schema" list in the
+  same instance of "yangmnt:schema-mounts".
 
 In the former case, every instance of the mount point that exists in
 the parent tree MUST contain a copy of YANG library data ^RFC7895^

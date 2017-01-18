@@ -312,7 +312,7 @@ example,
     "mount-point": [
       {
         "module": "example-virtual-host",
-        "name": "root"
+        "name": "root",
         "use-schema": [
           {
             "name": "virtual-router-schema",

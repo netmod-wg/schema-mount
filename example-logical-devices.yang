@@ -14,7 +14,7 @@ module example-logical-devices {
         type string;
       }
 
-      anydata root {
+      container root {
         yangmnt:mount-point logical-device;
       }
     }

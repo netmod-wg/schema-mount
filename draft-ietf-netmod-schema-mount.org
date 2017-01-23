@@ -92,11 +92,12 @@ mounted without any modifications.
 The basic idea of schema mount is to label a data node in the parent
 schema as the mount point, and then define a complete data model to be
 attached at the mount point so that the labeled data node effectively
-becomes the root node of the mounted data model. For the sake of
-backward compatibility, only anydata nodes (Section 7.10 of ^RFC7950^)
-are permitted as schema nodes. This way, old clients that do not
-support schema mount may not be able to figure out the schema of the
-mounted data model but they also will not break.
+becomes the root node of the mounted data model.
+# For the sake of
+# backward compatibility, only anydata nodes (Section 7.10 of ^RFC7950^)
+# are permitted as schema nodes. This way, old clients that do not
+# support schema mount may not be able to figure out the schema of the
+# mounted data model but they also will not break.
 
 In principle, the mounted schema can be specified at three different
 phases of the data model life cycle:
@@ -150,8 +151,9 @@ The following terms are defined in ^RFC7950^ and are not redefined
 here:
 
 - action
-- anydata
 - configuration data
+- container
+- list
 - operation
 
 The following terms are defined in ^RFC7223^ and are not redefined
@@ -161,8 +163,8 @@ here:
 
 ** Glossary of New Terms
 
-- mount point: anydata node whose definition contains the
-  "mount-point" extension statement. The argument of the
+- mount point: "container" or "list" node whose definition contains
+  the "mount-point" extension statement. The argument of the
   "mount-point" statement defines the name of the mount point.
 - parent schema (of a particular mounted schema): the schema that
   contains the mount point for the mounted schema.
@@ -222,10 +224,10 @@ described in the following subsections.
 
 ** Mount Point Definition
 
-An anydata node becomes a mount point if the "mount-point" extension
-(defined in the "ietf-yang-schema-mount" module) is used in its
-definition. This extension can appear only as a substatement of
-"anydata".
+A "container" or "list" node becomes a mount point if the
+"mount-point" extension (defined in the "ietf-yang-schema-mount"
+module) is used in its definition. This extension can appear only as a
+substatement of "container" and "list" statements.
 
 The argument of the "mount-point" extension is a YANG identifier that
 defines the name of the mount point. A module MAY contain multiple
@@ -234,7 +236,11 @@ defines the name of the mount point. A module MAY contain multiple
 It is therefore up to the designer of the parent schema to decide
 about the placement of mount points. A mount point can also be made
 conditional by placing "if-feature" and/or "when" as substatements of
-the "anydata" statement that represents the mount point.
+the "container" or "list" statement that represents the mount point.
+
+The "mount-point" statement MUST NOT be used in a YANG version 1
+module.  Note however that YANG version 1 modules can be mounted under
+a mount point.
 
 ** Specification of the Mounted Schema
 
@@ -295,7 +301,7 @@ follows:
         base virtual-device-type;
       }
     }
-    anydata root {
+    container root {
       yangmnt:mount-point virtual-device;
     }
 
@@ -539,19 +545,6 @@ resource using a request URI like this (all on one line):
 
   POST /restconf/data/ietf-network-instance:network-instances/
       network-instance=rtrA/root/ietf-isis:clear-adjacency HTTP/1.1
-
-* Open Issues
-
-- Is the 'mount-point' extension really needed? Now that mount points
-  can only appear under anydata nodes, there seems to be little need
-  to otherwise restrict mount point locations. In the 'mount-point'
-  list, schema node identifiers (as in 'augment' statements) can be
-  used instead of the (module, name) pair for identifying mount
-  points. As a useful side effect, a grouping containing mount points
-  could be used any number of times in the same module.  On the other
-  hand, by using the "mount-point" extension, the intent of the
-  data modeler is clear, and it provides a formal machine-readable
-  instruction about where mounts are allowed to occur.
 
 
 {{document:

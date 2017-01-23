@@ -76,8 +76,11 @@ module ietf-yang-schema-mount {
       "The argument 'name' is a YANG identifier, i.e., it it of the
        type 'yang:yang-identifier'.
 
+       The 'mount-point' statement MUST NOT be used in a YANG version
+       1 module, neither explicitly nor via a 'uses' statement.
+
        The 'mount-point' statement MAY be present as a substatement of
-       'anydata' and MUST NOT be present elsewhere.
+       'container' and 'list', and MUST NOT be present elsewhere.
 
        If a mount point is defined in a grouping, its name is bound
        to the module where the grouping is used. Note that this
@@ -179,18 +182,18 @@ module ietf-yang-schema-mount {
                the expression evaluates to true.
 
                The XPath expression is evaluated once for each
-               instance of the anydata node containing the mount
+               instance of the data node containing the mount
                point for which the 'when' leaf is defined.
 
                The XPath expression is evaluated using the rules
                specified in sec. 6.4 of RFC 7950, with these
                modifications:
 
-               - The context node is the anydata instance containing
+               - The context node is the data node instance containing
                  the corresponding 'mount-point' statement.
 
                - The accessible tree contains only data belonging to
-                 the parent schema, i.e., all instances of anydata
+                 the parent schema, i.e., all instances of data
                  nodes containing the mount points are considered
                  empty.
 

@@ -40,7 +40,7 @@ module example-network-manager-arbitrary {
           }
         }
       }
-      anydata root {
+      container root {
         yangmnt:mount-point managed-device;
       }
     }

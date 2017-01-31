@@ -73,14 +73,15 @@ module ietf-yang-schema-mount {
   extension mount-point {
     argument name;
     description
-      "The argument 'name' is a YANG identifier, i.e., it it of the
+      "The argument 'name' is a YANG identifier, i.e., it is of the
        type 'yang:yang-identifier'.
 
-       The 'mount-point' statement MUST NOT be used in a YANG version
-       1 module, neither explicitly nor via a 'uses' statement.
+       The 'mount-point' statement MUST NOT be used in a YANG
+       version 1 module, neither explicitly nor via a 'uses'
+       statement.
 
-       The 'mount-point' statement MAY be present as a substatement of
-       'container' and 'list', and MUST NOT be present elsewhere.
+       The 'mount-point' statement MAY be present as a substatement
+       of 'container' and 'list', and MUST NOT be present elsewhere.
 
        If a mount point is defined in a grouping, its name is bound
        to the module where the grouping is used. Note that this
@@ -113,8 +114,8 @@ module ietf-yang-schema-mount {
          YANG library instance with conformance type 'implement'. The
          corresponding YANG library instance is:
 
-         - standard YANG library state data as defined in RFC 7895, if
-           the 'mount-point' list is a child of 'schema-mounts',
+         - standard YANG library state data as defined in RFC 7895,
+           if the 'mount-point' list is a child of 'schema-mounts',
 
          - the contents of the sibling 'yanglib:modules-state'
            container, if the 'mount-point' list is a child of
@@ -134,19 +135,19 @@ module ietf-yang-schema-mount {
         type yang:yang-identifier;
         description
           "Entries of this leaf-list are names of YANG modules. All
-          these modules MUST be implemented in the parent schema and
-          MUST NOT be implemented in the mounted schema.
+           these modules MUST be implemented in the parent schema and
+           MUST NOT be implemented in the mounted schema.
 
-          Within the mounted schema and the corresponding data tree,
-          conceptual evaluation of absolute leafref paths and instance
-          identifiers, including the deref() XPath function, is
-          modified in the following way:
+           Within the mounted schema and the corresponding data tree,
+           conceptual evaluation of absolute leafref paths and
+           instance identifiers, including the deref() XPath
+           function, is modified in the following way:
 
-          If the leftmost node-identifier in an absolute leafref path
-          or instance identifier belongs to a module whose name is
-          listed in 'parent-references', then the root of the
-          accessible data tree coincides with the root of the parent
-          data tree.";
+           If the leftmost node-identifier in an absolute leafref
+           path or instance identifier belongs to a module whose name
+           is listed in 'parent-references', then the root of the
+           accessible data tree coincides with the root of the parent
+           data tree.";
       }
       choice schema-ref {
         description
@@ -213,7 +214,7 @@ module ietf-yang-schema-mount {
    */
 
   container schema-mounts {
-    config "false";
+    config false;
     description
       "Contains information about the structure of the overall mounted
        data model implemented in the server.";

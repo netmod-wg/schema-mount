@@ -43,7 +43,7 @@ idnits: $(next).txt
 
 .PHONY: validate validate_ex1
 validate:
-	pyang --ietf ietf-yang-schema-mount.yang
+	pyang --ietf --max-line-length 69 ietf-yang-schema-mount.yang
 	pyang example-logical-devices.yang
 	pyang example-network-manager-fixed.yang
 	pyang example-network-manager-arbitrary.yang

@@ -163,19 +163,11 @@ here:
 
 ** Glossary of New Terms
 
-- mount point: "container" or "list" node whose definition contains
+- mount point: container or list node whose definition contains
   the "mount-point" extension statement. The argument of the
   "mount-point" statement defines the name of the mount point.
 - parent schema (of a particular mounted schema): the schema that
   contains the mount point for the mounted schema.
-- shared management: server setup in which instance data of
-  both parent and mounted schemas are accessible within the same
-  management session.
-- split management: server setup in which one (master)
-  management session has access to instance data of both parent and
-  mounted schemas but, in addition, an extra session exists for
-  every instance of the mount point in the parent schema.  The
-  latter session has access only to the mounted data tree.
 - top-level schema: a schema according to ^RFC7950^ in which schema
   trees of each module (except augments) start at the root node.
 
@@ -245,19 +237,37 @@ a mount point.
 ** Specification of the Mounted Schema
 
 Mounted schemas for all mount points in the parent schema are defined
-in the "yangmnt:mount-point" list (state data inside the
-"schema-mounts" container). Every entry of this list refers
-through its key to a mount point and specifies the mounted schema.
+as state data in the "yangmnt:schema-mounts" container. Data in this
+container is intended to be as stable as data in the top-level YANG
+library ^RFC7895^. In particular, it SHOULD NOT change during the same
+management session.
+
+The "schema-mount" container has the "mount-point" list as one of its
+children. Every entry of this list refers through its key to a mount
+point and specifies the mounted schema.
 
 If a mount point is defined in the parent schema but does not have an
-entry in the "mount-point" list, then the mounted schema is void, i.e.,
-instances of that mount point MUST NOT contain any data.
+entry in the "mount-point" list, then the mounted schema is void,
+i.e., instances of that mount point MUST NOT contain any data above
+those that are defined in the parent schema.
 
 If multiple mount points with the same name are defined in the same
 module - either directly or because the mount point is defined in a
 grouping and the grouping is used multiple times - then the
 corresponding "mount-point" entry applies equally to all such mount
 points.
+
+All provisions of YANG 1.1 specification ^RFC7950^ apply to mounted
+schemas except where explicitly noted otherwise.
+
+The "config" property of schema nodes is overriden and all nodes in
+the mounted schema are read-only ("config false") if at least one of
+the following conditions is satisfied for a mount point:
+
++ The mount point is itself defined as "config false".
+
++ The "config" leaf in the corresponding entry of the "mount-point"
+  list is set to "false".
 
 An entry of the "mount-point" list can specify the mounted schema in
 two different ways:
@@ -438,6 +448,20 @@ Similarly, if the server emits a notification defined at the top level
 of any mounted module, it MUST be represented as if the
 notification was connected to the mount point, see Section 7.16 of
 ^RFC7950^.
+
+* Implementation Notes
+
+Network management of devices that use a data model with schema mount
+can be implemented in different ways. However, the following
+implementations options are envisioned as typical:
+
+- shared management: instance data of both parent and mounted schemas
+  are accessible within the same management session.
+
+- split management: one (master) management session has access to
+  instance data of both parent and mounted schemas but, in addition,
+  an extra session exists for every instance of the mount point,
+  having access only to the mounted data tree.
 
 * Data Model
 

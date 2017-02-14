@@ -40,7 +40,7 @@ the data model starting at a non-root location. For example, YANG
 modules such as "ietf-interfaces" ^RFC7223^ are often defined so as to
 be used in a data model of a physical device.  Now suppose we want to
 model a device that supports multiple logical devices
-^I-D.ietf-rtgwg-device-model^, each of which has its own instantiation
+^I-D.ietf-rtgwg-lne-model^, each of which has its own instantiation
 of "ietf-interfaces", and possibly other modules, but, at the same
 time, we want to be able to manage all these logical devices from the
 master device.  Hence, we would like to have a schema like this:
@@ -93,11 +93,6 @@ The basic idea of schema mount is to label a data node in the parent
 schema as the mount point, and then define a complete data model to be
 attached at the mount point so that the labeled data node effectively
 becomes the root node of the mounted data model.
-# For the sake of
-# backward compatibility, only anydata nodes (Section 7.10 of ^RFC7950^)
-# are permitted as schema nodes. This way, old clients that do not
-# support schema mount may not be able to figure out the schema of the
-# mounted data model but they also will not break.
 
 In principle, the mounted schema can be specified at three different
 phases of the data model life cycle:
@@ -105,6 +100,7 @@ phases of the data model life cycle:
 + Design-time: the mounted schema is defined along with the mount
   point in the parent module. In this case, the mounted schema has to
   be the same for every implementation of the parent module.
+  # Lou's suggestion not used.
 
 + Implementation-time: the mounted schema is defined by a server
   implementor and is as stable as YANG library information, i.e.,
@@ -112,10 +108,10 @@ phases of the data model life cycle:
   rebooting the server. Also, a client can learn the entire schema
   together with YANG library data.
 
-+ Run-time: the mounted schema is defined by read-only instance data
-  that is part of the mounted data model. If there are multiple
-  instances of the same mount point (e.g., in multiple entries of a
-  list), the mounted data model may be different for each instance.
++ Run-time: the mounted schema is defined by instance data that is
+  part of the mounted data model. If there are multiple instances of
+  the same mount point (e.g., in multiple entries of a list), the
+  mounted data model may be different for each instance.
 
 The schema mount mechanism defined in this document supports only the
 latter two cases because design-time definition of the mounted schema
@@ -160,6 +156,8 @@ The following terms are defined in ^RFC7223^ and are not redefined
 here:
 
 - system-controlled interface
+
+# Lou's comment on tree diagrams
 
 ** Glossary of New Terms
 
@@ -231,8 +229,8 @@ conditional by placing "if-feature" and/or "when" as substatements of
 the "container" or "list" statement that represents the mount point.
 
 The "mount-point" statement MUST NOT be used in a YANG version 1
-module.  Note however that YANG version 1 modules can be mounted under
-a mount point.
+module.  Note, however, that modules written in any YANG version,
+including version 1, can be mounted under a mount point.
 
 ** Specification of the Mounted Schema
 
@@ -375,7 +373,8 @@ Each entry of the "schema" list contains
 - (optionally) a new "schema-mounts" specification that applies to
   mount points defined within the mounted schema.
 
-* Augment and Validation in Mounted Data
+
+* Refering to Data Nodes in the Parent Schema @parref@
 
 A fundamental design principle of schema mount is that the mounted
 data model works exactly as a top-level data model, i.e., it is
@@ -437,7 +436,7 @@ restricted to the mounted schema.
 #    must 'deref(.)/../type = "ethernet"';
 #  }
 
-* RPC operations and Notifications
+* RPC operations and Notifications @rpcnot@
 
 If a mounted YANG module defines an RPC operation, clients can invoke
 this operation by representing it as an action defined for the
@@ -510,36 +509,39 @@ people: Alexander Clemm, Jan Medved, and Eric Voit
 
 *! start-appendix
 
-* Example: Device Model with LNEs an NIs
+* Example: Device Model with LNEs and NIs
 
-This non-normative example demonstrates an implementation of the device
-model as specified in ^I-D.ietf-rtgwg-device-model^, using both logical
-network elements (LNE) and network instances (NI). The (physical) device
-may implement a data model described by this YANG library content:
+This non-normative example demonstrates an implementation of the
+device model as specified in Section 2 of
+^I-D.ietf-rtgwg-device-model^, using both logical network elements
+(LNE) and network instances (NI).
+
+** Physical Device
+
+The data model for the physical device may be described by this YANG
+library content:
 
 !! include-figure yang-library-ex1-device.json
 
-We assume that split management is used at the LNE level, and the
-mounted schema is specified separately for each LNE instance. The
-corresponding "schema-mounts" data may be as follows:
+** Logical Network Elements
+
+Each LNE can have a specific data model that is determined at run
+time, so it is appropriate to mount it using the "inline" method,
+hence the following "schema-mounts" data:
 
 !! include-figure schema-mounts-ex1-device.json
 
 An administrator of the host device has to configure an entry for each
 LNE instance, for example,
 
-!! config-ex1-device.json
+!! include-figure config-ex1-device.json
 
 and then also place necessary state data as the contents of the "root"
-instance, which should include at least:
+instance, which should include at least
 
 - YANG library data specifying the LNE's data model, for example:
 
 !! include-figure yang-library-ex1-lne.json
-
-- specification of the mounted NI schema, for example:
-
-!! include-figure schema-mounts-ex1-lne.json
 
 - state data for interfaces assigned to the LNE instance (that
   effectively become system-controlled interfaces for the LNE), for
@@ -547,11 +549,12 @@ instance, which should include at least:
 
 !! include-figure interfaces-ex1-lne.json
 
-For every LNE instance, shared management can be used so as to allow
-clients access to the parent (LNE) data as well as data of all NI
-instances. The mounted NI schema is fixed for all NI instances and
-specified explicitly so that clients can learn the complete LNE-NI
-schema even before any NI instances are created.
+** Network Instances @exni@
+
+Assuming that network instances share the same data model, it can be
+mounted using the "use-schema" method as follows:
+
+!! include-figure schema-mounts-ex1-lne.json
 
 Note also that the "ietf-interfaces" module appears in the
 "parent-references" leaf-list for the mounted NI schema. This means
@@ -564,12 +567,98 @@ part of the NI schema.
 Assume that the mounted NI data model also implements the "ietf-isis"
 module ^I-D.ietf-isis-yang-isis-cfg^. An RPC operation defined in this
 module, such as "clear-adjacency", can be invoked by a client session
-of a LNE's RESTCONF server as an action tied to the mount point
-resource using a request URI like this (all on one line):
+of a LNE's RESTCONF server as an action tied to a the mount point of a
+particular network instance using a request URI like this (all on one
+line):
 
   POST /restconf/data/ietf-network-instance:network-instances/
       network-instance=rtrA/root/ietf-isis:clear-adjacency HTTP/1.1
 
+* Open Issues
+
+** Referencing Mount Points Using Schema Node Identifiers @sni@
+
+Each entry in the "mount-point" list is currently identified by two
+keys, namely YANG module name and mount point name. An alternative is
+to use a schema node identifier of the mount point as the single key.
+
+For example, the "schema-mounts" data for NI (^exni^) would be changed
+as follows (the "schema" list doesn't change):
+
+!! include-figure schema-mounts-sni.json
+
+This change would have several advantages:
+
+- no YANG extension is needed
+
+- parent modules needn't be searched for mount points, these are
+  specified explicitly
+
+- the schema mount mechanism becomes even closer to augments, which
+  may simplify implementation
+
+- if a mount point appears inside a grouping, then a different mounted
+  schema can be used for each use of the grouping.
+
+The disadvantage is that a mount point cannot be formally specified in
+the parent module. However, it is unclear how this could be useful
+because a mount point means nothing without corresponding data under
+"schema-mounts". For human readers, the intentions of the parent
+module's author regarding mount point can be placed in descriptions.
+
+** Defining the "mount-point" Extension in a Separate Module
+
+The "inline" method of schema mounting can be further simplified by
+defining the "inline" case as the default. That is, if a mount point
+is defined through the "mount-point" extension but is not present in
+the "mount-point" list, the "inline" schema mount is assumed.
+
+Consequently, a data model that uses only the "inline" method could
+omit the "schema-mounts" data entirely, but it still needs to use the
+"mount-point" extension. In order to enable this, the definition of
+the "mount-point" extension has to be moved to a YANG module of its
+own.
+
+A variant of this approach is to completely separate the "inline" and
+"use-schema" cases by dedicating the "mount-point" extension for use
+with the "inline" method only (with no "schema-mounts" data), and
+using schema node identifiers as described in ^sni^ for the
+"use-schema" case.
+
+** Parent References
+
+As explained in ^parref^, references to the parent schema can only be
+used in absolute leafref paths and instance identifiers. However, it is
+conceivable that they may be useful in other XPath expressions,
+e.g. in "must" statements. The authors believe it is impossible to
+allow for parent references in general XPath expressions because, for
+example, in a location path "//foo:bar" it would be unclear whether
+the lookup has to be started in the mounted or parent schema.
+
+Should parent references in general XPath be needed, it would be
+necessary to indicate it explicitly. One way to achieve this is to
+defining a new XPath function, e.g., parent-root(), that returns the
+root of the parent data tree.
+
+** RPC Operations and Notifications in Mounted Modules
+
+Turning RPC operations defined in mounted modules into actions tied to
+the corresponding mount point (see ^rpcnot^, and similarly for
+notifications) is not possible if the path to the mount point in the
+parent schema contains a keyless list (Section 7.15 of ^RFC7950^). The
+solutions for this corner case are possible:
+
++ any mount point MUST NOT have a keyless list among its ancestors
+
++ any mounted module MUST NOT contain RPC operations and/or
+  notifications
+
++ specifically for each mount point, at least one of the above
+  conditions MUST be satisfied.
+
+The first two requirements seem rather restrictive. On the other hand,
+the last one is difficult to guarantee - for example, things can break
+after an augment within the mounted schema.
 
 {{document:
     name ;

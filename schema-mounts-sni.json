@@ -1,0 +1,22 @@
+"ietf-yang-schema-mount:schema-mounts": {
+  "namespace": [
+    {
+      "prefix": "ni",
+      "ns-uri": "urn:ietf:params:xml:ns:yang:ietf-network-instance"
+    }
+  ]
+  "mount-point": [
+    {
+      "target": "/ni:network-instances/ni:network-instance/ni:root",
+      "parent-references": ["ietf-interfaces"],
+      "use-schema": [
+        {
+          "name": "ni-schema"
+        }
+      ]
+    }
+  ],
+  "schema": [
+    ...
+  ]
+}

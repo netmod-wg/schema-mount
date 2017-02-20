@@ -146,10 +146,11 @@ module ietf-yang-schema-mount {
           type empty;
           description
             "This leaf indicates that the server has mounted
-             'ietf-yang-library' and 'ietf-schema-mount' at the mount
-             point, and their instantiation (i.e., state data
-             containers 'yanglib:modules-state' and 'schema-mounts')
-             provides the information about the mounted schema.";
+             'ietf-yang-library' and, optionally, 'ietf-schema-mount'
+             at the mount point, and their instantiation (i.e., state
+             data containers 'yanglib:modules-state' and
+             'schema-mounts') provides the information about the
+             mounted schema.";
         }
         list use-schema {
           key "name";
@@ -261,18 +262,14 @@ module ietf-yang-schema-mount {
          point.  The schema information consists of two parts:
 
          - an instance of YANG library that defines YANG modules used
-           in the schema,
+           in the schema";
 
-         - mount-point list with content identical to the top-level
-           mount-point list (this makes the schema structure
-           recursive).";
       leaf name {
         type string;
         description
           "Arbitrary name of the schema entry.";
       }
       uses yanglib:module-list;
-      uses mount-point-list;
     }
   }
 }

@@ -100,7 +100,9 @@ phases of the data model life cycle:
 + Design-time: the mounted schema is defined along with the mount
   point in the parent module. In this case, the mounted schema has to
   be the same for every implementation of the parent module.
-  # Lou's suggestion not used.
+  [Editor's note: The following sentence is not yet agreed to.[
+  Augmentations to mounted modules that are supported by the
+  implementation also have to be supported within the mounted schema.
 
 + Implementation-time: the mounted schema is defined by a server
   implementor and is as stable as YANG library information, i.e.,
@@ -113,10 +115,17 @@ phases of the data model life cycle:
   the same mount point (e.g., in multiple entries of a list), the
   mounted data model may be different for each instance.
 
-The schema mount mechanism defined in this document supports only the
+The schema mount mechanism defined in this document focuses only on the
 latter two cases because design-time definition of the mounted schema
-doesn't play well with the existing YANG modularity mechanisms. For
-example, it would be impossible to augment the mounted data model.
+doesn't play well with the existing YANG modularity mechanisms.  These
+classifications are provided to facilitate the explanation of schema
+mount and are by definition oversimplifications.  Models that actually
+use schema mount may to fall under multiple classifications.  For
+example, a model may, at design-time, identify specific modules that
+must be present under a mount-point and also require that, at
+implementation-time, any augmentation supported by the implementation
+for one of the mounted modules must also be present under the mount
+point.
 
 Schema mount applies to the data model, and specifically does not
 assume anything about the source of instance data for the mounted
@@ -158,6 +167,8 @@ here:
 - system-controlled interface
 
 # Lou's comment on tree diagrams
+#Tree diagrams in this document follow the definition provided in
+#^RFC7223^ Section 1.2.
 
 ** Glossary of New Terms
 
@@ -168,6 +179,8 @@ here:
   contains the mount point for the mounted schema.
 - top-level schema: a schema according to ^RFC7950^ in which schema
   trees of each module (except augments) start at the root node.
+- inline schema: a mounted schema whose definition is provided as part
+  of the mounted data, using YANG library ^RFC7895^.
 
 ** Tree Diagrams
 
@@ -207,7 +220,7 @@ associated with the corresponding YANG module, as shown in
 
 The schema mount mechanism defined in this document provides a new
 extensibility mechanism for use with YANG 1.1. In contrast to the
-existing mechanisms described in ^intro^, schema mount defines the
+existing mechanisms described in ^intro^, schema mount primarily defines the
 relationship between the source and target YANG modules outside these
 modules. The procedure consists of two separate steps that are
 described in the following subsections.
@@ -255,8 +268,10 @@ grouping and the grouping is used multiple times - then the
 corresponding "mount-point" entry applies equally to all such mount
 points.
 
-All provisions of YANG 1.1 specification ^RFC7950^ apply to mounted
-schemas except where explicitly noted otherwise.
+All provisions of YANG 1.1 specification ^RFC7950^ apply to a
+schema containing a mount point, and all provision of the YANG
+specification indicated in a mount mounted apply to the mounted module
+except where explicitly noted below:
 
 The "config" property of schema nodes is overriden and all nodes in
 the mounted schema are read-only ("config false") if at least one of
@@ -448,6 +463,15 @@ of any mounted module, it MUST be represented as if the
 notification was connected to the mount point, see Section 7.16 of
 ^RFC7950^.
 
+* Recursive Schema
+
+It is permissible for a mount-point within a module to include
+itself or the Schema Mount module defined in this document.  This is
+the for mount-points that use inline or module-based schema
+representation.  The sole exception to this case is when parent
+references are used.  As described above, modules appearing in the
+parent-references list cannot also be mounted.
+
 * Implementation Notes
 
 Network management of devices that use a data model with schema mount
@@ -505,7 +529,16 @@ The idea of having some way to combine schemas from different YANG
 modules into one has been proposed independently by several groups of
 people: Alexander Clemm, Jan Medved, and Eric Voit
 (^I-D.clemm-netmod-mount^); Ladislav Lhotka
-(^I-D.lhotka-netmod-ysdl^); and Lou Berger and Christian Hopps.
+(^I-D.lhotka-netmod-ysdl^); and Lou Berger and Christian Hopps. Contact
+information for contributors follows:
+
+   Lou Berger
+   LabN Consulting, L.L.C.
+   Email: lberger@labn.net
+
+   Christan Hopps
+   Deutsche Telekom
+   Email: chopps@chopps.org
 
 *! start-appendix
 
@@ -639,6 +672,14 @@ Should parent references in general XPath be needed, it would be
 necessary to indicate it explicitly. One way to achieve this is to
 defining a new XPath function, e.g., parent-root(), that returns the
 root of the parent data tree.
+
+** Filtering/limiting parent references
+
+It could be useful to restrict what parent information can be accessed
+from within the child schema.  For example in the case of network
+instance, the instance named 'vrf-blue' would only ever need to
+reference interfaces assigned to 'vrf-blue' and this could be enforced
+based on XPath evaluation.
 
 ** RPC Operations and Notifications in Mounted Modules
 

@@ -625,6 +625,9 @@ with the "inline" method only (with no "schema-mounts" data), and
 using schema node identifiers as described in ^sni^ for the
 "use-schema" case.
 
+An additional consideration is if there should be any special indication
+of mount points what will always, or never, be of type "inline".
+
 ** Parent References
 
 As explained in ^parref^, references to the parent schema can only be
@@ -659,6 +662,16 @@ solutions for this corner case are possible:
 The first two requirements seem rather restrictive. On the other hand,
 the last one is difficult to guarantee - for example, things can break
 after an augment within the mounted schema.
+
+** Tree Representations
+
+Need to decide on how to represent mount points in trees.
+
+Also, should decide if modules required under inline mount points should
+be represented in any specific fashion, and if so what yang statements
+drives this.  For example, YANG library is required under all inline
+mount points, and it's possible that other mounted schemas could be
+required at parent module design time.
 
 {{document:
     name ;

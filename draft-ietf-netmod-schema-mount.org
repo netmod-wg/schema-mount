@@ -588,22 +588,14 @@ as follows (the "schema" list doesn't change):
 
 This change would have several advantages:
 
-- no YANG extension is needed
-
-- parent modules needn't be searched for mount points, these are
-  specified explicitly
-
 - the schema mount mechanism becomes even closer to augments, which
   may simplify implementation
 
 - if a mount point appears inside a grouping, then a different mounted
   schema can be used for each use of the grouping.
 
-The disadvantage is that a mount point cannot be formally specified in
-the parent module. However, it is unclear how this could be useful
-because a mount point means nothing without corresponding data under
-"schema-mounts". For human readers, the intentions of the parent
-module's author regarding mount point can be placed in descriptions.
+- it optionally allows for use of mount without use of the mount-point
+  extension. 
 
 ** Defining the "mount-point" Extension in a Separate Module
 

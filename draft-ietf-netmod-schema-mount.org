@@ -159,6 +159,8 @@ here:
 
 ** Glossary of New Terms
 
+- inline schema: a mounted schema whose definition is provided as part
+  of the mounted data, using YANG library ^RFC7895^.
 - mount point: container or list node whose definition contains
   the "mount-point" extension statement. The argument of the
   "mount-point" statement defines the name of the mount point.
@@ -657,6 +659,21 @@ after an augment within the mounted schema.
 ** Tree Representation
 
 Need to decide how/if mount points are represented in trees.
+
+** Design-Time Mounts
+
+The document currently doesn't provide explicit support for
+design-time mounts.  Design-time mounts have been identified as
+possibly for multiple cases, and it may be worthwhile to identify a
+minimum or complete set of modules that must be supported under a
+mount point.  This could be used in service modules that want to allow
+for configuration of device-specific information.  One option could be
+to add an extension that specify that a certain module is required to
+be mounted.
+
+Also, if design-time mounts are supported, it could be possible to
+represent both mounts points and their required modules in tree
+representations and support for such would need to be defined.
 
 
 {{document:

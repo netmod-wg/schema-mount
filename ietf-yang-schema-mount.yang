@@ -84,13 +84,11 @@ module ietf-yang-schema-mount {
        of 'container' and 'list', and MUST NOT be present elsewhere.
 
        If a mount point is defined in a grouping, its name is bound
-       to the module where the grouping is used. Note that this
-       implies that such a grouping can be used at most once in a
-       module.
+       to the module where the grouping is used.
 
        A mount point defines a place in the node hierarchy where
        other data models may be attached. A server that implements a
-       module with a mount point, populates the
+       module with a mount point populates the
        /schema-mounts/mount-point list with detailed information on
        which data models are mounted at each mount point.";
   }
@@ -195,7 +193,7 @@ module ietf-yang-schema-mount {
                  namespace prefix belong to the same namespace as the
                  context node.";
           }
-          leaf-list parent-references {
+          leaf-list parent-reference {
             type yang:yang-identifier;
             must "not(/schema-mounts/schema[name=current()/../name]/"
                + "module[name=current() and conformance-type="
@@ -218,7 +216,7 @@ module ietf-yang-schema-mount {
 
                If the leftmost node-identifier in an absolute leafref
                path or instance identifier belongs to a module whose
-               name is listed in 'parent-references', then the root
+               name is listed in 'parent-reference', then the root
                of the accessible data tree coincides with the root of
                the parent data tree.";
           }

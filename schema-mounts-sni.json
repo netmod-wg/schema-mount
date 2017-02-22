@@ -8,7 +8,7 @@
   "mount-point": [
     {
       "target": "/ni:network-instances/ni:network-instance/ni:root",
-      "parent-references": ["ietf-interfaces"],
+      "parent-reference": ["ietf-interfaces"],
       "use-schema": [
         {
           "name": "ni-schema"

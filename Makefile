@@ -36,7 +36,7 @@ back.xml: back.src.xml
 	./mk-back $< > $@
 
 ietf-yang-schema-mount.tree: ietf-yang-schema-mount.yang
-	pyang -f tree $< > $@
+	pyang -f tree --tree-line-length 68 $< > $@
 
 idnits: $(next).txt
 	$(idnits) $<

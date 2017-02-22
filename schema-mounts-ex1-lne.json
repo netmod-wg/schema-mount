@@ -3,7 +3,7 @@
       {
         "module": "ietf-network-instance",
         "name": "root",
-        "parent-references": ["ietf-interfaces"],
+        "parent-reference": ["ietf-interfaces"],
         "use-schema": [
           {
             "name": "ni-schema"

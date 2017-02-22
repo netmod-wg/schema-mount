@@ -81,7 +81,7 @@ With the "augment" approach, "ietf-interfaces" would have to augment the
 all its nodes at the top level. The same hierarchy of nodes would thus
 have to be defined twice, which is clearly not scalable either.
 
-This document introduces a new general mechanism, denoted as schema
+This document introduces a new generic mechanism, denoted as schema
 mount, that allows for mounting one data model consisting of any
 number of YANG modules at a specified location of another (parent)
 schema. Unlike the "uses" and "augment" approaches discussed above,
@@ -91,7 +91,7 @@ mounted without any modifications.
 
 The basic idea of schema mount is to label a data node in the parent
 schema as the mount point, and then define a complete data model to be
-attached at the mount point so that the labeled data node effectively
+attached to the mount point so that the labeled data node effectively
 becomes the root node of the mounted data model.
 
 In principle, the mounted schema can be specified at three different
@@ -100,7 +100,6 @@ phases of the data model life cycle:
 + Design-time: the mounted schema is defined along with the mount
   point in the parent module. In this case, the mounted schema has to
   be the same for every implementation of the parent module.
-  # Lou's suggestion not used.
 
 + Implementation-time: the mounted schema is defined by a server
   implementor and is as stable as YANG library information, i.e.,
@@ -113,10 +112,11 @@ phases of the data model life cycle:
   the same mount point (e.g., in multiple entries of a list), the
   mounted data model may be different for each instance.
 
-The schema mount mechanism defined in this document supports only the
-latter two cases because design-time definition of the mounted schema
-doesn't play well with the existing YANG modularity mechanisms. For
-example, it would be impossible to augment the mounted data model.
+The schema mount mechanism defined in this document provides support
+only for the latter two cases because design-time definition of the
+mounted schema doesn't play well with the existing YANG modularity
+mechanisms. For example, it would be impossible to augment the mounted
+data model.
 
 Schema mount applies to the data model, and specifically does not
 assume anything about the source of instance data for the mounted
@@ -156,8 +156,6 @@ The following terms are defined in ^RFC7223^ and are not redefined
 here:
 
 - system-controlled interface
-
-# Lou's comment on tree diagrams
 
 ** Glossary of New Terms
 
@@ -255,12 +253,9 @@ grouping and the grouping is used multiple times - then the
 corresponding "mount-point" entry applies equally to all such mount
 points.
 
-All provisions of YANG 1.1 specification ^RFC7950^ apply to mounted
-schemas except where explicitly noted otherwise.
-
-The "config" property of schema nodes is overriden and all nodes in
-the mounted schema are read-only ("config false") if at least one of
-the following conditions is satisfied for a mount point:
+The "config" property of mounted schema nodes is overriden and all
+nodes in the mounted schema are read-only ("config false") if at least
+one of the following conditions is satisfied for a mount point:
 
 + The mount point is itself defined as "config false".
 
@@ -373,7 +368,6 @@ Each entry of the "schema" list contains
 - (optionally) a new "schema-mounts" specification that applies to
   mount points defined within the mounted schema.
 
-
 * Refering to Data Nodes in the Parent Schema @parref@
 
 A fundamental design principle of schema mount is that the mounted
@@ -410,7 +404,7 @@ name).
 
 Therefore, schema mount also allows for such references, albeit in a
 limited and controlled way.  The "schema-mounts" container has
-a child leaf-list named "parent-references" that contains zero or more
+a child leaf-list named "parent-reference" that contains zero or more
 module names. All modules appearing in this leaf-list MUST be
 implemented in the parent schema and MUST NOT be implemented in the
 mounted schema. All absolute leafref paths and instance identifiers
@@ -419,7 +413,7 @@ then evaluated as follows:
 
 - If the leftmost node-identifier (right after the initial slash)
   belongs to the namespace of a module that is listed in
-  "parent-references", then the root of the accessible tree is not the
+  "parent-reference", then the root of the accessible tree is not the
   mount point but the root of the parent schema.
 
 - Other rules for the "leafref" and "instance-identifier" types as
@@ -504,8 +498,13 @@ TBD
 The idea of having some way to combine schemas from different YANG
 modules into one has been proposed independently by several groups of
 people: Alexander Clemm, Jan Medved, and Eric Voit
-(^I-D.clemm-netmod-mount^); Ladislav Lhotka
-(^I-D.lhotka-netmod-ysdl^); and Lou Berger and Christian Hopps.
+(^I-D.clemm-netmod-mount^); and Lou Berger and Christian Hopps:
+
+- Lou Berger, LabN Consulting, L.L.C., <lberger@labn.net>
+- Alexander Clemm, Huawei, <alexander.clemm@huawei.com>
+- Christian Hopps, Deutsche Telekom, <chopps@chopps.org>
+- Jan Medved, Cisco, <jmedved@cisco.com>
+- Eric Voit, Cisco, <evoit@cisco.com>
 
 *! start-appendix
 
@@ -557,7 +556,7 @@ mounted using the "use-schema" method as follows:
 !! include-figure schema-mounts-ex1-lne.json
 
 Note also that the "ietf-interfaces" module appears in the
-"parent-references" leaf-list for the mounted NI schema. This means
+"parent-reference" leaf-list for the mounted NI schema. This means
 that references to LNE interfaces, such as "outgoing-interface" in
 static routes, are valid despite the fact that "ietf-interfaces" isn't
 part of the NI schema.
@@ -580,7 +579,7 @@ line):
 
 Each entry in the "mount-point" list is currently identified by two
 keys, namely YANG module name and mount point name. An alternative is
-to use a schema node identifier of the mount point as the single key.
+to use a schema node identifier of the mount point as a single key.
 
 For example, the "schema-mounts" data for NI (^exni^) would be changed
 as follows (the "schema" list doesn't change):
@@ -655,6 +654,9 @@ solutions for this corner case are possible:
 
 + specifically for each mount point, at least one of the above
   conditions MUST be satisfied.
+
++ treat such actions and notifications as non-existing, i.e., ignore
+  them.
 
 The first two requirements seem rather restrictive. On the other hand,
 the last one is difficult to guarantee - for example, things can break

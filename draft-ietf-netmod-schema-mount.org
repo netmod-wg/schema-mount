@@ -662,6 +662,11 @@ The first two requirements seem rather restrictive. On the other hand,
 the last one is difficult to guarantee - for example, things can break
 after an augment within the mounted schema.
 
+** Tree Representation
+
+Need to decide how/if mount points are represented in trees.
+
+
 {{document:
     name ;
     ipr trust200902;

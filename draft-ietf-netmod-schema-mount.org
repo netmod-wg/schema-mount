@@ -580,8 +580,7 @@ line):
 
 Each entry in the "mount-point" list is currently identified by two
 keys, namely YANG module name and mount point name. An alternative is
-to use a schema node identifier of the mount point instead of just its
-name.
+to use a schema node identifier of the mount point as the single key.
 
 For example, the "schema-mounts" data for NI (^exni^) would be changed
 as follows (the "schema" list doesn't change):

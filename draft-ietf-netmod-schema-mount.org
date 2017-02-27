@@ -370,6 +370,27 @@ Each entry of the "schema" list contains
 - (optionally) a new "schema-mounts" specification that applies to
   mount points defined within the mounted schema.
 
+** Multiple Levels of Schema Mount
+
+YANG modules in a mounted schema MAY again contain mount points under
+which subschemas can be mounted. Consequently, it is possible to
+construct data models with an arbitrary number of schema levels. A
+subschema for a mount point contained in a mounted module can be
+specified in one of the following ways:
+
+- by implementing "ietf-yang-library" and "ietf-schema-mount" modules
+  in the mounted schema, and specifying the subschemas exactly as it
+  is done in the top-level schema
+
+- by using the "mount-point" list inside the coresponding "schema"
+  entry.
+
+The former method is applicable to both "inline" and "use-schema"
+cases whereas the latter requires the "use-schema" case. On the other
+hand, the latter method allows for a compact representation of a
+multi-level schema the does not rely on the presence of any instance
+data.
+
 * Refering to Data Nodes in the Parent Schema @parref@
 
 A fundamental design principle of schema mount is that the mounted

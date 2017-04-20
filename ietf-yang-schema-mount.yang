@@ -153,9 +153,7 @@ module ietf-yang-schema-mount {
           key "name";
           description
             "Each entry of this list contains a reference to a schema
-             defined in the /schema-mounts/schema list. The entry can
-             be made conditional by specifying an XPath expression in
-             the 'when' leaf.";
+             defined in the /schema-mounts/schema list.";
           leaf name {
             type leafref {
               path "/schema-mounts/schema/name";
@@ -163,62 +161,37 @@ module ietf-yang-schema-mount {
             description
               "Name of the referenced schema.";
           }
-          leaf when {
+          leaf-list parent-reference {
             type yang:xpath1.0;
             description
-              "This leaf contains an XPath expression. If it is
-               present, then the current entry applies if and only if
-               the expression evaluates to true.
+              "Entries of this leaf-list are names of XPath 1.0
+               expressions that are evaluated in the following
+               context:
 
-               The XPath expression is evaluated once for each
-               instance of the data node containing the mount
-               point for which the 'when' leaf is defined.
+               - The context node is the root node of the parent data tree.
 
-               The XPath expression is evaluated using the rules
-               specified in sec. 6.4 of RFC 7950, with these
-               modifications:
+               - The accessible tree is the parent data tree *without*
+                 any nodes defined in modules that are mounted inside
+                 the parent schema.
 
-               - The context node is the data node instance
-                 containing the corresponding 'mount-point'
-                 statement.
+               - The context position and context size are both equal
+                 to 1.
 
-               - The accessible tree contains only data belonging to
-                 the parent schema, i.e., all instances of data
-                 nodes containing the mount points are considered
-                 empty.
+               - The set of variable bindings is empty.
 
-               - The set of namespace declarations is the set of all
-                 prefix/namespace pairs defined in the
-                 /schema-mounts/namespace list. Names without a
-                 namespace prefix belong to the same namespace as the
-                 context node.";
-          }
-          leaf-list parent-reference {
-            type yang:yang-identifier;
-            must "not(/schema-mounts/schema[name=current()/../name]/"
-               + "module[name=current() and conformance-type="
-               + "'implement'])" {
-              error-message "Parent references cannot be used for a "
-                + "module implemented in the mounted schema.";
-              description
-                "Modules that are used for parent references MUST NOT
-                 be implemented in the mounted schema.";
-            }
-            description
-              "Entries of this leaf-list are names of YANG modules.
-               All these modules MUST be implemented in the parent
-               schema.
+               - The function library is the core function library
+                 defined in [XPath] and the functions defined in
+                 Section 10 of [RFC7950].
 
-               Within the mounted schema and the corresponding data
-               tree, conceptual evaluation of absolute leafref paths
-               and instance identifiers is modified in the following
-               way:
+               - The set of namespace declarations is defined by the
+                 'namespace' list under 'schema-mounts'.
 
-               If the leftmost node-identifier in an absolute leafref
-               path or instance identifier belongs to a module whose
-               name is listed in 'parent-reference', then the root
-               of the accessible data tree coincides with the root of
-               the parent data tree.";
+               Each XPath expression MUST evaluate to a nodeset
+               (possibly empty). For the purposes of evaluating XPath
+               expressions whose context nodes are defined in the
+               mounted schema, the union of all these nodesets
+               together with ancestor nodes are added to the
+               accessible data tree.
           }
         }
       }
@@ -238,7 +211,7 @@ module ietf-yang-schema-mount {
       key "prefix";
       description
         "This list provides a mapping of namespace prefixes that are
-         used in XPath expressions of 'when' leafs to the
+         used in XPath expressions of 'parent-reference' leafs to the
          corresponding namespace URI references.";
       leaf prefix {
         type yang:yang-identifier;

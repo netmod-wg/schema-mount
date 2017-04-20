@@ -164,15 +164,15 @@ module ietf-yang-schema-mount {
           leaf-list parent-reference {
             type yang:xpath1.0;
             description
-              "Entries of this leaf-list are names of XPath 1.0
-               expressions that are evaluated in the following
-               context:
+              "Entries of this leaf-list are XPath 1.0 expressions
+               that are evaluated in the following context:
 
-               - The context node is the root node of the parent data tree.
+               - The context node is the root node of the parent data
+                 tree.
 
-               - The accessible tree is the parent data tree *without*
-                 any nodes defined in modules that are mounted inside
-                 the parent schema.
+               - The accessible tree is the parent data tree
+                 *without* any nodes defined in modules that are
+                 mounted inside the parent schema.
 
                - The context position and context size are both equal
                  to 1.
@@ -191,7 +191,7 @@ module ietf-yang-schema-mount {
                expressions whose context nodes are defined in the
                mounted schema, the union of all these nodesets
                together with ancestor nodes are added to the
-               accessible data tree.
+               accessible data tree.";
           }
         }
       }

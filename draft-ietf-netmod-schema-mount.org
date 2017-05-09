@@ -425,33 +425,25 @@ least those that are assigned to the NI), which is impossible unless
 such a reference can point to a node in the parent schema (interface
 name).
 
-Therefore, schema mount also allows for such references, albeit in a
-limited and controlled way.  The "schema-mounts" container has
-a child leaf-list named "parent-reference" that contains zero or more
-module names. All modules appearing in this leaf-list MUST be
-implemented in the parent schema and MUST NOT be implemented in the
-mounted schema. All absolute leafref paths and instance identifiers
-within the mounted data model and corresponding instance data tree are
-then evaluated as follows:
+Therefore, schema mount also allows for such references. For every
+schema mounted using the "use-schema" method, it is possible to
+specify a leaf-list named "parent-reference" that contains zero or
+more XPath 1.0 expressions. Each expression is evaluated with the root
+of the parent data tree as the context node and the result MUST be a
+nodeset (see the description of the "parent-reference" node for a
+complete definition of the evaluation context). For the purposes of
+evaluating XPath expressions within the mounted data tree, the union
+of all such nodesets is added to the accessible data tree.
 
-- If the leftmost node-identifier (right after the initial slash)
-  belongs to the namespace of a module that is listed in
-  "parent-reference", then the root of the accessible tree is not the
-  mount point but the root of the parent schema.
+It is worth emphasizing that
 
-- Other rules for the "leafref" and "instance-identifier" types as
-  defined in Sections 9.9 and 9.13 of ^RFC7950^ remain in effect.
+- The nodes specified in "parent-reference" leaf-list are available in
+  the mounted schema only for XPath evaluations. In particular, they
+  cannot be accessed there via network management protocols such as
+  NETCONF ^RFC6241^ or RESTCONF ^RFC8040^.
 
-It is worth emphasizing that the mount jail can be escaped only via
-absolute leafref paths and instance identifiers. Relative leafref
-paths, "must"/"when" expressions and schema node identifiers are still
-restricted to the mounted schema.
-
-# FIXME: what happens in this case:
-#  leaf mgmt-ref {
-#    typedef if:interface-ref;
-#    must 'deref(.)/../type = "ethernet"';
-#  }
+- The mechanism of referencing nodes in the parent schema is not
+  available for schemas mounted using the "inline" method.
 
 * RPC operations and Notifications @rpcnot@
 
@@ -597,62 +589,6 @@ line):
       network-instance=rtrA/root/ietf-isis:clear-adjacency HTTP/1.1
 
 * Open Issues
-
-** Referencing Mount Points Using Schema Node Identifiers @sni@
-
-Each entry in the "mount-point" list is currently identified by two
-keys, namely YANG module name and mount point name. An alternative is
-to use a schema node identifier of the mount point as a single key.
-
-For example, the "schema-mounts" data for NI (^exni^) would be changed
-as follows (the "schema" list doesn't change):
-
-!! include-figure schema-mounts-sni.json
-
-This change would have several advantages:
-
-- the schema mount mechanism becomes even closer to augments, which
-  may simplify implementation
-
-- if a mount point appears inside a grouping, then a different mounted
-  schema can be used for each use of the grouping.
-
-- it optionally allows for use of mount without use of the mount-point
-  extension. 
-
-** Defining the "mount-point" Extension in a Separate Module
-
-The "inline" method of schema mounting can be further simplified by
-defining the "inline" case as the default. That is, if a mount point
-is defined through the "mount-point" extension but is not present in
-the "mount-point" list, the "inline" schema mount is assumed.
-
-Consequently, a data model that uses only the "inline" method could
-omit the "schema-mounts" data entirely, but it still needs to use the
-"mount-point" extension. In order to enable this, the definition of
-the "mount-point" extension has to be moved to a YANG module of its
-own.
-
-A variant of this approach is to completely separate the "inline" and
-"use-schema" cases by dedicating the "mount-point" extension for use
-with the "inline" method only (with no "schema-mounts" data), and
-using schema node identifiers as described in ^sni^ for the
-"use-schema" case.
-
-** Parent References
-
-As explained in ^parref^, references to the parent schema can only be
-used in absolute leafref paths and instance identifiers. However, it is
-conceivable that they may be useful in other XPath expressions,
-e.g. in "must" statements. The authors believe it is impossible to
-allow for parent references in general XPath expressions because, for
-example, in a location path "//foo:bar" it would be unclear whether
-the lookup has to be started in the mounted or parent schema.
-
-Should parent references in general XPath be needed, it would be
-necessary to indicate it explicitly. One way to achieve this is to
-defining a new XPath function, e.g., parent-root(), that returns the
-root of the parent data tree.
 
 ** RPC Operations and Notifications in Mounted Modules
 

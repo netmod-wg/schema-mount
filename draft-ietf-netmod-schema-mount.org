@@ -234,11 +234,11 @@ including version 1, can be mounted under a mount point.
 
 ** Specification of the Mounted Schema
 
-Mounted schemas for all mount points in the parent schema are defined
-as state data in the "yangmnt:schema-mounts" container. Data in this
-container is intended to be as stable as data in the top-level YANG
-library ^RFC7895^. In particular, it SHOULD NOT change during the same
-management session.
+Mounted schemas for all mount points in the parent schema are
+determined from state data in the "yangmnt:schema-mounts"
+container. Data in this container is intended to be as stable as data
+in the top-level YANG library ^RFC7895^. In particular, it SHOULD NOT
+change during the same management session.
 
 The "schema-mount" container has the "mount-point" list as one of its
 children. Every entry of this list refers through its key to a mount
@@ -259,9 +259,9 @@ The "config" property of mounted schema nodes is overriden and all
 nodes in the mounted schema are read-only ("config false") if at least
 one of the following conditions is satisfied for a mount point:
 
-+ The mount point is itself defined as "config false".
+- the mount point is itself defined as "config false"
 
-+ The "config" leaf in the corresponding entry of the "mount-point"
+- the "config" leaf in the corresponding entry of the "mount-point"
   list is set to "false".
 
 An entry of the "mount-point" list can specify the mounted schema in
@@ -273,93 +273,21 @@ two different ways:
 + by referring to one or more entries of the "schema" list in the
   same instance of "schema-mounts".
 
-In case 1, every instance of the mount point that exists in
-the parent tree MUST contain a copy of YANG library data ^RFC7895^
-that defines the mounted schema exactly as for a top-level data
-model. A client is expected to retrieve this data from the instance
-tree, possibly after creating the mount point. Instances of the same
-mount point MAY use different mounted schemas.
+In case 1, the mounted schema is determined at run time: every
+instance of the mount point that exists in the parent tree MUST
+contain a copy of YANG library data ^RFC7895^ that defines the mounted
+schema exactly as for a top-level data model. A client is expected to
+retrieve this data from the instance tree, possibly after creating the
+mount point. Instances of the same mount point MAY use different
+mounted schemas.
 
-In case 2, the mounted schema is defined by the combination
-of all "schema" entries referred to in the "use-schema"
-list. Optionally, a reference to a "schema" entry can be made
-conditional by including the "when" leaf. Its argument is an XPath
-expression that is evaluated in the parent tree with the mount point
-instance as the context node. The conditional "schema" entry is used
-only if the XPath expression evaluates to true. XPath expressions in
-the argument of "when" may use namespace prefixes that are declared in
-the "namespace" list (child of "schema-mounts").
-
-Conditional schemas may be used, for example, in a situation where
-virtual devices are of several different types and the schema for each
-type is fixed and known in advance. The list of virtual devices in a
-parent schema module (say "example-virtual-host") might be defined as
-follows:
-
-  list virtual-device {
-    key name;
-    leaf name {
-      type string;
-    }
-    leaf type {
-      type identityref {
-        base virtual-device-type;
-      }
-    }
-    container root {
-      yangmnt:mount-point virtual-device;
-    }
-
-The "schema-mounts" specification in state data might contain, for
-example,
-
-  "yangmnt:schema-mounts": {
-    "namespace": [
-      {
-        "prefix": "evh",
-        "ns-uri": "http://example.org/ns/example-virtual-host"
-      }
-    ],
-    "mount-point": [
-      {
-        "module": "example-virtual-host",
-        "name": "root",
-        "use-schema": [
-          {
-            "name": "virtual-router-schema",
-            "when": "derived-from(../evh:type, 'evh:virtual-router')"
-          },
-          {
-            "name": "virtual-switch-schema",
-            "when": "derived-from(../evh:type, 'evh:virtual-switch')"
-          }
-    ],
-    "schema": [
-      {
-        "name": "virtual-router-schema",
-        "module": [
-          ...
-        ]
-      },
-      {
-        "name": "virtual-switch-schema",
-        "module": [
-          ...
-        ]
-      }
-    ]
-  }
-
-The schema of virtual device instances can then be controlled by setting
-the "type" leaf to an appropriate identity derived from the
-"virtual-device-type" base.
-
-In case 2, the mounted schema is specified as implementation-time data
-that can be retrieved together with YANG library data for the parent
-schema, i.e., even before any instances of the mount point
-exist. However, the mounted schema has to be the same for all instances
-of the mount point (except for parts that are conditional due to
-"when" leaves).
+In case 2, the mounted schema is defined by the combination of all
+"schema" entries referred to in the "use-schema" list. In this case,
+the mounted schema is specified as implementation-time data that can
+be retrieved together with YANG library data for the parent schema,
+i.e., even before any instances of the mount point exist. However, the
+mounted schema has to be the same for all instances of the mount
+point.
 
 Each entry of the "schema" list contains
 

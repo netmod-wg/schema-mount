@@ -240,7 +240,7 @@ container. Data in this container is intended to be as stable as data
 in the top-level YANG library ^RFC7895^. In particular, it SHOULD NOT
 change during the same management session.
 
-The "schema-mount" container has the "mount-point" list as one of its
+The "schema-mounts" container has the "mount-point" list as one of its
 children. Every entry of this list refers through its key to a mount
 point and specifies the mounted schema.
 
@@ -255,7 +255,7 @@ grouping and the grouping is used multiple times - then the
 corresponding "mount-point" entry applies equally to all such mount
 points.
 
-The "config" property of mounted schema nodes is overriden and all
+The "config" property of mounted schema nodes is overridden and all
 nodes in the mounted schema are read-only ("config false") if at least
 one of the following conditions is satisfied for a mount point:
 
@@ -310,7 +310,7 @@ specified in one of the following ways:
   in the mounted schema, and specifying the subschemas exactly as it
   is done in the top-level schema
 
-- by using the "mount-point" list inside the coresponding "schema"
+- by using the "mount-point" list inside the corresponding "schema"
   entry.
 
 The former method is applicable to both "inline" and "use-schema"
@@ -319,7 +319,7 @@ hand, the latter method allows for a compact representation of a
 multi-level schema the does not rely on the presence of any instance
 data.
 
-* Refering to Data Nodes in the Parent Schema @parref@
+* Referring to Data Nodes in the Parent Schema @parref@
 
 A fundamental design principle of schema mount is that the mounted
 data model works exactly as a top-level data model, i.e., it is
@@ -331,7 +331,7 @@ instance data thus cannot refer to schema nodes or instance data
 outside the mount jail.
 
 However, this restriction is sometimes too severe. A typical example
-are network instances (NI) ^I-D.ietf-rtgwg-ni-model^, where each NI has
+is network instances (NI) ^I-D.ietf-rtgwg-ni-model^, where each NI has
 its own routing engine but the list of interfaces is global and shared
 by all NIs. If we want to model this organization with the NI schema
 mounted using schema mount, the overall schema tree would look

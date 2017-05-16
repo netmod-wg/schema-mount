@@ -295,8 +295,8 @@ Each entry of the "schema" list contains
   (and revisions etc.) that are implemented or imported in the mounted
   schema;
 
-- (optionally) a new "schema-mounts" specification that applies to
-  mount points defined within the mounted schema.
+- (optionally) a new "mount-point" list that applies to mount points
+  defined within the mounted schema.
 
 ** Multiple Levels of Schema Mount
 

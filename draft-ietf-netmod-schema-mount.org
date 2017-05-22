@@ -98,7 +98,7 @@ In principle, the mounted schema can be specified at three different
 phases of the data model life cycle:
 
 + Design-time: the mounted schema is defined along with the mount
-  point in the parent module. In this case, the mounted schema has to
+  point in the parent YANG module. In this case, the mounted schema has to
   be the same for every implementation of the parent module.
 
 + Implementation-time: the mounted schema is defined by a server
@@ -113,10 +113,9 @@ phases of the data model life cycle:
   mounted data model may be different for each instance.
 
 The schema mount mechanism defined in this document provides support
-only for the latter two cases because design-time definition of the
-mounted schema doesn't play well with the existing YANG modularity
-mechanisms. For example, it would be impossible to augment the mounted
-data model.
+only for the latter two cases. Design-time mounts are outside
+the scope of this document, and could be possibly dealt with in a
+future revision of the YANG data modeling language.
 
 Schema mount applies to the data model, and specifically does not
 assume anything about the source of instance data for the mounted

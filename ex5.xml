@@ -2,7 +2,7 @@
     xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount">
   <namespace>
     <prefix>edt</prefix>
-    <ns-uri>http://example.org/device-types</ns-uri>
+    <uri>http://example.org/device-types</uri>
   </namespace>
   <mount-point>
     <module>example-network-manager</module>

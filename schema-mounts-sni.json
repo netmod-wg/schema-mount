@@ -2,7 +2,7 @@
   "namespace": [
     {
       "prefix": "ni",
-      "ns-uri": "urn:ietf:params:xml:ns:yang:ietf-network-instance"
+      "uri": "urn:ietf:params:xml:ns:yang:ietf-network-instance"
     }
   ]
   "mount-point": [

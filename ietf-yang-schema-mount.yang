@@ -59,7 +59,7 @@ module ietf-yang-schema-mount {
      (https://tools.ietf.org/html/rfcXXXX); see the RFC itself for
      full legal notices.";
 
-  revision 2017-05-16 {
+  revision 2017-06-16 {
     description
       "Initial revision.";
     reference
@@ -218,7 +218,7 @@ module ietf-yang-schema-mount {
         description
           "Namespace prefix.";
       }
-      leaf ns-uri {
+      leaf uri {
         type inet:uri;
         description
           "Namespace URI reference.";

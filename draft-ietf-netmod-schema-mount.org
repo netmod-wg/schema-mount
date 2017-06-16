@@ -239,6 +239,10 @@ container. Data in this container is intended to be as stable as data
 in the top-level YANG library ^RFC7895^. In particular, it SHOULD NOT
 change during the same management session.
 
+The modules that are mounted under a mount point has no relation to
+the modules in the parent schema; specifically, if a module is mounted
+it may or may not be present in the parent schema.
+
 The "schema-mounts" container has the "mount-point" list as one of its
 children. Every entry of this list refers through its key to a mount
 point and specifies the mounted schema.
@@ -384,6 +388,12 @@ of any mounted module, it MUST be represented as if the
 notification was connected to the mount point, see Section 7.16 of
 ^RFC7950^.
 
+Note that since inline actions and notifications work only if there
+is no ancestor node that is a list node without a "key" statement (see
+section 7.15 and 7.16 of ^RFC7950^), RPCs, actions, and notifications
+in mounted modules are only accssible if the mountpoint does not have
+any ancestor node that is a list node without a "key" statement.
+
 * Implementation Notes
 
 Network management of devices that use a data model with schema mount
@@ -514,50 +524,6 @@ line):
 
   POST /restconf/data/ietf-network-instance:network-instances/
       network-instance=rtrA/root/ietf-isis:clear-adjacency HTTP/1.1
-
-* Open Issues
-
-** RPC Operations and Notifications in Mounted Modules
-
-Turning RPC operations defined in mounted modules into actions tied to
-the corresponding mount point (see ^rpcnot^, and similarly for
-notifications) is not possible if the path to the mount point in the
-parent schema contains a keyless list (Section 7.15 of ^RFC7950^). The
-solutions for this corner case are possible:
-
-+ any mount point MUST NOT have a keyless list among its ancestors
-
-+ any mounted module MUST NOT contain RPC operations and/or
-  notifications
-
-+ specifically for each mount point, at least one of the above
-  conditions MUST be satisfied.
-
-+ treat such actions and notifications as non-existing, i.e., ignore
-  them.
-
-The first two requirements seem rather restrictive. On the other hand,
-the last one is difficult to guarantee - for example, things can break
-after an augment within the mounted schema.
-
-** Tree Representation
-
-Need to decide how/if mount points are represented in trees.
-
-** Design-Time Mounts
-
-The document currently doesn't provide explicit support for
-design-time mounts.  Design-time mounts have been identified as
-possibly for multiple cases, and it may be worthwhile to identify a
-minimum or complete set of modules that must be supported under a
-mount point.  This could be used in service modules that want to allow
-for configuration of device-specific information.  One option could be
-to add an extension that specify that a certain module is required to
-be mounted.
-
-Also, if design-time mounts are supported, it could be possible to
-represent both mounts points and their required modules in tree
-representations and support for such would need to be defined.
 
 
 {{document:

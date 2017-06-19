@@ -232,7 +232,7 @@ it may or may not be present in the parent schema and, if present, its
 data may have no relationship to the data contained in the parent
 module.  Exceptions are possible, and such needs to be defined in the
 model defining the exception, e.g., YANG library data as noted below
-and the interface module in ^I-D.ietf-rtgwg-lne-model^.
+and the interface module in ^I-D.ietf-rtgwg-lne-model^. 
 
 The "schema-mounts" container has the "mount-point" list as one of its
 children. Every entry of this list refers through its key to a mount
@@ -289,8 +289,8 @@ mount point.
 Each entry of the "schema" list contains:
 
 - a list in the YANG library format specifying all YANG modules
-  (and revisions etc.) that are implemented or imported in the mounted
-  schema;
+  (augmentations, and revisions etc.) that are implemented or imported
+  in the mounted schema;
 
 - (optionally) a new "mount-point" list that applies to mount points
   defined within the mounted schema.

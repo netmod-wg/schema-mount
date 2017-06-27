@@ -242,8 +242,37 @@ module ietf-yang-schema-mount {
         description
           "Arbitrary name of the schema entry.";
       }
+      leaf module-set-id {
+        type string;
+        mandatory true;
+        description
+          "Contains a server-specific identifier representing
+           the current set of modules and submodules indentified
+           in 'module-list'.  The server MUST change the value of
+           this leaf when the information represented by 'module-list'
+           changes.";
+       }
       uses yanglib:module-list;
       uses mount-point-list;
+    }
+  }
+
+  /*
+   * Notifications
+    */
+  notification yang-schema-mount-change {
+    description
+      "Generated when the set of modules and submodules supported
+       for a particular mount point schema has changed.";
+    leaf module-set-id {
+      type leafref {
+        path "/yangmnt:schema-mounts/schema/yangmnt:module-set-id";
+      }
+      mandatory true;
+      description
+        "Contains the module-set-id value representing the
+         set of modules and submodules supported for the identified
+         schema the time the notification is generated.";
     }
   }
 }

@@ -20,6 +20,7 @@
   "schema": [
     {
       "name": "ni-schema",
+      "module-set-id": "4c9805268bc1309be9189ed51d1cadb474068c8b",
       "module": [
         {
           "name": "ietf-ipv4-unicast-routing",

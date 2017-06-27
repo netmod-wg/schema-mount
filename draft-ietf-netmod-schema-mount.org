@@ -281,7 +281,7 @@ the mounted schema is specified as implementation-time data that can
 be retrieved together with YANG library data for the parent schema,
 i.e., even before any instances of the mount point exist. However, the
 mounted schema has to be the same for all instances of the mount
-point. Note, that in this case a mount point may included a mounted YANG
+point. Note, that in this case a mount point may include a mounted YANG
 library module and the data contained in the mounted module MUST exactly
 match the data contained in the "schema" entries associated with the
 mount point.

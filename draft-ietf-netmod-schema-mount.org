@@ -156,6 +156,9 @@ here:
 
 - system-controlled interface
 
+Tree diagrams used in this document follow the notation defined in
+^I-D.ietf-netmod-yang-tree-diagrams^.
+
 ** Glossary of New Terms
 
 - inline schema: a mounted schema whose definition is provided as part
@@ -167,23 +170,6 @@ here:
   contains the mount point for the mounted schema.
 - top-level schema: a schema according to ^RFC7950^ in which schema
   trees of each module (except augments) start at the root node.
-
-** Tree Diagrams
-
- A simplified graphical representation of the data model is used in
- this document.  The meaning of the symbols in these diagrams is as
- follows:
-
-- Brackets "[" and "]" enclose list keys.
-- Abbreviations before data node names: "rw" means configuration
-  data (read-write) and "ro" state data (read-only).
-- Symbols after data node names: "?" means an optional node, "!"
-  means a presence container, and "*" denotes a list and
-  leaf-list.
-- Parentheses enclose choice and case nodes, and case nodes are
-  also marked with a colon (":").
-- Ellipsis ("...") stands for contents of subtrees that are not
-  shown.
 
 ** Namespace Prefixes
 
@@ -239,9 +225,14 @@ container. Data in this container is intended to be as stable as data
 in the top-level YANG library ^RFC7895^. In particular, it SHOULD NOT
 change during the same management session.
 
-The modules that are mounted under a mount point has no relation to
+Generally, the modules that are mounted under a mount point have no
+relation to
 the modules in the parent schema; specifically, if a module is mounted
-it may or may not be present in the parent schema.
+it may or may not be present in the parent schema and, if present, its
+data will generally have no relationship to the data of the parent.
+Exceptions are possible and such needs to be defined in the
+model defining the exception, e.g., the interface module in
+^I-D.ietf-rtgwg-lne-model^.
 
 The "schema-mounts" container has the "mount-point" list as one of its
 children. Every entry of this list refers through its key to a mount
@@ -290,13 +281,17 @@ the mounted schema is specified as implementation-time data that can
 be retrieved together with YANG library data for the parent schema,
 i.e., even before any instances of the mount point exist. However, the
 mounted schema has to be the same for all instances of the mount
-point.
+point. Note, that in this case a mount point may included a mounted YANG
+library module and the data contained in the mounted module MUST exactly
+match the data contained in the "schema" entries associated with the
+mount point.
 
-Each entry of the "schema" list contains
+Each entry of the "schema" list contains:
 
 - a list in the YANG library format specifying all YANG modules
-  (and revisions etc.) that are implemented or imported in the mounted
-  schema;
+  (and revisions etc.) that are implemented or imported
+  in the mounted schema. Note that this includes modules that
+  solely augment other listed modules;
 
 - (optionally) a new "mount-point" list that applies to mount points
   defined within the mounted schema.
@@ -388,11 +383,13 @@ of any mounted module, it MUST be represented as if the
 notification was connected to the mount point, see Section 7.16 of
 ^RFC7950^.
 
-Note that since inline actions and notifications work only if there
-is no ancestor node that is a list node without a "key" statement (see
-section 7.15 and 7.16 of ^RFC7950^), RPCs, actions, and notifications
-in mounted modules are only accssible if the mountpoint does not have
-any ancestor node that is a list node without a "key" statement.
+Note, inline actions and notifications will not work when they are
+contained within a list node without a "key" statement (see section 7.15
+and 7.16 of ^RFC7950^).  Therefore, to be useful, mount points which
+contain modules with RPCs, actions, and notifications SHOULD NOT have any
+ancestor node that is a list node without a "key" statement.  This
+requirement applies to the definition of modules using the "mount-point"
+extension statement.
 
 * Implementation Notes
 

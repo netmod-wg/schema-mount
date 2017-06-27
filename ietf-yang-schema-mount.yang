@@ -247,7 +247,7 @@ module ietf-yang-schema-mount {
         mandatory true;
         description
           "Contains a server-specific identifier representing
-           the current set of modules and submodules indentified
+           the current set of modules and submodules identified
            in 'module-list'.  The server MUST change the value of
            this leaf when the information represented by 'module-list'
            changes.";

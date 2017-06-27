@@ -225,14 +225,14 @@ container. Data in this container is intended to be as stable as data
 in the top-level YANG library ^RFC7895^. In particular, it SHOULD NOT
 change during the same management session.
 
-Generally, the modules that are mounted under a mount point has no
+Generally, the modules that are mounted under a mount point have no
 relation to
 the modules in the parent schema; specifically, if a module is mounted
 it may or may not be present in the parent schema and, if present, its
-data may have no relationship to the data contained in the parent
-module.  Exceptions are possible, and such needs to be defined in the
-model defining the exception, e.g., YANG library data as noted below
-and the interface module in ^I-D.ietf-rtgwg-lne-model^. 
+data will generally have no relationship to the data of the parent.
+Exceptions are possible and such needs to be defined in the
+model defining the exception, e.g., the interface module in
+^I-D.ietf-rtgwg-lne-model^.
 
 The "schema-mounts" container has the "mount-point" list as one of its
 children. Every entry of this list refers through its key to a mount
@@ -289,8 +289,9 @@ mount point.
 Each entry of the "schema" list contains:
 
 - a list in the YANG library format specifying all YANG modules
-  (augmentations, and revisions etc.) that are implemented or imported
-  in the mounted schema;
+  (and revisions etc.) that are implemented or imported
+  in the mounted schema. Note that this includes modules that
+  solely augment other listed modules;
 
 - (optionally) a new "mount-point" list that applies to mount points
   defined within the mounted schema.
@@ -385,7 +386,7 @@ notification was connected to the mount point, see Section 7.16 of
 Note, inline actions and notifications will not work when they are
 contained within a list node without a "key" statement (see section 7.15
 and 7.16 of ^RFC7950^).  Therefore, to be useful, mount points which
-contain modules with RPCs, actions, and notifications MUST NOT have any
+contain modules with RPCs, actions, and notifications SHOULD NOT have any
 ancestor node that is a list node without a "key" statement.  This
 requirement applies to the definition of modules using the "mount-point"
 extension statement.

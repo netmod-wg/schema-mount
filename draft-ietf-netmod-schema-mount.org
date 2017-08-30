@@ -217,6 +217,8 @@ The "mount-point" statement MUST NOT be used in a YANG version 1
 module.  Note, however, that modules written in any YANG version,
 including version 1, can be mounted under a mount point.
 
+Note that the "mount-point" statement does not define a new data node.
+
 ** Specification of the Mounted Schema
 
 Mounted schemas for all mount points in the parent schema are

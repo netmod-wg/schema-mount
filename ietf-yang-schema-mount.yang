@@ -80,17 +80,22 @@ module ietf-yang-schema-mount {
        version 1 module, neither explicitly nor via a 'uses'
        statement.
 
-       The 'mount-point' statement MAY be present as a substatement
-       of 'container' and 'list', and MUST NOT be present elsewhere.
+       The 'mount-point' statement MAY be present as a substatement of
+       'container' and 'list', and MUST NOT be present elsewhere.
+       There MUST NOT be more than one 'mount-point' statement in a
+       given 'container' or 'list' statement.
 
-       If a mount point is defined in a grouping, its name is bound
+       If a mount point is defined within a grouping, its name is bound
        to the module where the grouping is used.
 
        A mount point defines a place in the node hierarchy where
        other data models may be attached. A server that implements a
        module with a mount point populates the
        /schema-mounts/mount-point list with detailed information on
-       which data models are mounted at each mount point.";
+       which data models are mounted at each mount point.
+
+       Note that the 'mount-point' statement does not define a new
+       data node.";
   }
 
   /*
@@ -138,6 +143,7 @@ module ietf-yang-schema-mount {
            their 'config' property.";
       }
       choice schema-ref {
+        mandatory true;
         description
           "Alternatives for specifying the schema.";
         leaf inline {
@@ -151,6 +157,7 @@ module ietf-yang-schema-mount {
         }
         list use-schema {
           key "name";
+          min-elements 1;
           description
             "Each entry of this list contains a reference to a schema
              defined in the /schema-mounts/schema list.";

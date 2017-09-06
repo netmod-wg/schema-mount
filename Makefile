@@ -50,7 +50,7 @@ validate:
 	$(MAKE) validate_ex1
 
 validate_ex1: .ex1.xml
-	yang2dsdl -j -v $< ietf-yang-schema-mount.yang; \
+	yang2dsdl -x -j -v $< ietf-yang-schema-mount.yang; \
 
 .INTERMEDIATE: .ex1.xml
 .ex1.xml: ex1.xml

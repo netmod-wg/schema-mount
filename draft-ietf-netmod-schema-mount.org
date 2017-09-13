@@ -356,12 +356,13 @@ name).
 Therefore, schema mount also allows for such references. For every
 schema mounted using the "use-schema" method, it is possible to
 specify a leaf-list named "parent-reference" that contains zero or
-more XPath 1.0 expressions. Each expression is evaluated with the root
-of the parent data tree as the context node and the result MUST be a
-nodeset (see the description of the "parent-reference" node for a
-complete definition of the evaluation context). For the purposes of
-evaluating XPath expressions within the mounted data tree, the union
-of all such nodesets is added to the accessible data tree.
+more XPath 1.0 expressions. Each expression is evaluated with the node
+in the parent data tree where the mount point is defined as the
+context node. The result of this evaluation MUST be a nodeset (see the
+description of the "parent-reference" node for a complete definition
+of the evaluation context). For the purposes of evaluating XPath
+expressions within the mounted data tree, the union of all such
+nodesets is added to the accessible data tree.
 
 It is worth emphasizing that
 

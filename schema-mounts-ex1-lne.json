@@ -3,6 +3,10 @@
     {
         "prefix": "if",
         "uri": "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+    },
+    {
+        "prefix": "ni",
+        "uri": "urn:ietf:params:xml:ns:yang:ietf-network-instance"
     }
   ],
   "mount-point": [
@@ -12,7 +16,10 @@
       "use-schema": [
         {
           "name": "ni-schema",
-          "parent-reference": ["/if:interfaces"]
+          "parent-reference": [
+            "/if:interfaces/if:interface[
+               ni:bind-network-instance-name = current()/../ni:name]"
+          ]
         }
       ]
     }

@@ -174,8 +174,8 @@ module ietf-yang-schema-mount {
               "Entries of this leaf-list are XPath 1.0 expressions
                that are evaluated in the following context:
 
-               - The context node is the root node of the parent data
-                 tree.
+               - The context node is the node in the parent data tree
+                 where the mount-point is defined.
 
                - The accessible tree is the parent data tree
                  *without* any nodes defined in modules that are

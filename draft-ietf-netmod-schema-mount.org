@@ -443,7 +443,9 @@ registry ^RFC6020^.
 
 * Security Considerations
 
-TBD
+This document defines a mechanism for combining schemas from different
+YANG modules into a single schema, and as such doesn't introduce new
+security issues.
 
 * Contributors
 

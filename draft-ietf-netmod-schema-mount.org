@@ -295,6 +295,9 @@ Each entry of the "schema" list contains:
   in the mounted schema. Note that this includes modules that
   solely augment other listed modules;
 
+- an identifier representing the listed YANG modules that parallels
+  module-set-id used in YANG library;
+
 - (optionally) a new "mount-point" list that applies to mount points
   defined within the mounted schema.
 

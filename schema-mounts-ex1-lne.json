@@ -12,7 +12,7 @@
   "mount-point": [
     {
       "module": "ietf-network-instance",
-      "name": "root",
+      "label": "root",
       "use-schema": [
         {
           "name": "ni-schema",

@@ -2,7 +2,7 @@
   "mount-point": [
     {
       "module": "ietf-logical-network-element",
-      "name": "root",
+      "label": "root",
       "inline": [null]
     }
   ]

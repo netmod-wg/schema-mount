@@ -59,7 +59,7 @@ module ietf-yang-schema-mount {
      (https://tools.ietf.org/html/rfcXXXX); see the RFC itself for
      full legal notices.";
 
-  revision 2017-09-27 {
+  revision 2017-10-09 {
     description
       "Initial revision.";
     reference
@@ -71,9 +71,9 @@ module ietf-yang-schema-mount {
    */
 
   extension mount-point {
-    argument name;
+    argument label;
     description
-      "The argument 'name' is a YANG identifier, i.e., it is of the
+      "The argument 'label' is a YANG identifier, i.e., it is of the
        type 'yang:yang-identifier'.
 
        The 'mount-point' statement MUST NOT be used in a YANG
@@ -85,7 +85,7 @@ module ietf-yang-schema-mount {
        There MUST NOT be more than one 'mount-point' statement in a
        given 'container' or 'list' statement.
 
-       If a mount point is defined within a grouping, its name is
+       If a mount point is defined within a grouping, its label is
        bound to the module where the grouping is used.
 
        A mount point defines a place in the node hierarchy where
@@ -107,7 +107,7 @@ module ietf-yang-schema-mount {
       "This grouping is used inside the 'schema-mounts' container and
        inside the 'schema' list.";
     list mount-point {
-      key "module name";
+      key "module label";
       description
         "Each entry of this list specifies a schema for a particular
          mount point.
@@ -128,10 +128,10 @@ module ietf-yang-schema-mount {
         description
           "Name of a module containing the mount point.";
       }
-      leaf name {
+      leaf label {
         type yang:yang-identifier;
         description
-          "Name of the mount point defined using the 'mount-point'
+          "Label of the mount point defined using the 'mount-point'
            extension.";
       }
       leaf config {

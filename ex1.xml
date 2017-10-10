@@ -2,7 +2,7 @@
     xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount">
   <mount-point>
     <module>example-logical-devices</module>
-    <name>logical-device</name>
+    <label>logical-device</label>
     <use-schema>
       <name>logical-device</name>
     </use-schema>

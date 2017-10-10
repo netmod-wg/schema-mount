@@ -164,7 +164,7 @@ Tree diagrams used in this document follow the notation defined in
   of the mounted data, using YANG library ^RFC7895^.
 - mount point: container or list node whose definition contains
   the "mount-point" extension statement. The argument of the
-  "mount-point" statement defines the name of the mount point.
+  "mount-point" statement defines a label for the mount point.
 - parent schema (of a particular mounted schema): the schema that
   contains the mount point for the mounted schema.
 - top-level schema: a schema according to ^RFC7950^ in which schema
@@ -204,7 +204,7 @@ module) is used in its definition. This extension can appear only as a
 substatement of "container" and "list" statements.
 
 The argument of the "mount-point" extension is a YANG identifier that
-defines the name of the mount point. A module MAY contain multiple
+defines a label for the mount point. A module MAY contain multiple
 "mount-point" statements having the same argument.
 
 It is therefore up to the designer of the parent schema to decide
@@ -418,7 +418,7 @@ This document defines the YANG 1.1 module ^RFC7950^
 
 This module references ^RFC6991^ and ^RFC7895^.
 
-!! include-figure ietf-yang-schema-mount.yang extract-to="ietf-yang-schema-mount@2017-09-27.yang"
+!! include-figure ietf-yang-schema-mount.yang extract-to="ietf-yang-schema-mount@2017-10-09.yang"
 
 * IANA Considerations @iana@
 

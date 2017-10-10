@@ -146,7 +146,6 @@ The following terms are defined in ^RFC7950^ and are not redefined
 here:
 
 - action
-- configuration data
 - container
 - list
 - operation

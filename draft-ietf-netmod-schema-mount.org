@@ -442,9 +442,37 @@ registry ^RFC6020^.
 
 * Security Considerations
 
-This document defines a mechanism for combining schemas from different
-YANG modules into a single schema, and as such doesn't introduce new
-security issues.
+YANG module "ietf-yang-schema-mount" specified in this document
+defines a schema for data that is designed to be accessed
+via network management protocols such as NETCONF ^RFC6241^ or RESTCONF
+^RFC8040^. The lowest NETCONF layer is the secure transport layer, and
+the mandatory-to-implement secure transport is Secure Shell (SSH)
+^RFC6242^. The lowest RESTCONF layer is HTTPS, and the
+mandatory-to-implement secure transport is TLS ^RFC5246^.
+
+The network configuration access control model
+^I-D.draft-ietf-netconf-rfc6536bis^ provides the means to restrict
+access for particular NETCONF or RESTCONF users to a preconfigured
+subset of all available NETCONF or RESTCONF protocol operations and
+content.
+
+Some of the readable data nodes in this YANG module may be considered
+sensitive or vulnerable in some network environments.  It is thus
+important to control read access (e.g., via get, get-config, or
+notification) to these data nodes.  These are the subtrees and data
+nodes and their sensitivity/vulnerability:
+
+-  /schema-mounts: The schema defined by this state data provides
+   detailed information about a server implementation may help an
+   attacker identify the server capabilities and server
+   implementations with known bugs. Server vulnerabilities may be
+   specific to particular modules included in the schema, module
+   revisions, module features, or even module deviations. For example,
+   if a particular operation on a particular data node is known to
+   cause a server to crash or significantly degrade device
+   performance, then the schema information will help an attacker
+   identify server implementations with such a defect, in order to
+   launch a denial-of-service attack on the device.
 
 * Contributors
 

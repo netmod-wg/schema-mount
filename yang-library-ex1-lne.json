@@ -1,65 +1,89 @@
-"ietf-yang-library:modules-state": {
-  "module-set-id": "9358e11874068c8be06562089e94a89e0a392019",
-  "module": [
+"ietf-yang-library:yang-library": {
+  "checksum": "9358e11874068c8be06562089e94a89e0a392019",
+  "module-set": [
     {
-      "name": "iana-if-type",
-      "revision": "2014-05-08",
-      "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type",
-      "conformance-type": "implement"
-    },
-    {
-      "name": "ietf-inet-types",
-      "revision": "2013-07-15",
-      "namespace": "urn:ietf:params:xml:ns:yang:ietf-inet-types",
-      "conformance-type": "import"
-    },
-    {
-      "name": "ietf-interfaces",
-      "revision": "2014-05-08",
-      "feature": [
-        "arbitrary-names",
-        "pre-provisioning"
+      "name": "lne-modules",
+      "module": [
+        {
+          "name": "iana-if-type",
+          "revision": "2014-05-08",
+          "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type"
+        },
+        {
+          "name": "ietf-interfaces",
+          "revision": "2014-05-08",
+          "feature": [
+            {
+              "name": "arbitrary-names"
+            },
+            {
+              "name": "pre-provisioning"
+            }
+          ],
+          "namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+        },
+        {
+          "name": "ietf-ip",
+          "revision": "2014-06-16",
+          "feature": [
+            {
+              "name": "ipv6-privacy-autoconf"
+            }
+          ],
+          "namespace": "urn:ietf:params:xml:ns:yang:ietf-ip"
+        },
+        {
+          "name": "ietf-network-instance",
+          "revision": "2016-10-27",
+          "feature": [
+            {
+              "name": "bind-network-instance-name"
+            }
+          ],
+          "namespace":
+            "urn:ietf:params:xml:ns:yang:ietf-network-instance"
+        },
+        {
+          "name": "ietf-yang-library",
+          "revision": "2016-06-21",
+          "namespace":
+            "urn:ietf:params:xml:ns:yang:ietf-yang-library"
+        },
+        {
+          "name": "ietf-yang-schema-mount",
+          "revision": "2017-05-16",
+          "namespace":
+            "urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount"
+        }
       ],
-      "namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces",
-      "conformance-type": "implement"
+      "import-only-module": [
+        {
+          "name": "ietf-inet-types",
+          "revision": "2013-07-15",
+          "namespace": "urn:ietf:params:xml:ns:yang:ietf-inet-types"
+        },
+        {
+          "name": "ietf-yang-types",
+          "revision": "2013-07-15",
+          "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types"
+        }
+      ]
+    }
+  ],
+  "schema": [
+    {
+      "name": "lne-schema",
+      "module-set": [ "lne-modules" ]
+    }
+  ],
+  "datastore": [
+    {
+      "name": "ietf-datastores:running",
+      "schema": "lne-schema"
     },
     {
-      "name": "ietf-ip",
-      "revision": "2014-06-16",
-      "feature": [
-        "ipv6-privacy-autoconf"
-      ],
-      "namespace": "urn:ietf:params:xml:ns:yang:ietf-ip",
-      "conformance-type": "implement"
-    },
-    {
-      "name": "ietf-network-instance",
-      "revision": "2016-10-27",
-      "feature": [
-        "bind-network-instance-name"
-      ],
-      "namespace":
-        "urn:ietf:params:xml:ns:yang:ietf-network-instance",
-      "conformance-type": "implement"
-    },
-    {
-      "name": "ietf-yang-library",
-      "revision": "2016-06-21",
-      "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-library",
-      "conformance-type": "implement"
-    },
-    {
-      "name": "ietf-yang-schema-mount",
-      "revision": "2017-05-16",
-      "namespace":
-        "urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount",
-      "conformance-type": "implement"
-    },
-    {
-      "name": "ietf-yang-types",
-      "revision": "2013-07-15",
-      "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types",
-      "conformance-type": "import"
+      "name": "ietf-datastores:operational",
+      "schema": "lne-schema"
     }
   ]
 }

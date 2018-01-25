@@ -11,11 +11,11 @@ can be combined with various sets of other modules and thus form a
 data model that is tailored to meet the requirements of a specific use
 case. Server implementors are only required to specify all YANG
 modules comprising the data model (together with their revisions and
-other optional choices) in the YANG library data (^RFC7895^, and Section 5.6.4
-of ^RFC7950^) implemented by the server.  Such YANG modules appear
-in the data model "side by side", i.e., top-level data nodes of each
-module - if there are any - are also top-level nodes of the overall
-data model.
+other optional choices) in the YANG library data
+(^I-D.ietf-netconf-rfc7895bis^, and Section 5.6.4 of ^RFC7950^)
+implemented by the server.  Such YANG modules appear in the data model
+"side by side", i.e., top-level data nodes of each module - if there
+are any - are also top-level nodes of the overall data model.
 
 Furthermore, YANG has two mechanisms for contributing a schema
 hierarchy defined elsewhere to the contents of an internal node of the
@@ -37,13 +37,14 @@ placed.
 In some cases these mechanisms are not sufficient; it is often
 necessary that an existing module (or a set of modules) is added to
 the data model starting at a non-root location. For example, YANG
-modules such as "ietf-interfaces" ^RFC7223^ are often defined so as to
-be used in a data model of a physical device.  Now suppose we want to
-model a device that supports multiple logical devices
-^I-D.ietf-rtgwg-lne-model^, each of which has its own instantiation
-of "ietf-interfaces", and possibly other modules, but, at the same
-time, we want to be able to manage all these logical devices from the
-master device.  Hence, we would like to have a schema like this:
+modules such as "ietf-interfaces" ^I-D.ietf-netmod-rfc7223bis^ are
+often defined so as to be used in a data model of a physical device.
+Now suppose we want to model a device that supports multiple logical
+devices ^I-D.ietf-rtgwg-lne-model^, each of which has its own
+instantiation of "ietf-interfaces", and possibly other modules, but,
+at the same time, we want to be able to manage all these logical
+devices from the master device.  Hence, we would like to have a schema
+like this:
 
   +--rw interfaces
   |  +--rw interface* [name]
@@ -150,8 +151,8 @@ here:
 - list
 - operation
 
-The following terms are defined in ^RFC7223^ and are not redefined
-here:
+The following terms are defined in ^I-D.ietf-netmod-rfc7223bis^ and
+are not redefined here:
 
 - system-controlled interface
 
@@ -161,7 +162,7 @@ Tree diagrams used in this document follow the notation defined in
 ** Glossary of New Terms
 
 - inline schema: a mounted schema whose definition is provided as part
-  of the mounted data, using YANG library ^RFC7895^.
+  of the mounted data, using YANG library ^I-D.ietf-netconf-rfc7895bis^.
 - mount point: container or list node whose definition contains
   the "mount-point" extension statement. The argument of the
   "mount-point" statement defines a label for the mount point.
@@ -185,7 +186,7 @@ associated with the corresponding YANG module, as shown in
 | yangmnt | ietf-yang-schema-mount | ^yangmod^ |
 | inet    | ietf-inet-types        | ^RFC6991^ |
 | yang    | ietf-yang-types        | ^RFC6991^ |
-| yanglib | ietf-yang-library      | ^RFC7895^ |
+| yanglib | ietf-yang-library      | ^I-D.ietf-netconf-rfc7895bis^ |
 
 * Schema Mount
 
@@ -223,8 +224,8 @@ Note that the "mount-point" statement does not define a new data node.
 Mounted schemas for all mount points in the parent schema are
 determined from state data in the "yangmnt:schema-mounts"
 container. Data in this container is intended to be as stable as data
-in the top-level YANG library ^RFC7895^. In particular, it SHOULD NOT
-change during the same management session.
+in the top-level YANG library ^I-D.ietf-netconf-rfc7895bis^. In
+particular, it SHOULD NOT change during the same management session.
 
 Generally, the modules that are mounted under a mount point have no
 relation to
@@ -270,11 +271,11 @@ two different ways:
 
 In case 1, the mounted schema is determined at run time: every
 instance of the mount point that exists in the parent tree MUST
-contain a copy of YANG library data ^RFC7895^ that defines the mounted
-schema exactly as for a top-level data model. A client is expected to
-retrieve this data from the instance tree, possibly after creating the
-mount point. Instances of the same mount point MAY use different
-mounted schemas.
+contain a copy of YANG library data ^I-D.ietf-netconf-rfc7895bis^ that
+defines the mounted schema exactly as for a top-level data model. A
+client is expected to retrieve this data from the instance tree,
+possibly after creating the mount point. Instances of the same mount
+point MAY use different mounted schemas.
 
 In case 2, the mounted schema is defined by the combination of all
 "schema" entries referred to in the "use-schema" list. In this case,
@@ -416,9 +417,9 @@ This document defines the YANG 1.1 module ^RFC7950^
 
 * Schema Mount YANG Module @yangmod@
 
-This module references ^RFC6991^ and ^RFC7895^.
+This module references ^RFC6991^ and ^I-D.ietf-netconf-rfc7895bis^.
 
-!! include-figure ietf-yang-schema-mount.yang extract-to="ietf-yang-schema-mount@2017-10-09.yang"
+!! include-figure ietf-yang-schema-mount.yang extract-to="ietf-yang-schema-mount@2018-01-25.yang"
 
 * IANA Considerations @iana@
 
@@ -451,7 +452,7 @@ the mandatory-to-implement secure transport is Secure Shell (SSH)
 mandatory-to-implement secure transport is TLS ^RFC5246^.
 
 The network configuration access control model
-^I-D.draft-ietf-netconf-rfc6536bis^ provides the means to restrict
+^I-D.ietf-netconf-rfc6536bis^ provides the means to restrict
 access for particular NETCONF or RESTCONF users to a preconfigured
 subset of all available NETCONF or RESTCONF protocol operations and
 content.
@@ -462,7 +463,7 @@ important to control read access (e.g., via get, get-config, or
 notification) to these data nodes.  These are the subtrees and data
 nodes and their sensitivity/vulnerability:
 
--  /schema-mounts: The schema defined by this state data provides
+-  schema-mounts: The schema defined by this state data provides
    detailed information about a server implementation may help an
    attacker identify the server capabilities and server
    implementations with known bugs. Server vulnerabilities may be
@@ -507,7 +508,8 @@ library content:
 
 Each LNE can have a specific data model that is determined at run
 time, so it is appropriate to mount it using the "inline" method,
-hence the following "schema-mounts" data:
+hence the following "schema-mounts" data is added to the physical
+device's YANG library:
 
 !! include-figure schema-mounts-ex1-device.json
 
@@ -517,22 +519,23 @@ LNE instance, for example,
 !! include-figure config-ex1-device.json
 
 and then also place necessary state data as the contents of the "root"
-instance, which should include at least
+instance, which should include at least:
 
 - YANG library data specifying the LNE's data model, for example:
 
 !! include-figure yang-library-ex1-lne.json
 
-- state data for interfaces assigned to the LNE instance (that
-  effectively become system-controlled interfaces for the LNE), for
-  example:
+- operational state data for interfaces assigned to the LNE instance
+  (that effectively become system-controlled interfaces for the LNE),
+  for example:
 
 !! include-figure interfaces-ex1-lne.json
 
 ** Network Instances @exni@
 
 Assuming that network instances share the same data model, it can be
-mounted using the "use-schema" method as follows:
+mounted using the "use-schema" method, hence the following
+"schema-mounts" data is added to the LNE's YANG library:
 
 !! include-figure schema-mounts-ex1-lne.json
 

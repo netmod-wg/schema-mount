@@ -26,6 +26,8 @@ next_ver ?= $(shell printf "%.2d" $$((1$(current_ver)-99)))
 endif
 next := $(draft)-$(next_ver)
 
+PYANGFLAGS ?= -p ../../netconf-wg/rfc7895bis -p ../datastore-dt
+
 .PHONY: latest all clean
 
 all: $(next).txt
@@ -36,27 +38,18 @@ back.xml: back.src.xml
 	./mk-back $< > $@
 
 ietf-yang-schema-mount.tree: ietf-yang-schema-mount.yang
-	pyang -f tree --tree-line-length 68 $< > $@
+	pyang $(PYANGFLAGS) -f tree --tree-line-length 68 $< > $@
 
 idnits: $(next).txt
 	$(idnits) $<
 
-.PHONY: validate validate_ex1
+.PHONY: validate
 validate:
-	pyang --ietf --max-line-length 69 ietf-yang-schema-mount.yang
-	pyang example-logical-devices.yang
-	pyang example-network-manager-fixed.yang
-	pyang example-network-manager-arbitrary.yang
-	$(MAKE) validate_ex1
-
-validate_ex1: .ex1.xml
-	yang2dsdl -x -j -v $< ietf-yang-schema-mount.yang; \
-
-.INTERMEDIATE: .ex1.xml
-.ex1.xml: ex1.xml
-	echo "<data xmlns='urn:ietf:params:xml:ns:netconf:base:1.0'>" > $@; \
-	cat $< >> $@; \
-	echo "</data>" >> $@
+	pyang $(PYANGFLAGS) --ietf --max-line-length 69 \
+		ietf-yang-schema-mount.yang
+	pyang $(PYANGFLAGS) example-logical-devices.yang
+	pyang $(PYANGFLAGS) example-network-manager-fixed.yang
+	pyang $(PYANGFLAGS) example-network-manager-arbitrary.yang
 
 clean:
 	-rm -f ietf-yang-schema-mount.tree
@@ -76,7 +69,12 @@ $(next).xml: ietf-yang-schema-mount.yang \
 	example-logical-devices.yang \
 	example-network-manager-fixed.yang \
 	example-network-manager-arbitrary.yang \
-	ex1.xml ex2.xml ex3.xml ex4.xml ex5.xml ex6.xml\
+	yang-library-ex1-device.json \
+	schema-mounts-ex1-device.json \
+	config-ex1-device.json \
+	yang-library-ex1-lne.json \
+	interfaces-ex1-lne.json \
+	schema-mounts-ex1-lne.json \
 	back.xml
 
 $(next).xml: $(draft).xml

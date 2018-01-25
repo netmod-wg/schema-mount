@@ -1,9 +1,19 @@
-"ietf-yang-schema-mount:schema-mounts": {
-  "mount-point": [
+"ietf-yang-library:yang-library": {
+  ...
+  "schema": [
     {
-      "module": "ietf-logical-network-element",
-      "label": "root",
-      "inline": [null]
+      "name": "physical-device-schema",
+      "module-set": [ "physical-device-modules" ],
+      "ietf-yang-schema-mount:schema-mounts": {
+        "mount-point": [
+          {
+            "module": "ietf-logical-network-element",
+            "label": "root",
+            "inline": [null]
+          }
+        ]
+      }
     }
   ]
 }
+

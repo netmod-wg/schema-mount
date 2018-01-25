@@ -1,4 +1,4 @@
-"ietf-interfaces:interfaces-state": {
+"ietf-interfaces:interfaces": {
   "interface": [
     {
       "name": "eth0",

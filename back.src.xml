@@ -8,19 +8,25 @@
 
   ietf-ref:RFC6991
 
-  ietf-ref:RFC7895
-
   ietf-ref:RFC7950
+
+  ietf-ref:RFC6241
+
+  ietf-ref:RFC6242
+
+  ietf-ref:RFC5246
+
+  ietf-ref:RFC8040
+
+  ietf-ref:I-D.ietf-netconf-rfc6536bis
+
+  ietf-ref:I-D.ietf-netconf-rfc7895bis
 
 </references>
 
 <references title="Informative References">
 
-  ietf-ref:RFC6241
-
-  ietf-ref:RFC7223
-
-  ietf-ref:RFC8040
+  ietf-ref:I-D.ietf-netmod-rfc7223bis
 
   ietf-ref:I-D.ietf-netmod-yang-tree-diagrams
 

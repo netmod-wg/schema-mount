@@ -23,12 +23,6 @@ module ietf-yang-schema-mount {
       "draft-ietf-netconf-rfc7895bis: YANG Module Library";
   }
 
-  import ietf-yang-metadata {
-    prefix md;
-    reference
-      "RFC 7952: Defining and Using Metadata with YANG";
-  }
-
   organization
     "IETF NETMOD (NETCONF Data Modeling Language) Working Group";
 
@@ -48,7 +42,7 @@ module ietf-yang-schema-mount {
      module. It also defines operational state data that specify the
      overall structure of the data model.
 
-     Copyright (c) 2017 IETF Trust and the persons identified as
+     Copyright (c) 2018 IETF Trust and the persons identified as
      authors of the code. All rights reserved.
 
      Redistribution and use in source and binary forms, with or
@@ -67,7 +61,7 @@ module ietf-yang-schema-mount {
      (https://tools.ietf.org/html/rfcXXXX); see the RFC itself for
      full legal notices.";
 
-  revision 2018-01-17 {
+  revision 2018-01-25 {
     description
       "Initial revision.";
     reference
@@ -107,28 +101,13 @@ module ietf-yang-schema-mount {
   }
 
   /*
-   * Metadata annotations
-   */
-
-  md:annotation schema-ref {
-    type leafref {
-      path "/yanglib:yang-library/yanglib:schema/yanglib:name";
-      require-instance true;
-    }
-    description
-      "This metadata annotation is used for specifying the mounted
-       schema for an inline mount point instance. Its value is the
-       name of a schema that MUST be defined in YANG library.
-
-       All instances of inline mount points in all datastores MUST
-       have this metadata annotation.";
-  }
-  
-  /*
    * State data nodes
    */
 
   augment "/yanglib:yang-library/yanglib:schema" {
+    description
+      "Adds schema mount information to a schema in the YANG
+       library.";
     container schema-mounts {
       config false;
       description
@@ -137,9 +116,9 @@ module ietf-yang-schema-mount {
       list namespace {
         key "prefix";
         description
-          "This list provides a mapping of namespace prefixes that are
-           used in XPath expressions of 'parent-reference' leafs to the
-           corresponding namespace URI references.";
+          "This list provides a mapping of namespace prefixes that
+           are used in XPath expressions of 'parent-reference' leafs
+           to the corresponding namespace URI references.";
         leaf prefix {
           type yang:yang-identifier;
           description
@@ -154,8 +133,8 @@ module ietf-yang-schema-mount {
       list mount-point {
         key "module label";
         description
-          "Each entry of this list specifies a schema for a particular
-           mount point.
+          "Each entry of this list specifies a schema for a
+           particular mount point.
 
            Each mount point MUST be defined using the 'mount-point'
            extension in one of the modules listed in the YANG library
@@ -175,9 +154,9 @@ module ietf-yang-schema-mount {
           type boolean;
           default "true";
           description
-            "If this leaf is set to 'false', then all data nodes in the
-             mounted schema are read-only (config false), regardless of
-             their 'config' property.";
+            "If this leaf is set to 'false', then all data nodes in
+             the mounted schema are read-only (config false),
+             regardless of their 'config' property.";
         }
         choice schema-ref {
           mandatory true;
@@ -187,19 +166,20 @@ module ietf-yang-schema-mount {
             type empty;
             description
               "This leaf indicates an inline mount point: the mounted
-               schema will be supplied dynamically at run time via the
-               'yangmnt:schema-ref' metadata annotation that MUST be
-	       attached to all instances of the mount point in all
+               schema will be supplied dynamically at run time via
+               the 'yangmnt:schema-ref' metadata annotation that MUST
+               be attached to all instances of the mount point in all
                datastores.";
           }
           container use-schema {
             description
-              "Each entry of this list contains a reference to a schema
-               defined in the YANG library and an optional
+              "Each entry of this list contains a reference to a
+               schema defined in the YANG library and an optional
                parent-reference specification.";
             leaf name {
               type leafref {
-                path "/yanglib:yang-library/yanglib:schema/yanglib:name";
+                path "/yanglib:yang-library/yanglib:schema"
+                   + "/yanglib:name";
               }
               description
                 "Name of the referenced schema.";
@@ -210,15 +190,15 @@ module ietf-yang-schema-mount {
                 "Entries of this leaf-list are XPath 1.0 expressions
                  that are evaluated in the following context:
 
-                 - The context node is the node in the parent data tree
-                   where the mount-point is defined.
+                 - The context node is the node in the parent data
+                   tree where the mount-point is defined.
 
                  - The accessible tree is the parent data tree
                    *without* any nodes defined in modules that are
                    mounted inside the parent schema.
 
-                 - The context position and context size are both equal
-                   to 1.
+                 - The context position and context size are both
+                   equal to 1.
 
                  - The set of variable bindings is empty.
 
@@ -226,17 +206,17 @@ module ietf-yang-schema-mount {
                    defined in [XPath] and the functions defined in
                    Section 10 of [RFC7950].
 
-                 - The set of namespace declarations is defined by the
-                   'namespace' list under 'schema-mounts'.
+                 - The set of namespace declarations is defined by
+                   the 'namespace' list under 'schema-mounts'.
 
                  Each XPath expression MUST evaluate to a nodeset
-                 (possibly empty). For the purposes of evaluating XPath
-                 expressions whose context nodes are defined in the
-                 mounted schema, the union of all these nodesets
+                 (possibly empty). For the purposes of evaluating
+                 XPath expressions whose context nodes are defined in
+                 the mounted schema, the union of all these nodesets
                  together with ancestor nodes are added to the
                  accessible data tree.";
             }
-	  }
+          }
         }
       }
     }

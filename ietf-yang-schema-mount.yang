@@ -165,11 +165,11 @@ module ietf-yang-schema-mount {
           leaf inline {
             type empty;
             description
-              "This leaf indicates an inline mount point: the mounted
-               schema will be supplied dynamically at run time via
-               the 'yangmnt:schema-ref' metadata annotation that MUST
-               be attached to all instances of the mount point in all
-               datastores.";
+              "This leaf indicates that the server has mounted
+               'ietf-yang-library' at the mount point, and their
+               instantiation (i.e., state data container
+               'yanglib:yang-library' provides the information about
+               the mounted schema.";
           }
           container use-schema {
             description

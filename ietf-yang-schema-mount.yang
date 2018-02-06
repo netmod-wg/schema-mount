@@ -168,8 +168,8 @@ module ietf-yang-schema-mount {
               "This leaf indicates that the server has mounted
                'ietf-yang-library' at the mount point, and their
                instantiation (i.e., state data container
-               'yanglib:yang-library' provides the information about
-               the mounted schema.";
+               'yanglib:yang-library' in the operational state
+               provides the information about the mounted schema.";
           }
           container use-schema {
             description
@@ -181,6 +181,7 @@ module ietf-yang-schema-mount {
                 path "/yanglib:yang-library/yanglib:schema"
                    + "/yanglib:name";
               }
+              mandatory true;
               description
                 "Name of the referenced schema.";
             }

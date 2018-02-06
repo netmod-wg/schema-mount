@@ -1,7 +1,7 @@
 # -*- org -*-
 
-This document defines a mechanism to combine YANG modules into
-the schema defined in other YANG modules.
+This document defines a mechanism to extend a YANG schema tree with
+other schema trees.
 
 * Introduction @intro@
 
@@ -103,15 +103,15 @@ phases of the data model life cycle:
   be the same for every implementation of the parent module.
 
 + Implementation-time: the mounted schema is defined by a server
-  implementor and is as stable as YANG library information, i.e.,
-  it may change after an upgrade of server software but not after
-  rebooting the server. Also, a client can learn the entire schema
-  together with YANG library data.
+  implementor and is as stable as YANG library information of the
+  server.  A client can learn the entire schema by reading the
+  server's YANG library data.
 
 + Run-time: the mounted schema is defined by instance data that is
-  part of the mounted data model. If there are multiple instances of
-  the same mount point (e.g., in multiple entries of a list), the
-  mounted data model may be different for each instance.
+  associated with the mount point and reported outside the server's
+  YANG library information. If there are multiple instances of the
+  same mount point (e.g., in multiple entries of a list), the mounted
+  data model may be different for each instance.
 
 The schema mount mechanism defined in this document provides support
 only for the latter two cases. Design-time mounts are outside
@@ -136,11 +136,12 @@ The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "OPTIONAL" in this document are to be interpreted as described in BCP
 14, ^RFC2119^.
 
-The following terms are defined in ^RFC6241^ and are not redefined
-here:
+The following terms are defined in
+^I-D.ietf-netmod-revised-datastores^ and are not redefined here:
 
 - client
 - notification
+- operational state
 - server
 
 The following terms are defined in ^RFC7950^ and are not redefined
@@ -170,6 +171,8 @@ Tree diagrams used in this document follow the notation defined in
   contains the mount point for the mounted schema.
 - top-level schema: a schema according to ^RFC7950^ in which schema
   trees of each module (except augments) start at the root node.
+- use-schema: a mounted schema whose definition is provided as part of
+  the YANG library data.
 
 ** Namespace Prefixes
 
@@ -224,8 +227,7 @@ Note that the "mount-point" statement does not define a new data node.
 Mounted schemas for all mount points in the parent schema are
 determined from state data in the "yangmnt:schema-mounts"
 container. Data in this container is intended to be as stable as data
-in the top-level YANG library ^I-D.ietf-netconf-rfc7895bis^. In
-particular, it SHOULD NOT change during the same management session.
+in the top-level YANG library ^I-D.ietf-netconf-rfc7895bis^.
 
 Generally, the modules that are mounted under a mount point have no
 relation to
@@ -266,37 +268,27 @@ two different ways:
 + by stating that the schema is available inline, i.e., in run-time
   instance data; or
 
-+ by referring to one or more entries of the "schema" list in the
-  same instance of "schema-mounts".
++ by referring to an entry in the "yanglib:schema" list.
 
 In case 1, the mounted schema is determined at run time: every
-instance of the mount point that exists in the parent tree MUST
-contain a copy of YANG library data ^I-D.ietf-netconf-rfc7895bis^ that
-defines the mounted schema exactly as for a top-level data model. A
-client is expected to retrieve this data from the instance tree,
-possibly after creating the mount point. Instances of the same mount
-point MAY use different mounted schemas.
+instance of the mount point in the operational state that exists in
+the parent tree MUST contain a copy of YANG library data
+^I-D.ietf-netconf-rfc7895bis^ that defines the mounted schema exactly
+as for a top-level data model. A client is expected to retrieve this
+data from the operational state, possibly after creating the mount
+point. Instances of the same mount point MAY use different mounted
+schemas.
 
-In case 2, the mounted schema is defined by the combination of all
-"schema" entries referred to in the "use-schema" list. In this case,
+In case 2, the mounted schema is defined by the
+"yanglib:schema" entry referred to in the "use-schema" leaf. In this case,
 the mounted schema is specified as implementation-time data that can
 be retrieved together with YANG library data for the parent schema,
 i.e., even before any instances of the mount point exist. However, the
 mounted schema has to be the same for all instances of the mount
 point. Note, that in this case a mount point may include a mounted YANG
 library module and the data contained in the mounted module MUST exactly
-match the data contained in the "schema" entries associated with the
+match the data contained in the "yanglib:schema" entry associated with the
 mount point.
-
-Each entry of the "schema" list contains:
-
-- a list in the YANG library format specifying all YANG modules
-  (and revisions etc.) that are implemented or imported
-  in the mounted schema. Note that this includes modules that
-  solely augment other listed modules;
-
-- (optionally) a new "mount-point" list that applies to mount points
-  defined within the mounted schema.
 
 ** Multiple Levels of Schema Mount
 
@@ -310,7 +302,7 @@ specified in one of the following ways:
   in the mounted schema, and specifying the subschemas exactly as it
   is done in the top-level schema
 
-- by using the "mount-point" list inside the corresponding "schema"
+- by using the "mount-point" list inside the corresponding "yanglib:schema"
   entry.
 
 The former method is applicable to both "inline" and "use-schema"
@@ -377,7 +369,7 @@ It is worth emphasizing that
 * RPC operations and Notifications @rpcnot@
 
 If a mounted YANG module defines an RPC operation, clients can invoke
-this operation by representing it as an action defined for the
+this operation as if it was defined as an action for the
 corresponding mount point, see Section 7.15 of ^RFC7950.  An example
 of this is given in ^invoke-rpc^.
 

@@ -11,11 +11,11 @@ can be combined with various sets of other modules and thus form a
 data model that is tailored to meet the requirements of a specific use
 case. Server implementors are only required to specify all YANG
 modules comprising the data model (together with their revisions and
-other optional choices) in the YANG library data (^RFC7895^, and Section 5.6.4
-of ^RFC7950^) implemented by the server.  Such YANG modules appear
-in the data model "side by side", i.e., top-level data nodes of each
-module - if there are any - are also top-level nodes of the overall
-data model.
+other optional choices) in the YANG library data (^RFC7895^,
+^I-D.ietf-netconf-rfc7895bis^ and Section 5.6.4 of ^RFC7950^)
+implemented by the server.  Such YANG modules appear in the data model
+"side by side", i.e., top-level data nodes of each module - if there
+are any - are also top-level nodes of the overall data model.
 
 Furthermore, YANG has two mechanisms for contributing a schema
 hierarchy defined elsewhere to the contents of an internal node of the
@@ -37,7 +37,7 @@ placed.
 In some cases these mechanisms are not sufficient; it is often
 necessary that an existing module (or a set of modules) is added to
 the data model starting at a non-root location. For example, YANG
-modules such as "ietf-interfaces" ^RFC7223^ are often defined so as to
+modules such as "ietf-interfaces" ^RFC8343^ are often defined so as to
 be used in a data model of a physical device.  Now suppose we want to
 model a device that supports multiple logical devices
 ^I-D.ietf-rtgwg-lne-model^, each of which has its own instantiation
@@ -102,10 +102,8 @@ phases of the data model life cycle:
   be the same for every implementation of the parent module.
 
 + Implementation-time: the mounted schema is defined by a server
-  implementor and is as stable as YANG library information, i.e.,
-  it may change after an upgrade of server software but not after
-  rebooting the server. Also, a client can learn the entire schema
-  together with YANG library data.
+  implementor and is as stable as YANG library information of the
+  server.
 
 + Run-time: the mounted schema is defined by instance data that is
   part of the mounted data model. If there are multiple instances of
@@ -135,33 +133,32 @@ The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "OPTIONAL" in this document are to be interpreted as described in BCP
 14, ^RFC2119^.
 
-The following terms are defined in ^RFC6241^ and are not redefined
-here:
-
-- client
-- notification
-- server
-
 The following terms are defined in ^RFC7950^ and are not redefined
 here:
 
 - action
 - container
 - list
-- operation
+- RPC operation
 
-The following terms are defined in ^RFC7223^ and are not redefined
+The following terms are defined in ^RFC8342^ and are not redefined
+here:
+
+- client
+- notification
+- operational state
+- server
+
+The following terms are defined in ^RFC8343^ and are not redefined
 here:
 
 - system-controlled interface
 
 Tree diagrams used in this document follow the notation defined in
-^I-D.ietf-netmod-yang-tree-diagrams^.
+^RFC8340^
 
 ** Glossary of New Terms
 
-- inline schema: a mounted schema whose definition is provided as part
-  of the mounted data, using YANG library ^RFC7895^.
 - mount point: container or list node whose definition contains
   the "mount-point" extension statement. The argument of the
   "mount-point" statement defines a label for the mount point.
@@ -185,7 +182,7 @@ associated with the corresponding YANG module, as shown in
 | yangmnt | ietf-yang-schema-mount | ^yangmod^ |
 | inet    | ietf-inet-types        | ^RFC6991^ |
 | yang    | ietf-yang-types        | ^RFC6991^ |
-| yanglib | ietf-yang-library      | ^RFC7895^ |
+| yanglib | ietf-yang-library      | ^RFC7895^, ^I-D.ietf-netconf-rfc7895bis^ |
 
 * Schema Mount
 
@@ -223,8 +220,7 @@ Note that the "mount-point" statement does not define a new data node.
 Mounted schemas for all mount points in the parent schema are
 determined from state data in the "yangmnt:schema-mounts"
 container. Data in this container is intended to be as stable as data
-in the top-level YANG library ^RFC7895^. In particular, it SHOULD NOT
-change during the same management session.
+in the top-level YANG library.
 
 Generally, the modules that are mounted under a mount point have no
 relation to
@@ -260,42 +256,16 @@ one of the following conditions is satisfied for a mount point:
   list is set to "false".
 
 An entry of the "mount-point" list can specify the mounted schema in
-two different ways:
+two different ways, "inline" or "shared-schema".
 
-+ by stating that the schema is available inline, i.e., in run-time
-  instance data; or
-
-+ by referring to one or more entries of the "schema" list in the
-  same instance of "schema-mounts".
-
-In case 1, the mounted schema is determined at run time: every
-instance of the mount point that exists in the parent tree MUST
-contain a copy of YANG library data ^RFC7895^ that defines the mounted
+The mounted schema is determined at run time: every
+instance of the mount point that exists in the operational state MUST
+contain a copy of YANG library data that defines the mounted
 schema exactly as for a top-level data model. A client is expected to
 retrieve this data from the instance tree, possibly after creating the
-mount point. Instances of the same mount point MAY use different
-mounted schemas.
-
-In case 2, the mounted schema is defined by the combination of all
-"schema" entries referred to in the "use-schema" list. In this case,
-the mounted schema is specified as implementation-time data that can
-be retrieved together with YANG library data for the parent schema,
-i.e., even before any instances of the mount point exist. However, the
-mounted schema has to be the same for all instances of the mount
-point. Note, that in this case a mount point may include a mounted YANG
-library module and the data contained in the mounted module MUST exactly
-match the data contained in the "schema" entries associated with the
-mount point.
-
-Each entry of the "schema" list contains:
-
-- a list in the YANG library format specifying all YANG modules
-  (and revisions etc.) that are implemented or imported
-  in the mounted schema. Note that this includes modules that
-  solely augment other listed modules;
-
-- (optionally) a new "mount-point" list that applies to mount points
-  defined within the mounted schema.
+mount point.  In the "inline" case, instances of the same mount point
+MAY use different mounted schemas, whereas in the "shared-schema"
+case, all instances MUST use the same mounted schema.
 
 ** Multiple Levels of Schema Mount
 
@@ -303,20 +273,9 @@ YANG modules in a mounted schema MAY again contain mount points under
 which subschemas can be mounted. Consequently, it is possible to
 construct data models with an arbitrary number of schema levels. A
 subschema for a mount point contained in a mounted module can be
-specified in one of the following ways:
-
-- by implementing "ietf-yang-library" and "ietf-yang-schema-mount" modules
-  in the mounted schema, and specifying the subschemas exactly as it
-  is done in the top-level schema
-
-- by using the "mount-point" list inside the corresponding "schema"
-  entry.
-
-The former method is applicable to both "inline" and "use-schema"
-cases whereas the latter requires the "use-schema" case. On the other
-hand, the latter method allows for a compact representation of a
-multi-level schema the does not rely on the presence of any instance
-data.
+specified by implementing "ietf-yang-library" and
+"ietf-yang-schema-mount" modules in the mounted schema, and specifying
+the subschemas exactly as it is done in the top-level schema.
 
 * Referring to Data Nodes in the Parent Schema @parref@
 
@@ -353,31 +312,26 @@ such a reference can point to a node in the parent schema (interface
 name).
 
 Therefore, schema mount also allows for such references. For every
-schema mounted using the "use-schema" method, it is possible to
-specify a leaf-list named "parent-reference" that contains zero or
-more XPath 1.0 expressions. Each expression is evaluated with the node
-in the parent data tree where the mount point is defined as the
-context node. The result of this evaluation MUST be a nodeset (see the
+mount point in the "shared-schema" case, it is possible to specify a
+leaf-list named "parent-reference" that contains zero or more XPath
+1.0 expressions. Each expression is evaluated with the node in the
+parent data tree where the mount point is defined as the context
+node. The result of this evaluation MUST be a nodeset (see the
 description of the "parent-reference" node for a complete definition
 of the evaluation context). For the purposes of evaluating XPath
 expressions within the mounted data tree, the union of all such
 nodesets is added to the accessible data tree.
 
-It is worth emphasizing that
-
-- The nodes specified in "parent-reference" leaf-list are available in
-  the mounted schema only for XPath evaluations. In particular, they
-  cannot be accessed there via network management protocols such as
-  NETCONF ^RFC6241^ or RESTCONF ^RFC8040^.
-
-- The mechanism of referencing nodes in the parent schema is not
-  available for schemas mounted using the "inline" method.
+It is worth emphasizing that the nodes specified in "parent-reference"
+leaf-list are available in the mounted schema only for XPath
+evaluations. In particular, they cannot be accessed there via network
+management protocols such as NETCONF ^RFC6241^ or RESTCONF ^RFC8040^.
 
 * RPC operations and Notifications @rpcnot@
 
 If a mounted YANG module defines an RPC operation, clients can invoke
-this operation by representing it as an action defined for the
-corresponding mount point, see Section 7.15 of ^RFC7950.  An example
+this operation as if it were defined as an action for the
+corresponding mount point, see Section 7.15 of ^RFC7950^.  An example
 of this is given in ^invoke-rpc^.
 
 Similarly, if the server emits a notification defined at the top level
@@ -392,6 +346,21 @@ contain modules with RPCs, actions, and notifications SHOULD NOT have any
 ancestor node that is a list node without a "key" statement.  This
 requirement applies to the definition of modules using the "mount-point"
 extension statement.
+
+* Network Management Datastore Architecture (NMDA) Considerations
+
+The schema mount solution presented in this document is designed to
+work both with servers that implement the NMDA ^RFC8342^, and old
+servers that don't implement the NMDA.
+
+Note to RFC Editor: please update the date YYYY-MM-DD below with the
+revision of the ietf-yang-library in the published version of
+draft-ietf-netconf-rfc7895bis, and remove this note.
+
+Specifically, a server that don't support the NMDA, MAY implement
+revision 2016-06-21 of "ietf-yang-library" ^RFC7950^ under a mount
+point.   A server that supports the NMDA, MUST implement at least
+revision YYYY-MM-DD of "ietf-yang-library" ^I-D.ietf-netconf-rfc7895bis^.
 
 * Implementation Notes
 
@@ -416,7 +385,7 @@ This document defines the YANG 1.1 module ^RFC7950^
 
 * Schema Mount YANG Module @yangmod@
 
-This module references ^RFC6991^ and ^RFC7895^.
+This module references ^RFC6991^.
 
 !! include-figure ietf-yang-schema-mount.yang extract-to="ietf-yang-schema-mount@2017-10-09.yang"
 
@@ -451,7 +420,7 @@ the mandatory-to-implement secure transport is Secure Shell (SSH)
 mandatory-to-implement secure transport is TLS ^RFC5246^.
 
 The network configuration access control model
-^I-D.draft-ietf-netconf-rfc6536bis^ provides the means to restrict
+^RFC8341^ provides the means to restrict
 access for particular NETCONF or RESTCONF users to a preconfigured
 subset of all available NETCONF or RESTCONF protocol operations and
 content.
@@ -496,6 +465,9 @@ device model as specified in Section 2 of
 ^I-D.ietf-rtgwg-device-model^, using both logical network elements
 (LNE) and network instances (NI).
 
+In these examples, the character "\" is used where a line break has
+been inserted for formatting reasons.
+
 ** Physical Device
 
 The data model for the physical device may be described by this YANG
@@ -532,7 +504,7 @@ instance, which should include at least
 ** Network Instances @exni@
 
 Assuming that network instances share the same data model, it can be
-mounted using the "use-schema" method as follows:
+mounted using the "shared-schema" method as follows:
 
 !! include-figure schema-mounts-ex1-lne.json
 

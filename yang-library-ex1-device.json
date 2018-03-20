@@ -1,62 +1,85 @@
-"ietf-yang-library:modules-state": {
-  "module-set-id": "14e2ab5dc325f6d86f743e8d3ade233f1a61a899",
-  "module": [
-    {
-      "name": "iana-if-type",
-      "revision": "2014-05-08",
-      "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type",
-      "conformance-type": "implement"
-    },
-    {
-      "name": "ietf-inet-types",
-      "revision": "2013-07-15",
-      "namespace": "urn:ietf:params:xml:ns:yang:ietf-inet-types",
-      "conformance-type": "import"
-    },
-    {
-      "name": "ietf-interfaces",
-      "revision": "2014-05-08",
-      "feature": [
-        "arbitrary-names",
-        "pre-provisioning"
-      ],
-      "namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces",
-      "conformance-type": "implement"
-    },
-    {
-      "name": "ietf-ip",
-      "revision": "2014-06-16",
-      "namespace": "urn:ietf:params:xml:ns:yang:ietf-ip",
-      "conformance-type": "implement"
-    },
-    {
-      "name": "ietf-logical-network-element",
-      "revision": "2016-10-21",
-      "feature": [
-        "bind-lne-name"
-      ],
-      "namespace":
-        "urn:ietf:params:xml:ns:yang:ietf-logical-network-element",
-      "conformance-type": "implement"
-    },
-    {
-      "name": "ietf-yang-library",
-      "revision": "2016-06-21",
-      "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-library",
-      "conformance-type": "implement"
-    },
-    {
-      "name": "ietf-yang-schema-mount",
-      "revision": "2017-05-16",
-      "namespace":
-        "urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount",
-      "conformance-type": "implement"
-    },
-    {
-      "name": "ietf-yang-types",
-      "revision": "2013-07-15",
-      "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types",
-      "conformance-type": "import"
-    }
-  ]
+{
+   "ietf-yang-library:yang-library": {
+     "checksum": "14e2ab5dc325f6d86f743e8d3ade233f1a61a899",
+     "module-set": [
+       {
+         "name": "physical-device-modules",
+         "module": [
+           {
+             "name": "iana-if-type",
+             "revision": "2015-06-12",
+             "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type"
+           },
+           {
+             "name": "ietf-interfaces",
+             "revision": "2018-02-20",
+             "feature": ["arbitrary-names", "pre-provisioning" ],
+             "namespace":
+               "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+           },
+           {
+             "name": "ietf-ip",
+             "revision": "2018-02-22",
+             "namespace": "urn:ietf:params:xml:ns:yang:ietf-ip"
+           },
+           {
+             "name": "ietf-logical-network-element",
+             "revision": "2016-10-21",
+             "feature": [ "bind-lne-name" ],
+             "namespace":
+               "urn:ietf:params:xml:ns:yang:\
+               ietf-logical-network-element"
+           },
+           {
+             "name": "ietf-yang-library",
+             "revision": "2018-02-21",
+             "namespace":
+               "urn:ietf:params:xml:ns:yang:ietf-yang-library"
+           },
+           {
+             "name": "ietf-yang-schema-mount",
+             "revision": "2018-03-20",
+             "namespace":
+               "urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount"
+           }
+         ],
+         "import-only-module": [
+           {
+             "name": "ietf-inet-types",
+             "revision": "2013-07-15",
+             "namespace":
+               "urn:ietf:params:xml:ns:yang:ietf-inet-types"
+           },
+           {
+             "name": "ietf-yang-types",
+             "revision": "2013-07-15",
+             "namespace":
+               "urn:ietf:params:xml:ns:yang:ietf-yang-types"
+           },
+           {
+             "name": "ietf-datastores",
+             "revision": "2018-02-14",
+             "namespace":
+               "urn:ietf:params:xml:ns:yang:ietf-datastores"
+           }
+         ]
+       }
+     ],
+     "schema": [
+       {
+         "name": "physical-device-schema",
+         "module-set": [ "physical-device-modules" ]
+       }
+     ],
+     "datastore": [
+       {
+         "name": "ietf-datastores:running",
+         "schema": "physical-device-schema"
+       },
+       {
+         "name": "ietf-datastores:operational",
+         "schema": "physical-device-schema"
+       }
+     ]
+   }
 }

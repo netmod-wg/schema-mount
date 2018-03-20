@@ -15,12 +15,6 @@ module ietf-yang-schema-mount {
       "RFC 6991: Common YANG Data Types";
   }
 
-  import ietf-yang-library {
-    prefix yanglib;
-    reference
-      "RFC 7895: YANG Module Library";
-  }
-
   organization
     "IETF NETMOD (NETCONF Data Modeling Language) Working Group";
 
@@ -40,7 +34,7 @@ module ietf-yang-schema-mount {
      module. It also defines operational state data that specify the
      overall structure of the data model.
 
-     Copyright (c) 2017 IETF Trust and the persons identified as
+     Copyright (c) 2018 IETF Trust and the persons identified as
      authors of the code. All rights reserved.
 
      Redistribution and use in source and binary forms, with or
@@ -59,7 +53,7 @@ module ietf-yang-schema-mount {
      (https://tools.ietf.org/html/rfcXXXX); see the RFC itself for
      full legal notices.";
 
-  revision 2017-10-09 {
+  revision 2018-03-20 {
     description
       "Initial revision.";
     reference
@@ -99,13 +93,31 @@ module ietf-yang-schema-mount {
   }
 
   /*
-   * Groupings
+   * State data nodes
    */
 
-  grouping mount-point-list {
+  container schema-mounts {
+    config false;
     description
-      "This grouping is used inside the 'schema-mounts' container and
-       inside the 'schema' list.";
+      "Contains information about the structure of the overall
+       mounted data model implemented in the server.";
+    list namespace {
+      key "prefix";
+      description
+        "This list provides a mapping of namespace prefixes that are
+         used in XPath expressions of 'parent-reference' leafs to the
+         corresponding namespace URI references.";
+      leaf prefix {
+        type yang:yang-identifier;
+        description
+          "Namespace prefix.";
+      }
+      leaf uri {
+        type inet:uri;
+        description
+          "Namespace URI reference.";
+      }
+    }
     list mount-point {
       key "module label";
       description
@@ -113,16 +125,8 @@ module ietf-yang-schema-mount {
          mount point.
 
          Each mount point MUST be defined using the 'mount-point'
-         extension in one of the modules listed in the corresponding
-         YANG library instance with conformance type 'implement'. The
-         corresponding YANG library instance is:
-
-         - standard YANG library state data as defined in RFC 7895,
-           if the 'mount-point' list is a child of 'schema-mounts',
-
-         - the contents of the sibling 'yanglib:modules-state'
-           container, if the 'mount-point' list is a child of
-           'schema'.";
+         extension in one of the modules listed in the server's
+         YANG library instance with conformance type 'implement'.";
       leaf module {
         type yang:yang-identifier;
         description
@@ -146,28 +150,33 @@ module ietf-yang-schema-mount {
         mandatory true;
         description
           "Alternatives for specifying the schema.";
-        leaf inline {
-          type empty;
+        container inline {
+          presence
+            "A complete self-contained schema is mounted at the
+             mount point.";
           description
-            "This leaf indicates that the server has mounted
-             'ietf-yang-library' and 'ietf-schema-mount' at the mount
-             point, and their instantiation (i.e., state data
-             containers 'yanglib:modules-state' and 'schema-mounts')
-             provides the information about the mounted schema.";
+            "This node indicates that the server has mounted
+             'ietf-yang-library' at the mount point, and its
+             instantiation provides the information about the mounted
+             schema.
+
+             Different instances of the mount point may have
+             different schemas mounted.";
         }
-        list use-schema {
-          key "name";
-          min-elements 1;
+        container shared-schema {
+          presence
+            "The mounted schema together with the 'parent-reference'
+             make up the schema for this mount point.";
           description
-            "Each entry of this list contains a reference to a schema
-             defined in the /schema-mounts/schema list.";
-          leaf name {
-            type leafref {
-              path "/schema-mounts/schema/name";
-            }
-            description
-              "Name of the referenced schema.";
-          }
+            "This node indicates that the server has mounted
+             'ietf-yang-library' at the mount point, and its
+             instantiation provides the information about the mounted
+             schema.  When XPath expressions in the mounted schema
+             are evaluated, the 'parent-reference' leaf-list is taken
+             into account.
+
+             Different instances of the mount point MUST have the
+             same schema mounted.";
           leaf-list parent-reference {
             type yang:xpath1.0;
             description
@@ -202,55 +211,6 @@ module ietf-yang-schema-mount {
           }
         }
       }
-    }
-  }
-
-  /*
-   * State data nodes
-   */
-
-  container schema-mounts {
-    config false;
-    description
-      "Contains information about the structure of the overall
-       mounted data model implemented in the server.";
-    list namespace {
-      key "prefix";
-      description
-        "This list provides a mapping of namespace prefixes that are
-         used in XPath expressions of 'parent-reference' leafs to the
-         corresponding namespace URI references.";
-      leaf prefix {
-        type yang:yang-identifier;
-        description
-          "Namespace prefix.";
-      }
-      leaf uri {
-        type inet:uri;
-        description
-          "Namespace URI reference.";
-      }
-    }
-    uses mount-point-list;
-    list schema {
-      key "name";
-      description
-        "Each entry specifies a schema that can be mounted at a mount
-         point.  The schema information consists of two parts:
-
-         - an instance of YANG library that defines YANG modules used
-           in the schema,
-
-         - mount-point list with content identical to the top-level
-           mount-point list (this makes the schema structure
-           recursive).";
-      leaf name {
-        type string;
-        description
-          "Arbitrary name of the schema entry.";
-      }
-      uses yanglib:module-list;
-      uses mount-point-list;
     }
   }
 }

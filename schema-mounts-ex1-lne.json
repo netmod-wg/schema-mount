@@ -1,58 +1,26 @@
-"ietf-yang-schema-mount:schema-mounts": {
-  "namespace": [
-    {
-        "prefix": "if",
-        "uri": "urn:ietf:params:xml:ns:yang:ietf-interfaces"
-    },
-    {
-        "prefix": "ni",
-        "uri": "urn:ietf:params:xml:ns:yang:ietf-network-instance"
-    }
-  ],
-  "mount-point": [
-    {
-      "module": "ietf-network-instance",
-      "label": "root",
-      "use-schema": [
-        {
-          "name": "ni-schema",
-          "parent-reference": [
-            "/if:interfaces/if:interface[
-               ni:bind-network-instance-name = current()/../ni:name]"
-          ]
-        }
-      ]
-    }
-  ],
-  "schema": [
-    {
-      "name": "ni-schema",
-      "module": [
-        {
-          "name": "ietf-ipv4-unicast-routing",
-          "revision": "2016-11-04",
-          "namespace":
-           "urn:ietf:params:xml:ns:yang:ietf-ipv4-unicast-routing",
-          "conformance-type": "implement"
-        },
-        {
-          "name": "ietf-ipv6-unicast-routing",
-          "revision": "2016-11-04",
-          "namespace":
-           "urn:ietf:params:xml:ns:yang:ietf-ipv6-unicast-routing",
-          "conformance-type": "implement"
-        },
-        {
-          "name": "ietf-routing",
-          "revision": "2016-11-04",
-          "feature": [
-            "multiple-ribs",
-            "router-id"
-          ],
-          "namespace": "urn:ietf:params:xml:ns:yang:ietf-routing",
-          "conformance-type": "implement"
-        }
-      ]
-    }
-  ]
+{
+  "ietf-yang-schema-mount:schema-mounts": {
+    "namespace": [
+      {
+          "prefix": "if",
+          "uri": "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+      },
+      {
+          "prefix": "ni",
+          "uri": "urn:ietf:params:xml:ns:yang:ietf-network-instance"
+      }
+    ],
+    "mount-point": [
+      {
+        "module": "ietf-network-instance",
+        "label": "root",
+          "shared-schema": {
+            "parent-reference": [
+              "/if:interfaces/if:interface[\
+              ni:bind-network-instance-name = current()/../ni:name]"
+            ]
+          }
+      }
+    ]
+  }
 }

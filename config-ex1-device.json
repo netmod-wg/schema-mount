@@ -2,23 +2,23 @@
   "ietf-interfaces:interfaces": {
     "interface": [
       {
-	"name": "eth0",
-	"type": "iana-if-type:ethernetCsmacd",
-	"enabled": true,
-	"ietf-logical-network-element:bind-lne-name": "eth0"
+        "name": "eth0",
+        "type": "iana-if-type:ethernetCsmacd",
+        "enabled": true,
+        "ietf-logical-network-element:bind-lne-name": "eth0"
       }
     ]
   },
   "ietf-logical-network-element:logical-network-elements": {
     "logical-network-element": [
       {
-	"name": "lne-1",
-	"managed": true,
-	"description": "LNE with NIs",
-	"root": {
-	  ...
-	}
-      },
+        "name": "lne-1",
+        "managed": true,
+        "description": "LNE with NIs",
+        "root": {
+          ...
+        }
+      }
       ...
     ]
   }

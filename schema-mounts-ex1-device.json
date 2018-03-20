@@ -1,9 +1,11 @@
-"ietf-yang-schema-mount:schema-mounts": {
-  "mount-point": [
-    {
-      "module": "ietf-logical-network-element",
-      "label": "root",
-      "inline": [null]
-    }
-  ]
+{
+  "ietf-yang-schema-mount:schema-mounts": {
+    "mount-point": [
+      {
+        "module": "ietf-logical-network-element",
+        "label": "root",
+        "inline": {}
+      }
+    ]
+  }
 }

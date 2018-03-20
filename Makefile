@@ -26,6 +26,10 @@ next_ver ?= $(shell printf "%.2d" $$((1$(current_ver)-99)))
 endif
 next := $(draft)-$(next_ver)
 
+examples = $(wildcard ex*.yang) \
+	   $(wildcard *ex*.json) \
+	   $(wildcard *ex*.xml)
+
 .PHONY: latest all clean
 
 all: $(next).txt
@@ -48,6 +52,10 @@ validate:
 	pyang example-network-manager-fixed.yang
 	pyang example-network-manager-arbitrary.yang
 	$(MAKE) validate_ex1
+	$(MAKE) validate_yang_lib_ex1_device
+	$(MAKE) validate_yang_lib_ex1_lne
+	$(MAKE) validate_sm_ex1_lne
+	$(MAKE) validate_sm_ex1_device
 
 validate_ex1: .ex1.xml
 	yang2dsdl -x -j -v $< ietf-yang-schema-mount.yang; \
@@ -58,12 +66,57 @@ validate_ex1: .ex1.xml
 	cat $< >> $@; \
 	echo "</data>" >> $@
 
-clean:
+OLD_YANG_LIBRARY=${PYANG_XSLT_DIR}/../modules/ietf/ietf-yang-library.yang
+NEW_YANG_LIBRARY=../../netconf-wg/rfc7895bis/ietf-yang-library.yang
+
+.INTERMEDIATE: old-ietf-yang-library.jtox new-ietf-yang-library.jtox
+old-ietf-yang-library.jtox:
+	pyang -f jtox ${OLD_YANG_LIBRARY} > $@
+new-ietf-yang-library.jtox:
+	pyang --max-status current -f jtox ${NEW_YANG_LIBRARY} > $@
+
+.INTERMEDIATE: .yang-library-ex1-device.xml .yang-library-ex1-lne.xml
+.yang-library-ex1-device.xml: .yang-library-ex1-device.json \
+	  new-ietf-yang-library.jtox
+	json2xml new-ietf-yang-library.jtox $< > $@
+
+.yang-library-ex1-lne.xml: .yang-library-ex1-lne.json \
+	  old-ietf-yang-library.jtox
+	json2xml old-ietf-yang-library.jtox $< > $@
+
+validate_yang_lib_ex1_device: .yang-library-ex1-device.xml
+	yang2dsdl -c -x -j -v $< ${NEW_YANG_LIBRARY}
+
+validate_yang_lib_ex1_lne: .yang-library-ex1-lne.xml
+	yang2dsdl -x -j -v $< ${OLD_YANG_LIBRARY}
+
+.INTERMEDIATE: ietf-yang-schema-mount.jtox
+ietf-yang-schema-mount.jtox: ietf-yang-schema-mount.yang
+	pyang -f jtox $<  > $@
+
+.INTERMEDIATE: .schema-mounts-ex1-device.xml .schema-mounts-ex1-lne.xml
+.schema-mounts-ex1-%.xml: .schema-mounts-ex1-%.json \
+	  ietf-yang-schema-mount.jtox
+	json2xml ietf-yang-schema-mount.jtox $< > $@
+
+
+validate_sm_ex1_lne: .schema-mounts-ex1-lne.xml
+	yang2dsdl -x -j -v $< ietf-yang-schema-mount.yang
+
+validate_sm_ex1_device: .schema-mounts-ex1-device.xml
+	yang2dsdl -x -j -v $< ietf-yang-schema-mount.yang
+
+
+.INTERMEDIATE: .%.json .%.json
+.%.json: %.json
+	cat $< | awk -F\\ '/(.*)\\/ { printf "%s", $$1; next } { print $$0 }' >\
+	  $@
+
+clean: clean_ex
 	-rm -f ietf-yang-schema-mount.tree
 	-rm -f $(draft).txt $(draft).html index.html back.xml
 	-rm -f $(next).txt $(next).html
 	-rm -f $(draft)-[0-9][0-9].xml
-	-rm -f *.rng *.dsrl *.sch
 ifeq (.md,$(draft_type))
 	-rm -f $(draft).xml
 endif
@@ -71,13 +124,12 @@ ifeq (.org,$(draft_type))
 	-rm -f $(draft).xml
 endif
 
+clean_ex:
+	-rm -f *.rng *.dsrl *.sch
+
 $(next).xml: ietf-yang-schema-mount.yang \
 	ietf-yang-schema-mount.tree \
-	example-logical-devices.yang \
-	example-network-manager-fixed.yang \
-	example-network-manager-arbitrary.yang \
-	ex1.xml ex2.xml ex3.xml ex4.xml ex5.xml ex6.xml\
-	back.xml
+	back.xml $(examples)
 
 $(next).xml: $(draft).xml
 	sed -e"s/$(basename $<)-latest/$(basename $@)/" $< > $@

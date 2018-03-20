@@ -357,10 +357,11 @@ Note to RFC Editor: please update the date YYYY-MM-DD below with the
 revision of the ietf-yang-library in the published version of
 draft-ietf-netconf-rfc7895bis, and remove this note.
 
-Specifically, a server that don't support the NMDA, MAY implement
+Specifically, a server that doesn't support the NMDA, MAY implement
 revision 2016-06-21 of "ietf-yang-library" ^RFC7950^ under a mount
-point.   A server that supports the NMDA, MUST implement at least
-revision YYYY-MM-DD of "ietf-yang-library" ^I-D.ietf-netconf-rfc7895bis^.
+point.  A server that supports the NMDA, MUST implement at least
+revision YYYY-MM-DD of "ietf-yang-library"
+^I-D.ietf-netconf-rfc7895bis^ under the mount points.
 
 * Implementation Notes
 
@@ -471,7 +472,7 @@ been inserted for formatting reasons.
 ** Physical Device
 
 The data model for the physical device may be described by this YANG
-library content:
+library content, assuming the server supports the NMDA:
 
 !! include-figure yang-library-ex1-device.json
 
@@ -491,7 +492,8 @@ LNE instance, for example,
 and then also place necessary state data as the contents of the "root"
 instance, which should include at least
 
-- YANG library data specifying the LNE's data model, for example:
+- YANG library data specifying the LNE's data model, for example,
+  assuming the server does not implement the NMDA:
 
 !! include-figure yang-library-ex1-lne.json
 

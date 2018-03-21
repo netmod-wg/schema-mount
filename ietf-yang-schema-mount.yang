@@ -28,6 +28,8 @@ module ietf-yang-schema-mount {
      Editor:   Ladislav Lhotka
                <mailto:lhotka@nic.cz>";
 
+  // RFC Ed.: replace XXXX with actual RFC number and
+  // remove this note.
   description
     "This module defines a YANG extension statement that can be used
      to incorporate data models defined in other YANG modules in a
@@ -53,6 +55,8 @@ module ietf-yang-schema-mount {
      (https://tools.ietf.org/html/rfcXXXX); see the RFC itself for
      full legal notices.";
 
+  // RFC Ed.: update the date below with the date of RFC publication
+  // and remove this note.
   revision 2018-03-20 {
     description
       "Initial revision.";
@@ -207,7 +211,13 @@ module ietf-yang-schema-mount {
                expressions whose context nodes are defined in the
                mounted schema, the union of all these nodesets
                together with ancestor nodes are added to the
-               accessible data tree.";
+               accessible data tree.
+
+               Note that in the case 'ietf-yang-schema-mount' is
+               itself mounted, a 'parent-reference' in the mounted
+               module may refer to nodes that were brought into the
+               accessible tree through a 'parent-reference' in the
+               parent schema.";
           }
         }
       }

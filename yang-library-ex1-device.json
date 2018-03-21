@@ -6,6 +6,12 @@
          "name": "physical-device-modules",
          "module": [
            {
+             "name": "ietf-datastores",
+             "revision": "2018-02-14",
+             "namespace":
+               "urn:ietf:params:xml:ns:yang:ietf-datastores"
+           },
+           {
              "name": "iana-if-type",
              "revision": "2015-06-12",
              "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type"
@@ -55,12 +61,6 @@
              "revision": "2013-07-15",
              "namespace":
                "urn:ietf:params:xml:ns:yang:ietf-yang-types"
-           },
-           {
-             "name": "ietf-datastores",
-             "revision": "2018-02-14",
-             "namespace":
-               "urn:ietf:params:xml:ns:yang:ietf-datastores"
            }
          ]
        }

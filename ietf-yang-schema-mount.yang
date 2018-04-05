@@ -57,7 +57,7 @@ module ietf-yang-schema-mount {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2018-03-20 {
+  revision 2018-04-05 {
     description
       "Initial revision.";
     reference

@@ -1,7 +1,8 @@
 # -*- org -*-
 
-This document defines a mechanism to combine YANG modules into
-the schema defined in other YANG modules.
+This document defines a mechanism to add the schema trees defined by a
+set of YANG modules into the schema tree defined in another YANG
+module.
 
 * Introduction @intro@
 
@@ -17,7 +18,7 @@ implemented by the server.  Such YANG modules appear in the data model
 "side by side", i.e., top-level data nodes of each module - if there
 are any - are also top-level nodes of the overall data model.
 
-Furthermore, YANG has two mechanisms for contributing a schema
+YANG has two mechanisms for contributing a schema
 hierarchy defined elsewhere to the contents of an internal node of the
 schema tree; these mechanisms are realized through the following YANG
 statements:
@@ -36,30 +37,30 @@ placed.
 
 In some cases these mechanisms are not sufficient; it is sometimes
 necessary that an existing module (or a set of modules) is added to
-the data model starting at a non-root location. For example, YANG
-modules such as "ietf-interfaces" ^RFC8343^ are often defined so as to
-be used in a data model of a physical device.  Now suppose we want to
-model a device that supports multiple logical devices
-^I-D.ietf-rtgwg-lne-model^, each of which has its own instantiation
-of "ietf-interfaces", and possibly other modules, but, at the same
-time, we want to be able to manage all these logical devices from the
-master device.  Hence, we would like to have a schema like this:
+the data model starting at locations other than the root. For example,
+YANG modules such as "ietf-interfaces" ^RFC8343^ are defined so
+as to be used in a data model of a physical device.  Now suppose we
+want to model a device that supports multiple logical devices
+^I-D.ietf-rtgwg-lne-model^, each of which has its own instantiation of
+"ietf-interfaces", and possibly other modules, but, at the same time,
+we want to be able to manage all these logical devices from the master
+device.  Hence, we would like to have a schema tree like this:
 
   +--rw interfaces
   |  +--rw interface* [name]
   |     ...
-  +--rw logical-device* [name]
+  +--rw logical-network-element* [name]
      +--rw name
      |   ...
      +--rw interfaces
        +--rw interface* [name]
           ...
 
-With the "uses" approach, the complete schema tree of "ietf-interfaces"
-would have to be wrapped in a grouping, and then this grouping would
-have to be used at the top level (for the master device) and then also
-in the "logical-device" list (for the logical devices).  This approach
-has several disadvantages:
+With the "uses" approach, the complete schema tree of
+"ietf-interfaces" would have to be wrapped in a grouping, and then
+this grouping would have to be used at the top level (for the master
+device) and then also in the "logical-network-element" list (for the
+logical devices).  This approach has several disadvantages:
 
 - It is not scalable because every time there is a new YANG module
   that needs to be added to the logical device model, we have to
@@ -77,11 +78,11 @@ has several disadvantages:
   the "uses" statements are defined in a standard module.
 
 With the "augment" approach, "ietf-interfaces" would have to augment the
-"logical-device" list with all its nodes, and at the same time define
+"logical-network-element" list with all its nodes, and at the same time define
 all its nodes at the top level. The same hierarchy of nodes would thus
 have to be defined twice, which is clearly not scalable either.
 
-This document introduces a new generic mechanism, denoted as schema
+This document introduces a new mechanism, denoted as schema
 mount, that allows for mounting one data model consisting of any
 number of YANG modules at a specified location of another (parent)
 schema. Unlike the "uses" and "augment" approaches discussed above,
@@ -145,6 +146,8 @@ here:
 - data node
 - list
 - RPC operation
+- schema node
+- schema tree
 
 The following terms are defined in ^RFC8342^ and are not redefined
 here:
@@ -159,9 +162,6 @@ here:
 
 - system-controlled interface
 
-Tree diagrams used in this document follow the notation defined in
-^RFC8340^
-
 ** Glossary of New Terms
 
 - mount point: container or list node whose definition contains
@@ -169,8 +169,13 @@ Tree diagrams used in this document follow the notation defined in
   "mount-point" statement defines a label for the mount point.
 - parent schema (of a particular mounted schema): the schema that
   contains the mount point for the mounted schema.
-- top-level schema: a schema according to ^RFC7950^ in which schema
+- top-level schema: a set of modules in which the schema
   trees of each module (except augments) start at the root node.
+
+** Tree Diagrams
+
+Tree diagrams used in this document follow the notation defined in
+^RFC8340^
 
 ** Namespace Prefixes
 
@@ -215,10 +220,20 @@ conditional by placing "if-feature" and/or "when" as substatements of
 the "container" or "list" statement that represents the mount point.
 
 The "mount-point" statement MUST NOT be used in a YANG version 1
-module ^RFC6020^.  Note, however, that modules written in any YANG
-version, including version 1, can be mounted under a mount point.
+module ^RFC6020^.  The reason for this is that otherwise it is not
+possible to invoke mounted RPC operations, and receive mounted
+notifications.  See ^rpcnot^ for details.  Note, however, that modules
+written in any YANG version, including version 1, can be mounted under
+a mount point.
 
 Note that the "mount-point" statement does not define a new data node.
+
+** Data Model
+
+This document defines the YANG 1.1 module ^RFC7950^
+"ietf-yang-schema-mount", which has the following structure:
+
+!! include-figure ietf-yang-schema-mount.tree
 
 ** Specification of the Mounted Schema
 
@@ -227,13 +242,13 @@ determined from state data in the "/schema-mounts"
 container.
 
 Generally, the modules that are mounted under a mount point have no
-relation to
-the modules in the parent schema; specifically, if a module is mounted
-it may or may not be present in the parent schema and, if present, its
-data will generally have no relationship to the data of the parent.
-Exceptions are possible and such needs to be defined in the
-model defining the exception, e.g., the interface module in
-^I-D.ietf-rtgwg-lne-model^.
+relation to the modules in the parent schema; specifically, if a
+module is mounted it may or may not be present in the parent schema
+and, if present, its data will generally have no relationship to the
+data of the parent.  Exceptions are possible and such needs to be
+defined in the model defining the exception.  For example,
+^I-D.ietf-rtgwg-lne-model^ defines a mechanism to bind interfaces to
+mounted logical network elements.
 
 The "/schema-mounts" container has the "mount-point" list as one of its
 children. Every entry of this list refers through its key to a mount
@@ -241,7 +256,7 @@ point and specifies the mounted schema.
 
 If a mount point is defined in the parent schema but does not have an
 entry in the "mount-point" list, then the mounted schema is void,
-i.e., instances of that mount point MUST NOT contain any data above
+i.e., instances of that mount point MUST NOT contain any data except
 those that are defined in the parent schema.
 
 If multiple mount points with the same name are defined in the same
@@ -265,7 +280,7 @@ two different ways, "inline" or "shared-schema".
 The mounted schema is determined at run time: every
 instance of the mount point that exists in the operational state MUST
 contain a copy of YANG library data that defines the mounted
-schema exactly as for a top-level data model. A client is expected to
+schema exactly as for a top-level schema. A client is expected to
 retrieve this data from the instance tree, possibly after creating the
 mount point.  In the "inline" case, instances of the same mount point
 MAY use different mounted schemas, whereas in the "shared-schema"
@@ -274,19 +289,19 @@ case, all instances MUST use the same mounted schema.
 ** Multiple Levels of Schema Mount
 
 YANG modules in a mounted schema MAY again contain mount points under
-which subschemas can be mounted. Consequently, it is possible to
-construct data models with an arbitrary number of schema levels. A
-subschema for a mount point contained in a mounted module can be
+which other schemas can be mounted.  Consequently, it is possible to
+construct data models with an arbitrary number of mounted schemas.  A
+schema for a mount point contained in a mounted module can be
 specified by implementing "ietf-yang-library" and
 "ietf-yang-schema-mount" modules in the mounted schema, and specifying
-the subschemas exactly as it is done in the top-level schema.
+the schemas exactly as it is done in the top-level schema.
 
 * Referring to Data Nodes in the Parent Schema @parref@
 
 A fundamental design principle of schema mount is that the mounted
-data model works exactly as a top-level data model, i.e., it is
+schema works exactly as a top-level schema, i.e., it is
 confined to the "mount jail". This means that all paths in the mounted
-data model (in leafrefs, instance-identifiers, XPath expressions, and
+schema (in leafrefs, instance-identifiers, XPath expressions, and
 target nodes of augments) are interpreted with the mount point as the
 root node. YANG modules of the mounted schema as well as corresponding
 instance data thus cannot refer to schema nodes or instance data
@@ -367,6 +382,26 @@ point.  A server that supports the NMDA, MUST implement at least
 revision YYYY-MM-DD of "ietf-yang-library"
 ^I-D.ietf-netconf-rfc7895bis^ under the mount points.
 
+* Interaction with the Network Configuration Access Control Model (NACM)
+
+If NACM ^RFC8341^ is implemented on a server, it can be used to
+control access to nodes defined by the mounted schema in the same way
+as for nodes defined by the top-level schema.
+
+For example, suppose the module "ietf-interfaces" is mounted in the
+"root" container in the "logical-network-element" list defined in
+^I-D.ietf-rtgwg-lne-model^.  Then the following NACM path can be used
+to control access to the "interfaces" container (where the character
+'\' is used where a line break has been inserted for formatting
+reasons):
+
+  <path xmlns:lne=
+          "urn:ietf:params:xml:ns:yang:ietf-logical-network-element"
+        xmlns:if="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+    /lne:logical-network-elements\
+      /lne:logical-network-element/lne:root/if:interfaces
+  </path>
+
 * Implementation Notes
 
 Network management of devices that use a data model with schema mount
@@ -381,18 +416,11 @@ implementations options are envisioned as typical:
   an extra session exists for every instance of the mount point,
   having access only to the mounted data tree.
 
-* Data Model
-
-This document defines the YANG 1.1 module ^RFC7950^
-"ietf-yang-schema-mount", which has the following structure:
-
-!! include-figure ietf-yang-schema-mount.tree
-
 * Schema Mount YANG Module @yangmod@
 
 This module references ^RFC6991^.
 
-!! include-figure ietf-yang-schema-mount.yang extract-to="ietf-yang-schema-mount@2017-10-09.yang"
+!! include-yang ietf-yang-schema-mount.yang
 
 * IANA Considerations @iana@
 
@@ -470,7 +498,7 @@ device model as specified in Section 2 of
 ^I-D.ietf-rtgwg-device-model^, using both logical network elements
 (LNE) and network instances (NI).
 
-In these examples, the character "\" is used where a line break has
+In these examples, the character '\' is used where a line break has
 been inserted for formatting reasons.
 
 ** Physical Device

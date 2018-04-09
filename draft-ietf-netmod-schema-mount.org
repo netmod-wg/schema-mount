@@ -1,8 +1,8 @@
 # -*- org -*-
 
-This document defines a mechanism to add the schema trees defined by a
-set of YANG modules into the schema tree defined in another YANG
-module.
+This document defines a mechanism to add the schema trees defined
+by a set of YANG modules onto a mount point defined in the schema tree
+in some YANG module.
 
 * Introduction @intro@
 
@@ -167,10 +167,11 @@ here:
 - mount point: container or list node whose definition contains
   the "mount-point" extension statement. The argument of the
   "mount-point" statement defines a label for the mount point.
-- parent schema (of a particular mounted schema): the schema that
-  contains the mount point for the mounted schema.
-- top-level schema: a set of modules in which the schema
-  trees of each module (except augments) start at the root node.
+- schema: collection of schema trees with a common root
+- top-level schema: schema rooted at the root node
+- mounted schema: schema rooted at a mount point
+- parent schema (of a mounted schema): schema containing the mount
+  point
 
 ** Tree Diagrams
 

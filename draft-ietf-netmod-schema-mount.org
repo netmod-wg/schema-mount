@@ -157,10 +157,15 @@ here:
 - operational state
 - server
 
-The following terms are defined in ^RFC8343^ and are not redefined
+The following term is defined in ^RFC8343^ and are not redefined
 here:
 
 - system-controlled interface
+
+The following term is defined in ^I-D.ietf-netconf-rfc7895bis^ and
+are not redefined here:
+
+- YANG library checksum
 
 ** Glossary of New Terms
 
@@ -278,14 +283,18 @@ one of the following conditions is satisfied for a mount point:
 An entry of the "mount-point" list can specify the mounted schema in
 two different ways, "inline" or "shared-schema".
 
-The mounted schema is determined at run time: every
-instance of the mount point that exists in the operational state MUST
-contain a copy of YANG library data that defines the mounted
-schema exactly as for a top-level schema. A client is expected to
-retrieve this data from the instance tree, possibly after creating the
-mount point.  In the "inline" case, instances of the same mount point
-MAY use different mounted schemas, whereas in the "shared-schema"
-case, all instances MUST use the same mounted schema.
+The mounted schema is determined at run time: every instance of the
+mount point that exists in the operational state MUST contain a copy
+of YANG library data that defines the mounted schema exactly as for a
+top-level schema. A client is expected to retrieve this data from the
+instance tree.  In the "inline" case, instances of the same mount
+point MAY use different mounted schemas, whereas in the
+"shared-schema" case, all instances MUST use the same mounted schema.
+This means that in the "shared-schema" case, all instances of the same
+mount point MUST have the same YANG library checksum.  In the "inline"
+case, if two instances have the same YANG library checksum it is not
+guaranteed that the YANG library contents are equal for these
+instances.
 
 ** Multiple Levels of Schema Mount
 

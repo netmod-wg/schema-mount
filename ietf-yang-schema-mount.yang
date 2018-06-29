@@ -57,7 +57,7 @@ module ietf-yang-schema-mount {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2018-04-05 {
+  revision 2018-06-29 {
     description
       "Initial revision.";
     reference
@@ -159,10 +159,10 @@ module ietf-yang-schema-mount {
             "A complete self-contained schema is mounted at the
              mount point.";
           description
-            "This node indicates that the server has mounted
-             'ietf-yang-library' at the mount point, and its
-             instantiation provides the information about the mounted
-             schema.
+            "This node indicates that the server has mounted at least
+             the module 'ietf-yang-library' at the mount point, and
+             its instantiation provides the information about the
+             mounted schema.
 
              Different instances of the mount point may have
              different schemas mounted.";
@@ -172,12 +172,12 @@ module ietf-yang-schema-mount {
             "The mounted schema together with the 'parent-reference'
              make up the schema for this mount point.";
           description
-            "This node indicates that the server has mounted
-             'ietf-yang-library' at the mount point, and its
-             instantiation provides the information about the mounted
-             schema.  When XPath expressions in the mounted schema
-             are evaluated, the 'parent-reference' leaf-list is taken
-             into account.
+            "This node indicates that the server has mounted at least
+             the module 'ietf-yang-library' at the mount point, and
+             its instantiation provides the information about the
+             mounted schema.  When XPath expressions in the mounted
+             schema are evaluated, the 'parent-reference' leaf-list
+             is taken into account.
 
              Different instances of the mount point MUST have the
              same schema mounted.";

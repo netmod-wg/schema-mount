@@ -31,7 +31,7 @@ statements:
   defined in the same or another module. See Section 4.2.8 of
   ^RFC7950^ for more details.
 
-With both mechanisms, the YANG module with the "uses" or "augemnt"
+With both mechanisms, the YANG module with the "uses" or "augment"
 statement explicitly defines the exact location in the schema tree
 where the new nodes are placed.
 

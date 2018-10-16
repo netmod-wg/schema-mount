@@ -1,6 +1,6 @@
 {
    "ietf-yang-library:yang-library": {
-     "checksum": "14e2ab5dc325f6d86f743e8d3ade233f1a61a899",
+     "content-id": "14e2ab5dc325f6d86f743e8d3ade233f1a61a899",
      "module-set": [
        {
          "name": "physical-device-modules",

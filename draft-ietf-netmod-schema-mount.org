@@ -103,7 +103,7 @@ phases of the data model life cycle:
   be the same for every implementation of the parent module.
 
 + Implementation-time: the mounted schema is defined by a server
-  implementor and is as stable as YANG library information of the
+  implementor and is as stable as the YANG library information of the
   server.
 
 + Run-time: the mounted schema is defined by instance data that is
@@ -169,7 +169,7 @@ here:
 The following term is defined in ^I-D.ietf-netconf-rfc7895bis^ is
 not redefined here:
 
-- YANG library checksum
+- YANG library content identifier
 
 The following additional terms are used within this document:
 
@@ -297,10 +297,13 @@ instance tree.  In the "inline" case, instances of the same mount
 point MAY use different mounted schemas, whereas in the
 "shared-schema" case, all instances MUST use the same mounted schema.
 This means that in the "shared-schema" case, all instances of the same
-mount point MUST have the same YANG library checksum.  In the "inline"
-case, if two instances have the same YANG library checksum it is not
-guaranteed that the YANG library contents are equal for these
-instances.
+mount point MUST have the same YANG library content identifier.  In
+the "inline" case, if two instances have the same YANG library content
+identifier it is not guaranteed that the YANG library contents are
+equal for these instances.
+
+Examples of "inline" and "shared-schema" can be found in ^exlne^ and
+^exni^, respectively.
 
 ** Multiple Levels of Schema Mount
 
@@ -317,7 +320,7 @@ the schemas exactly as it is done in the top-level schema.
 A fundamental design principle of schema mount is that the mounted
 schema works exactly as a top-level schema, i.e., it is
 confined to the "mount jail". This means that all paths in the mounted
-schema (in leafrefs, instance-identifiers, XPath expressions, and
+schema (in leafrefs, instance-identifiers, XPath ^XPATH^ expressions, and
 target nodes of augments) are interpreted with the mount point as the
 root node. YANG modules of the mounted schema as well as corresponding
 instance data thus cannot refer to schema nodes or instance data
@@ -376,7 +379,7 @@ notification was connected to the mount point, see Section 7.16 of
 
 Note, inline actions and notifications will not work when they are
 contained within a list node without a "key" statement (see section 7.15
-and 7.16 of ^RFC7950^).  Therefore, to be useful, mount points which
+and 7.16 of ^RFC7950^).  Therefore, to be useful, mount points that
 contain modules with RPCs, actions, and notifications SHOULD NOT have any
 ancestor node that is a list node without a "key" statement.  This
 requirement applies to the definition of modules using the "mount-point"
@@ -398,9 +401,9 @@ point.  A server that supports the NMDA, MUST implement at least
 revision YYYY-MM-DD of "ietf-yang-library"
 ^I-D.ietf-netconf-rfc7895bis^ under the mount points.
 
-* Interaction with the Network Configuration Access Control Model (NACM)
+* Interaction with the Network Configuration Access Control Model (NACM) @nacm@
 
-If NACM ^RFC8341^ is implemented on a server, it can be used to
+If NACM ^RFC8341^ is implemented on a server, it is used to
 control access to nodes defined by the mounted schema in the same way
 as for nodes defined by the top-level schema.
 
@@ -492,6 +495,10 @@ nodes and their sensitivity/vulnerability:
    identify server implementations with such a defect, in order to
    launch a denial-of-service attack on the device.
 
+It is important to take the security considerations for all nodes in
+the mounted schemas into account, and control access to these nodes
+by using the mechanism described in ^nacm^.
+
 * Contributors
 
 The idea of having some way to combine schemas from different YANG
@@ -524,7 +531,7 @@ library content, assuming the server supports the NMDA:
 
 !! include-figure yang-library-ex1-device.json
 
-** Logical Network Elements
+** Logical Network Elements @exlne@
 
 Each LNE can have a specific data model that is determined at run
 time, so it is appropriate to mount it using the "inline" method,

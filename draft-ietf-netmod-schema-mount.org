@@ -499,6 +499,11 @@ It is important to take the security considerations for all nodes in
 the mounted schemas into account, and control access to these nodes
 by using the mechanism described in ^nacm^.
 
+Care must be taken when the "parent-reference" XPath expressions are
+constructed, since the result of the evaluation of these expressions
+is added to the accessible tree for any XPath expression found in the
+mounted schema.
+
 * Contributors
 
 The idea of having some way to combine schemas from different YANG

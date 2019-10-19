@@ -589,6 +589,28 @@ line):
       network-instance=rtrA/root/ietf-isis:clear-adjacency HTTP/1.1
 
 
+** Tree Representations
+
+Need to decide on how to represent mount points in trees.
+
+** Design Time Mounts
+
+The document currently doesn't allow for design time mounts. Design time
+mounts have been identified as possibly for multiple cases, and it may
+be worthwhile to identify a minimum or complete set of modules that must
+be supported under a mount point. This could be used in service modules
+that want to allow for configuration of device-specific information.
+The document could be modified to either (a) not preclude design time
+mounts, but not fully specify their support, or (b) fully define their
+support. 
+
+Also if/when design time mounts are supported, it could be possible to
+represent both mounts points and their required modules in tree
+representations and support for such would need to be defined. For
+example, YANG library is required under all inline mount points, and
+it's possible that other mounted schemes could be required at parent
+module design time. 
+
 {{document:
     name ;
     ipr trust200902;
